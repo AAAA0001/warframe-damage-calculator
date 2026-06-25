@@ -50,7 +50,7 @@ class melee(weapon):
             f"{'CRIT DAMAGE:':<14} {f'{self.base_crit_damage:.2f}x':<6} -> {self.effective_crit_damage():.2f}x",
             f"{'STATUS CHANCE:':<14} {f'{self.base_status_chance:.2%}':<6} -> {self.moded_status_chance:.2%}",
             f"{'STATUS DAMAGE:':<14} {'1.00x':<6} -> {self.moded_status_damage:.2f}x",
-            *(f"{f'{dt.upper()}:':<14} {f'{self.base_damage_dist.get(dt):.2f}':<6} -> {self.moded_damage_dist.get(dt):.2f}" for dt, _ in self.moded_damage_dist if self.moded_damage_dist.get(dt) != 0),
+            *(f"{f'{dt.upper()}:':<14} {f'{self.base_damage_dist.get(dt):.2f}':<6} -> {self.moded_damage_dist.get(dt):.2f}" for dt, _ in self.moded_damage_dist),
             f"{'TOTAL DAMAGE:':<14} {f'{self.base_total_damage:.2f}':<6} -> {self.moded_total_damage:.2f}",
             "-------------------------------------",
             f"{'FLAT DPH:':<14} {self.flat_dph():.2f}",
