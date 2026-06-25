@@ -100,21 +100,20 @@ class ranged(weapon):
         return self.moded_multishot if self.is_beam else 1
 
     def flat_dotph_for(self, damage_dist: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Needs In-Game Testing
-        total_damage = damage_dist.total_damage
-        if total_damage <= 0:
+        if damage_dist.total_damage <= 0:
             return 0.0
         average_primed_chamber_multiplier = self.average_primed_chamber_multiplier()
         # Hunter munitions
         hunter_munitions_expected_procs = self.moded_hunter_munitions * min(crit_chance, 1)
-        hunter_munitions_damage_per_proc = 2.1 * total_damage * max(self.effective_crit_damage(), crit_multiplier) * self.moded_status_damage * self.moded_faction_damage**2 * average_primed_chamber_multiplier
+        hunter_munitions_damage_per_proc = 2.1 * damage_dist.total_damage * max(self.effective_crit_damage(), crit_multiplier) * self.moded_status_damage * self.moded_faction_damage**2 * average_primed_chamber_multiplier
         hunter_munitions_expected_damage = hunter_munitions_expected_procs * hunter_munitions_damage_per_proc
-        # Hunter munitions & Internal bleeding overlap variables
+        # Overlap variables
         impact_internal_bleeding = (damage_dist.weight("impact") + self.forced_procs.get("impact")) * self.moded_internal_bleeding
         guaranteed_proc = int(self.moded_status_chance)
         fractional_proc = self.moded_status_chance % 1
         # Internal bleeding
         internal_bleeding_expected_procs = impact_internal_bleeding * self.moded_status_chance
-        internal_bleeding_damage_per_proc = 2.1 * total_damage * crit_multiplier * self.moded_status_damage * self.moded_faction_damage**2 * average_primed_chamber_multiplier
+        internal_bleeding_damage_per_proc = 2.1 * damage_dist.total_damage * crit_multiplier * self.moded_status_damage * self.moded_faction_damage**2 * average_primed_chamber_multiplier
         internal_bleeding_expected_damage = internal_bleeding_expected_procs * internal_bleeding_damage_per_proc
         # Hunter munitions & Internal bleeding overlap
         prob_at_least_one_internal_bleeding_proc = 1 - (1 - impact_internal_bleeding) ** guaranteed_proc * ((1 - fractional_proc) + fractional_proc * (1 - impact_internal_bleeding))
