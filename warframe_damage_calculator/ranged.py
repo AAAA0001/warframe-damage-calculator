@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
+
 from .dist import Dist
 from .weapon import Weapon
 from .upgrade import Upgrade
