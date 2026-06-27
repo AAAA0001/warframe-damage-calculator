@@ -4,7 +4,7 @@ from .weapon import Weapon
 from .melee import Melee
 from .ranged import Ranged
 
-__version__ = "1.0.0"
+__version__ = "0.1.0"
 
 __all__ = [
     "Dist",
