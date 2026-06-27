@@ -1,21 +1,21 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from .dist import dist
-from .upgrade import upgrade
+from .dist import Dist
+from .upgrade import Upgrade
 
 DOT_MULTIPLIERS = (("slash", 2.1), ("heat", 3.0), ("toxin", 3.0), ("electricity", 3.0), ("gas", 3.0))
 
 @dataclass
-class weapon:
-    base_damage_dist: dist = field(default_factory=dist)
+class Weapon:
+    base_damage_dist: Dist = field(default_factory=Dist)
     base_crit_chance: float = 0.0
     base_crit_damage: float = 0.0
     base_status_chance: float = 0.0
     base_total_damage: float = field(init=False)
-    config: upgrade = field(init=False)
+    config: Upgrade = field(init=False)
     moded_multiplicative_base_damage: float = field(init=False)
     moded_base_damage: float = field(init=False)
-    moded_damage_dist: dist = field(init=False)
+    moded_damage_dist: Dist = field(init=False)
     moded_total_damage: float = field(init=False)
     moded_faction_damage: float = field(init=False)
     moded_flat_crit_chance: float = field(init=False)
@@ -28,9 +28,9 @@ class weapon:
     
     def __post_init__(self) -> None:
         self.base_total_damage = self.base_damage_dist.total_damage
-        self.configure(upgrade())
+        self.configure(Upgrade())
     
-    def configure(self, *upgrades: upgrade) -> weapon:
+    def configure(self, *upgrades: Upgrade) -> Weapon:
         config = sum(upgrades)
         self.config = config
         self.moded_multiplicative_base_damage = 1 + config.multiplicative_base_damage

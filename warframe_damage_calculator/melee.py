@@ -1,18 +1,18 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from .dist import dist
-from .weapon import weapon
-from .upgrade import upgrade
+from .dist import Dist
+from .weapon import Weapon
+from .upgrade import Upgrade
 
 DOT_MULTIPLIERS = (("slash", 2.1), ("heat", 3.0), ("toxin", 3.0), ("electricity", 3.0), ("gas", 3.0))
 
 @dataclass
-class melee(weapon):
+class Melee(Weapon):
     base_attack_speed: float = 0.0
     moded_attack_speed: float = field(init=False)
     moded_melee_duplicate: float = field(init=False)
 
-    def configure(self, *upgrades: upgrade) -> melee:
+    def configure(self, *upgrades: Upgrade) -> Melee:
         super().configure(*upgrades)
         config = self.config
         self.moded_attack_speed = self.base_attack_speed * (1 + config.attack_speed)

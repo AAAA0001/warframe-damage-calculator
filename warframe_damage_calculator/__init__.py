@@ -1,15 +1,15 @@
-from .dist import dist
-from .upgrade import upgrade
-from .weapon import weapon
-from .melee import melee
-from .ranged import ranged
+from .dist import Dist
+from .upgrade import Upgrade
+from .weapon import Weapon
+from .melee import Melee
+from .ranged import Ranged
 
 __version__ = "1.0.0"
 
 __all__ = [
-    "dist",
-    "upgrade",
-    "weapon",
-    "melee",
-    "ranged",
+    "Dist",
+    "Upgrade",
+    "Weapon",
+    "Melee",
+    "Ranged",
 ]

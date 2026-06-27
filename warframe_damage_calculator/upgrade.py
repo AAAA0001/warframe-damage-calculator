@@ -1,10 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, fields
-from .dist import dist
+from .dist import Dist
 
 @dataclass
-class upgrade:
-    damage_dist: dist = field(default_factory=dist)
+class Upgrade:
+    damage_dist: Dist = field(default_factory=Dist)
     multiplicative_base_damage: float = 0.0
     base_damage: float = 0.0
     faction_damage: float = 0.0
@@ -30,9 +30,9 @@ class upgrade:
     vigilante_bonus: float = 0.0
     melee_duplicate: float = 0.0
 
-    def __add__(self, other: upgrade) -> upgrade:
-        return upgrade(**{field.name: getattr(self, field.name) + getattr(other, field.name) for field in fields(self)})
+    def __add__(self, other: Upgrade) -> Upgrade:
+        return Upgrade(**{field.name: getattr(self, field.name) + getattr(other, field.name) for field in fields(self)})
     
-    def __radd__(self, other: int | float) -> upgrade:
+    def __radd__(self, other: int | float) -> Upgrade:
         if other == 0: return self
         else: return NotImplemented

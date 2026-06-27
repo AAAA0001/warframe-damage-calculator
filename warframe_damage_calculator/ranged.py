@@ -1,15 +1,15 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from .dist import dist
-from .weapon import weapon
-from .upgrade import upgrade
+from .dist import Dist
+from .weapon import Weapon
+from .upgrade import Upgrade
 
 DOT_MULTIPLIERS = (("slash", 2.1), ("heat", 3.0), ("toxin", 3.0), ("electricity", 3.0), ("gas", 3.0))
 
 @dataclass
-class ranged(weapon):
-    base_explosion_damage_dist: dist = field(default_factory=dist)
-    forced_procs: dist = field(default_factory=dist)
+class Ranged(Weapon):
+    base_explosion_damage_dist: Dist = field(default_factory=Dist)
+    forced_procs: Dist = field(default_factory=Dist)
     base_fire_rate: float = 0.0
     base_charge_time: float = 0.0
     base_reload_speed: float = 0.0
@@ -18,7 +18,7 @@ class ranged(weapon):
     base_weakpoint_damage: float = 3.0
     is_beam: bool = False
     base_explosion_total_damage: float = field(init=False)
-    moded_explosion_damage_dist: dist = field(init=False)
+    moded_explosion_damage_dist: Dist = field(init=False)
     moded_explosion_total_damage: float = field(init=False)
     moded_weakpoint_damage: float = field(init=False)
     moded_multiplicative_fire_rate: float = field(init=False)
@@ -38,7 +38,7 @@ class ranged(weapon):
         self.base_explosion_total_damage = self.base_explosion_damage_dist.total_damage
         super().__post_init__()
     
-    def configure(self, *upgrades: upgrade) -> ranged:
+    def configure(self, *upgrades: Upgrade) -> Ranged:
         super().configure(*upgrades)
         config = self.config
         self.moded_explosion_damage_dist = self.moded_base_damage * self.base_explosion_damage_dist.apply(config.damage_dist).combine()
@@ -99,7 +99,7 @@ class ranged(weapon):
     def beam_dot_multiplier(self) -> float:
         return self.moded_multishot if self.is_beam else 1
 
-    def flat_dotph_for(self, damage_dist: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Needs In-Game Testing
+    def flat_dotph_for(self, damage_dist: Dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Needs In-Game Testing
         if damage_dist.total_damage <= 0:
             return 0.0
         average_primed_chamber_multiplier = self.average_primed_chamber_multiplier()
