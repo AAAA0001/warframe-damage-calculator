@@ -4,7 +4,7 @@ from .weapon import weapon
 from .melee import melee
 from .ranged import ranged
 
-__version__ = "1.1.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "dist",
