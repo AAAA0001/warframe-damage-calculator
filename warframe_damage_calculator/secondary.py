@@ -7,4 +7,8 @@ from .ranged import Ranged
 
 @dataclass
 class Secondary(Ranged):
-    pass
+    def _compute_moded_stats(self) -> None:
+        super()._compute_moded_stats()
+
+    def _compute_effective_stats(self) -> None:
+        super()._compute_effective_stats()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Self
 
 from .dist import Dist
 from .upgrade import Upgrade
@@ -41,7 +42,7 @@ class Weapon:
         self.effective_status_chance = self.moded_status_chance
         self.effective_status_damage = self.moded_status_damage
 
-    def configure(self, *upgrades: Upgrade) -> Weapon:
+    def configure(self, *upgrades: Upgrade) -> Self:
         self.config = sum(upgrades)
         self._compute_moded_stats()
         self._compute_effective_stats()
