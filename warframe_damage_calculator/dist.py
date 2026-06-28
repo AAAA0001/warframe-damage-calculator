@@ -4,10 +4,7 @@ from dataclasses import dataclass, field
 from typing import Iterator, Iterable
 from types import MappingProxyType
 
-PHYSICAL = {"impact", "puncture", "slash"}
-ELEMENTAL = {"cold", "electricity", "heat", "toxin"}
-COMBINATIONS = {("cold", "heat"): "blast", ("electricity", "toxin"): "corrosive", ("heat", "toxin"): "gas", ("cold", "electricity"): "magnetic", ("electricity", "heat"): "radiation", ("cold", "toxin"): "viral"}
-ORDER = dict(enumerate(["impact", "puncture", "slash", "blast", "corrosive", "gas", "magnetic", "radiation", "viral", "cold", "electricity", "heat", "toxin"]))
+from .constants import COMBINATIONS, ELEMENTAL, ORDER, PHYSICAL
 
 @dataclass(frozen=True, init=False)
 class Dist:

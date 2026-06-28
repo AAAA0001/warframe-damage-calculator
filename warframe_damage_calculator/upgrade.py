@@ -31,6 +31,8 @@ class Upgrade:
     primed_chamber: float = 0.0
     vigilante_bonus: float = 0.0
     melee_duplicate: float = 0.0
+    fire_rate_lock: bool = False
+    multishot_lock: bool = False
 
     def __add__(self, other: Upgrade) -> Upgrade:
         return Upgrade(**{field.name: getattr(self, field.name) + getattr(other, field.name) for field in fields(self)})

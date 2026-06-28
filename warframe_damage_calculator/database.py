@@ -3,13 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from .constants import UPGRADE_TABLES, WEAPON_TABLES
 from .dist import Dist
 from .melee import Melee
-from .ranged import Ranged
+from .primary import Primary
+from .secondary import Secondary
 from .upgrade import Upgrade
-
-WEAPON_TABLES = ("primary", "secondary", "melee")
-UPGRADE_TABLES = ("mod", "arcane")
 
 class Database:
     def __init__(self, root: Path | None = None) -> None:
@@ -34,12 +33,25 @@ class Database:
                 return table, record
         raise KeyError(f"Unknown object: {name}")
 
-    def weapon(self, name: str) -> Melee | Ranged:
+    def weapon(self, name: str) -> Melee | Primary | Secondary:
         table, record = self.find(WEAPON_TABLES, name)
         common = {"base_damage_dist": Dist(**record.get("damage_dist", {})), "base_crit_chance": record.get("crit_chance", 0.0), "base_crit_damage": record.get("crit_damage", 0.0), "base_status_chance": record.get("status_chance", 0.0)}
         if table == "melee":
             return Melee(**common, base_attack_speed=record.get("attack_speed", 0.0))
-        return Ranged(**common, base_explosion_damage_dist=Dist(**record.get("explosion_damage_dist", {})), forced_procs=Dist(**record.get("forced_procs", {})), base_fire_rate=record.get("fire_rate", 0.0), base_charge_time=record.get("charge_time", 0.0), base_reload_speed=record.get("reload_speed", 0.0), base_magazine_capacity=record.get("magazine_capacity", 0), base_multishot=record.get("multishot", 1.0), is_beam=record.get("is_beam", False))
+        ranged_common = dict(
+            common,
+            base_explosion_damage_dist=Dist(**record.get("explosion_damage_dist", {})),
+            forced_procs=Dist(**record.get("forced_procs", {})),
+            base_fire_rate=record.get("fire_rate", 0.0),
+            base_charge_time=record.get("charge_time", 0.0),
+            base_reload_speed=record.get("reload_speed", 0.0),
+            base_magazine_capacity=record.get("magazine_capacity", 0),
+            base_multishot=record.get("multishot", 1.0),
+            is_beam=record.get("is_beam", False),
+        )
+        if table == "primary":
+            return Primary(**ranged_common)
+        return Secondary(**ranged_common)
 
     def upgrade(self, name: str, rank: int | None = None, stacks: int | None = None, conditional: bool | None = None) -> Upgrade:
         _, record = self.find(UPGRADE_TABLES, name)
@@ -66,7 +78,7 @@ class Database:
 
 default_database = Database()
 
-def load_weapon(name: str) -> Melee | Ranged:
+def load_weapon(name: str) -> Melee | Primary | Secondary:
     return default_database.weapon(name)
 
 def load_upgrade(name: str, rank: int | None = None, stacks: int | None = None, conditional: bool | None = None) -> Upgrade:
