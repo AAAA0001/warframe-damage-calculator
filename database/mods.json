@@ -12,33 +12,23 @@
         "fire_rate": [0.1, 0.2, 0.3, 0.4]
     },
     "Amalgam Barrel Diffusion": {
-        "damage_dist": {},
         "multishot": [0.183, 0.367, 0.55, 0.733, 0.917, 1.1]
     },
     "Amalgam Organ Shatter": {
-        "damage_dist": {},
         "crit_damage": [0.142, 0.283, 0.425, 0.567, 0.708, 0.85]
     },
-    "Amalgam Serration": {
-        "damage_dist": {},
-        "base_damage": [0.141, 0.282, 0.423, 0.564, 0.705, 0.845, 0.986, 1.127, 1.268, 1.409, 1.55]
-    },
     "Amalgam Shotgun Barrage": {
-        "damage_dist": {},
         "fire_rate": [0.142, 0.283, 0.425, 0.567, 0.708, 0.85]
     },
     "Ammo Stock": {
-        "damage_dist": {},
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Anemic Agility": {
-        "damage_dist": {},
         "fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9],
         "base_damage": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15]
     },
     "Argon Scope": {
-        "damage_dist": {},
-        "conditional_crit_chance": [0.225, 0.45, 0.675, 0.9, 1.125, 1.35]
+        "crit_chance": [0.225, 0.45, 0.675, 0.9, 1.125, 1.35]
     },
     "Atomic Fallout": {
         "damage_dist": {
@@ -51,50 +41,31 @@
             "puncture": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         }
     },
-    "Augur Pact": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
-    },
     "Bane of Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Bane of Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Bane of Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Bane of Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Bane of The Murmur": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Barrel Diffusion": {
-        "damage_dist": {},
         "multishot": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Bladed Rounds": {
-        "damage_dist": {},
-        "conditional_crit_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-    },
-    "Blaze": {
-        "damage_dist": {
-            "heat": [0.15, 0.3, 0.45, 0.6]
-        },
-        "base_damage": [0.15, 0.3, 0.45, 0.6]
+        "crit_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Blood Rush": {
-        "damage_dist": {},
         "crit_chance": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4]
     },
     "Blunderbuss": {
-        "damage_dist": {},
         "crit_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Bore": {
@@ -108,7 +79,6 @@
         }
     },
     "Burdened Magazine": {
-        "damage_dist": {},
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "reload_speed": [-0.03, -0.06, -0.09, -0.12, -0.15, -0.18]
     },
@@ -130,8 +100,7 @@
         "status_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Catalyzer Link": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+        "status_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Charged Shell": {
         "damage_dist": {
@@ -150,46 +119,32 @@
         "reload_speed": [0.1, 0.2, 0.3, 0.4]
     },
     "Cleanse Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Cleanse Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Cleanse Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Cleanse Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Cleanse The Murmur": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Collision Force": {
         "damage_dist": {
             "impact": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         }
     },
-    "Comet Rounds": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
     "Concussion Rounds": {
         "damage_dist": {
             "impact": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
     },
-    "Condition Overload": {
-        "damage_dist": {},
-        "base_damage": [0.133, 0.267, 0.4, 0.533, 0.667, 0.8]
-    },
     "Condition's Perfection": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.25, 0.5, 0.75, 1.0]
+        "status_chance": [0.25, 0.5, 0.75, 1.0]
     },
     "Contagious Spread": {
         "damage_dist": {
@@ -201,35 +156,20 @@
             "electricity": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
     },
-    "Counterweight": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
-    "Covert Lethality": {
-        "damage_dist": {},
-        "base_damage": [0.25, 0.5, 0.75, 1.0]
-    },
     "Crash Course": {
         "damage_dist": {
             "impact": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         }
     },
-    "Crash Shot": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
     "Creeping Bullseye": {
-        "damage_dist": {},
         "crit_chance": [0.333, 0.667, 1.0, 1.333, 1.667, 2.0],
         "fire_rate": [-0.033, -0.067, -0.1, -0.133, -0.167, -0.2]
     },
     "Critical Deceleration": {
-        "damage_dist": {},
         "crit_chance": [0.333, 0.667, 1.0, 1.333, 1.667, 2.0],
         "fire_rate": [-0.033, -0.067, -0.1, -0.133, -0.167, -0.2]
     },
     "Critical Delay": {
-        "damage_dist": {},
         "crit_chance": [0.333, 0.667, 1.0, 1.333, 1.667, 2.0],
         "fire_rate": [-0.033, -0.067, -0.1, -0.133, -0.167, -0.2],
         "conditional_fire_rate": [-0.033, -0.067, -0.1, -0.133, -0.167, -0.2]
@@ -250,44 +190,31 @@
         }
     },
     "Dreamer's Wrath": {
-        "damage_dist": {},
         "crit_damage": [0.08, 0.16, 0.24, 0.32]
     },
     "Drifting Contact": {
-        "damage_dist": {},
         "status_chance": [0.1, 0.2, 0.3, 0.4]
     },
     "Embedded Catalyzer": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
+        "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Enduring Affliction": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.167, 0.333, 0.5, 0.667, 0.833, 1.0]
-    },
-    "Energy Channel": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.333, 0.667, 1.0, 1.333, 1.667, 2.0]
+        "status_chance": [0.167, 0.333, 0.5, 0.667, 0.833, 1.0]
     },
     "Expel Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Expel Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Expel Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Expel Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Expel The Murmur": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Fanged Fusillade": {
         "damage_dist": {
@@ -295,7 +222,6 @@
         }
     },
     "Fast Hands": {
-        "damage_dist": {},
         "reload_speed": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Fever Strike": {
@@ -303,30 +229,19 @@
             "toxin": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
     },
-    "Finishing Touch": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-    },
     "Firestorm": {
         "damage_dist": {
             "blast": [0.06, 0.12, 0.18, 0.24]
         }
     },
-    "Flak Shot": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
     "Flawed Ammo Stock": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2]
     },
     "Flawed Bane of Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.025, 0.05, 0.075, 0.1]
+        "faction_damage": [0.025, 0.05, 0.075, 0.1]
     },
     "Flawed Bane of Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.025, 0.05, 0.075, 0.1]
+        "faction_damage": [0.025, 0.05, 0.075, 0.1]
     },
     "Flawed Charged Shell": {
         "damage_dist": {
@@ -344,15 +259,12 @@
         }
     },
     "Flawed Expel Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.025, 0.05, 0.075, 0.1]
+        "faction_damage": [0.025, 0.05, 0.075, 0.1]
     },
     "Flawed Expel Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.025, 0.05, 0.075, 0.1]
+        "faction_damage": [0.025, 0.05, 0.075, 0.1]
     },
     "Flawed Fast Hands": {
-        "damage_dist": {},
         "reload_speed": [0.03, 0.06, 0.09, 0.12]
     },
     "Flawed Fever Strike": {
@@ -370,17 +282,12 @@
             "heat": [0.1, 0.2, 0.3, 0.4]
         }
     },
-    "Flawed Hornet Strike": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4]
-    },
     "Flawed Incendiary Coat": {
         "damage_dist": {
             "heat": [0.1, 0.2, 0.3, 0.4]
         }
     },
     "Flawed Magazine Warp": {
-        "damage_dist": {},
         "magazine_capacity": [0.03, 0.06, 0.09, 0.12]
     },
     "Flawed Molten Impact": {
@@ -394,7 +301,6 @@
         }
     },
     "Flawed Organ Shatter": {
-        "damage_dist": {},
         "crit_damage": [0.15, 0.3, 0.45, 0.6]
     },
     "Flawed Pathogen Rounds": {
@@ -403,24 +309,10 @@
         }
     },
     "Flawed Pistol Gambit": {
-        "damage_dist": {},
         "crit_chance": [0.15, 0.3, 0.45, 0.6]
     },
-    "Flawed Point Blank": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4]
-    },
-    "Flawed Pressure Point": {
-        "damage_dist": {},
-        "base_damage": [0.2, 0.4, 0.6, 0.8]
-    },
     "Flawed Quickdraw": {
-        "damage_dist": {},
         "reload_speed": [0.05, 0.1, 0.15, 0.2]
-    },
-    "Flawed Serration": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4]
     },
     "Flawed Shocking Touch": {
         "damage_dist": {
@@ -428,19 +320,15 @@
         }
     },
     "Flawed Shotgun Barrage": {
-        "damage_dist": {},
         "fire_rate": [0.1, 0.2, 0.3, 0.4]
     },
     "Flawed Slip Magazine": {
-        "damage_dist": {},
         "magazine_capacity": [0.025, 0.05, 0.075, 0.1]
     },
     "Flawed Smite Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2]
     },
     "Flawed Speed Trigger": {
-        "damage_dist": {},
         "fire_rate": [0.05, 0.1, 0.15, 0.2],
         "conditional_fire_rate": [0.05, 0.1, 0.15, 0.2]
     },
@@ -450,15 +338,12 @@
         }
     },
     "Flawed Tactical Pump": {
-        "damage_dist": {},
         "reload_speed": [0.03, 0.06, 0.09, 0.12]
     },
     "Flawed Target Cracker": {
-        "damage_dist": {},
         "crit_damage": [0.075, 0.15, 0.225, 0.3]
     },
     "Flawed True Steel": {
-        "damage_dist": {},
         "crit_chance": [0.2, 0.4, 0.6, 0.8],
         "conditional_crit_chance": [0.2, 0.4, 0.6, 0.8]
     },
@@ -478,7 +363,6 @@
         }
     },
     "Frail Momentum": {
-        "damage_dist": {},
         "fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9],
         "base_damage": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15]
     },
@@ -495,7 +379,6 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "Full Capacity": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3],
         "reload_speed": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15]
     },
@@ -510,76 +393,63 @@
         }
     },
     "Galvanized Aptitude": {
-        "damage_dist": {},
         "status_chance": [0.073, 0.145, 0.218, 0.291, 0.364, 0.436, 0.509, 0.582, 0.655, 0.727, 0.8],
         "stack_base_damage": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4],
         "max_stacks": 2
     },
     "Galvanized Chamber": {
-        "damage_dist": {},
         "multishot": [0.073, 0.145, 0.218, 0.291, 0.364, 0.436, 0.509, 0.582, 0.655, 0.727, 0.8],
         "stack_multishot": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
         "max_stacks": 5
     },
     "Galvanized Crosshairs": {
-        "damage_dist": {},
-        "conditional_crit_chance": [0.109, 0.218, 0.327, 0.436, 0.545, 0.655, 0.764, 0.873, 0.982, 1.091, 1.2],
+        "crit_chance": [0.109, 0.218, 0.327, 0.436, 0.545, 0.655, 0.764, 0.873, 0.982, 1.091, 1.2],
         "stack_crit_chance": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4],
         "max_stacks": 5
     },
     "Galvanized Diffusion": {
-        "damage_dist": {},
         "multishot": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1],
         "stack_multishot": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
         "max_stacks": 4
     },
     "Galvanized Elementalist": {
-        "damage_dist": {},
         "status_damage": [0.073, 0.145, 0.218, 0.291, 0.364, 0.436, 0.509, 0.582, 0.655, 0.727, 0.8],
         "stack_status_chance": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
         "max_stacks": 4
     },
     "Galvanized Hell": {
-        "damage_dist": {},
         "multishot": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1],
         "stack_multishot": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
         "max_stacks": 4
     },
     "Galvanized Savvy": {
-        "damage_dist": {},
         "status_chance": [0.073, 0.145, 0.218, 0.291, 0.364, 0.436, 0.509, 0.582, 0.655, 0.727, 0.8],
         "stack_base_damage": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4],
         "max_stacks": 2
     },
     "Galvanized Scope": {
-        "damage_dist": {},
-        "conditional_crit_chance": [0.109, 0.218, 0.327, 0.436, 0.545, 0.655, 0.764, 0.873, 0.982, 1.091, 1.2],
+        "crit_chance": [0.109, 0.218, 0.327, 0.436, 0.545, 0.655, 0.764, 0.873, 0.982, 1.091, 1.2],
         "stack_crit_chance": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4],
         "max_stacks": 5
     },
     "Galvanized Shot": {
-        "damage_dist": {},
         "status_chance": [0.073, 0.145, 0.218, 0.291, 0.364, 0.436, 0.509, 0.582, 0.655, 0.727, 0.8],
         "stack_base_damage": [0.036, 0.073, 0.109, 0.145, 0.182, 0.218, 0.255, 0.291, 0.327, 0.364, 0.4],
         "max_stacks": 3
     },
     "Galvanized Steel": {
-        "damage_dist": {},
         "crit_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1],
         "conditional_crit_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1],
         "stack_crit_damage": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
         "max_stacks": 4
     },
     "Gladiator Might": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Gunslinger": {
-        "damage_dist": {},
         "fire_rate": [0.12, 0.24, 0.36, 0.48, 0.6, 0.72]
     },
     "Hammer Shot": {
-        "damage_dist": {},
         "crit_damage": [0.15, 0.3, 0.45, 0.6],
         "status_chance": [0.2, 0.4, 0.6, 0.8]
     },
@@ -587,10 +457,6 @@
         "damage_dist": {
             "heat": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
-    },
-    "Heavy Caliber": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65]
     },
     "Heavy Trauma": {
         "damage_dist": {
@@ -603,7 +469,6 @@
         }
     },
     "Hell's Chamber": {
-        "damage_dist": {},
         "multishot": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Hellfire": {
@@ -612,8 +477,7 @@
         }
     },
     "Hemorrhage": {
-        "damage_dist": {},
-        "conditional_internal_bleeding": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
+        "internal_bleeding": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
     },
     "High Voltage": {
         "damage_dist": {
@@ -622,43 +486,26 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "Hollow Point": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "base_damage": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15]
     },
-    "Hornet Strike": {
-        "damage_dist": {},
-        "base_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2]
-    },
     "Hunter Munitions": {
-        "damage_dist": {},
-        "conditional_hunter_munitions": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "hunter_munitions": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Hydraulic Barrel": {
-        "damage_dist": {},
         "magazine_capacity": [-0.05, -0.1, -0.15, -0.2]
     },
     "Hydraulic Chamber": {
-        "damage_dist": {},
         "magazine_capacity": [-0.025, -0.05, -0.075, -0.1]
     },
     "Hydraulic Crosshairs": {
-        "damage_dist": {},
-        "conditional_crit_chance": [0.225, 0.45, 0.675, 0.9, 1.125, 1.35]
+        "crit_chance": [0.225, 0.45, 0.675, 0.9, 1.125, 1.35]
     },
     "Ice Storm": {
         "damage_dist": {
             "cold": [0.1, 0.2, 0.3, 0.4]
         },
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4]
-    },
-    "Impaler Munitions": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
-    "Impenetrable Offense": {
-        "damage_dist": {},
-        "base_damage": [-0.025, -0.05, -0.075, -0.1]
     },
     "Incendiary Coat": {
         "damage_dist": {
@@ -671,8 +518,7 @@
         }
     },
     "Internal Bleeding": {
-        "damage_dist": {},
-        "conditional_internal_bleeding": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
+        "internal_bleeding": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
     },
     "Jagged Edge": {
         "damage_dist": {
@@ -698,37 +544,26 @@
         "status_chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Kill Switch": {
-        "damage_dist": {},
         "reload_speed": [0.125, 0.25, 0.375, 0.5]
     },
-    "Killing Blow": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-    },
     "Laser Sight": {
-        "damage_dist": {},
-        "conditional_crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+        "crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Lethal Torrent": {
-        "damage_dist": {},
         "fire_rate": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "multishot": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Loaded Capacity": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3],
         "reload_speed": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15]
     },
     "Loose Chamber": {
-        "damage_dist": {},
         "reload_speed": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Loose Magazine": {
-        "damage_dist": {},
         "reload_speed": [0.083, 0.167, 0.25, 0.333, 0.417, 0.5]
     },
     "Magazine Warp": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Magnetic Capacity": {
@@ -755,12 +590,7 @@
         "fire_rate": [0.1, 0.2, 0.3, 0.4]
     },
     "Magnetic Welt": {
-        "damage_dist": {},
-        "conditional_fire_rate": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
-    },
-    "Magnum Force": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65]
+        "fire_rate": [0.058, 0.117, 0.175, 0.233, 0.292, 0.35]
     },
     "Maim": {
         "damage_dist": {
@@ -768,7 +598,6 @@
         }
     },
     "Maiming Strike": {
-        "damage_dist": {},
         "crit_chance": [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
     },
     "Malignant Force": {
@@ -777,38 +606,22 @@
         },
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
-    "Master's Edge": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-    },
     "Melee Elementalist": {
-        "damage_dist": {},
         "status_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Melee Prowess": {
-        "damage_dist": {},
         "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Merciless Gunfight": {
-        "damage_dist": {},
         "crit_damage": [0.075, 0.15, 0.225, 0.3, 0.375, 0.45]
-    },
-    "Meteor Munitions": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
     },
     "Molten Impact": {
         "damage_dist": {
             "heat": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
     },
-    "Mortal Conduct": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.15, 0.3, 0.45, 0.6]
-    },
     "Nano-Applicator": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
+        "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "No Return": {
         "damage_dist": {
@@ -821,7 +634,6 @@
         }
     },
     "Organ Shatter": {
-        "damage_dist": {},
         "crit_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Pathogen Rounds": {
@@ -840,17 +652,14 @@
         }
     },
     "Pistol Acuity": {
-        "damage_dist": {},
         "weakpoint_damage": [0.318, 0.636, 0.955, 1.273, 1.591, 1.909, 2.227, 2.545, 2.864, 3.182, 3.5],
         "weakpoint_crit_chance": [0.318, 0.636, 0.955, 1.273, 1.591, 1.909, 2.227, 2.545, 2.864, 3.182, 3.5]
     },
     "Pistol Elementalist": {
-        "damage_dist": {},
         "status_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9],
         "reload_speed": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Pistol Gambit": {
-        "damage_dist": {},
         "crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Pistol Pestilence": {
@@ -859,45 +668,29 @@
         },
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
-    "Point Blank": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
-    },
     "Point Strike": {
-        "damage_dist": {},
         "crit_chance": [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
     },
-    "Pressure Point": {
-        "damage_dist": {},
-        "base_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-    },
     "Pressurized Magazine": {
-        "damage_dist": {},
-        "conditional_fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
+        "fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Primary Acuity": {
-        "damage_dist": {},
         "weakpoint_damage": [0.318, 0.636, 0.955, 1.273, 1.591, 1.909, 2.227, 2.545, 2.864, 3.182, 3.5],
         "weakpoint_crit_chance": [0.318, 0.636, 0.955, 1.273, 1.591, 1.909, 2.227, 2.545, 2.864, 3.182, 3.5]
     },
     "Primed Ammo Stock": {
-        "damage_dist": {},
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
     },
     "Primed Bane of Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Bane of Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Bane of Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Bane of Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Charged Shell": {
@@ -911,19 +704,15 @@
         }
     },
     "Primed Cleanse Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Cleanse Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Cleanse Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Cleanse Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Convulsion": {
@@ -937,23 +726,18 @@
         }
     },
     "Primed Expel Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Expel Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Expel Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Expel Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Fast Hands": {
-        "damage_dist": {},
         "reload_speed": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Fever Strike": {
@@ -982,68 +766,46 @@
         }
     },
     "Primed Magazine Warp": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Pistol Gambit": {
-        "damage_dist": {},
         "crit_chance": [0.17, 0.34, 0.51, 0.68, 0.85, 1.02, 1.19, 1.36, 1.53, 1.7, 1.87]
     },
-    "Primed Point Blank": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65]
-    },
-    "Primed Pressure Point": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65]
-    },
     "Primed Quickdraw": {
-        "damage_dist": {},
         "reload_speed": [0.08, 0.16, 0.24, 0.32, 0.4, 0.48, 0.56, 0.64, 0.72, 0.8, 0.88]
     },
     "Primed Ravage": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
     },
     "Primed Shred": {
-        "damage_dist": {},
         "fire_rate": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55],
         "conditional_fire_rate": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Slip Magazine": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Smite Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Smite Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Smite Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Smite Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
     },
     "Primed Tactical Pump": {
-        "damage_dist": {},
         "reload_speed": [0.091, 0.182, 0.273, 0.364, 0.455, 0.545, 0.636, 0.727, 0.818, 0.909, 1.0]
     },
     "Primed Target Cracker": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
     },
     "Proton Jet": {
-        "damage_dist": {},
-        "conditional_status_chance": [0.3, 0.6, 0.9, 1.2]
+        "status_chance": [0.3, 0.6, 0.9, 1.2]
     },
     "Proton Snap": {
-        "damage_dist": {},
         "base_damage": [0.25, 0.5, 0.75, 1.0],
         "status_chance": [0.125, 0.25, 0.375, 0.5]
     },
@@ -1053,7 +815,6 @@
         }
     },
     "Quickdraw": {
-        "damage_dist": {},
         "reload_speed": [0.08, 0.16, 0.24, 0.32, 0.4, 0.48]
     },
     "Radiated Reload": {
@@ -1063,21 +824,12 @@
         "reload_speed": [0.1, 0.2, 0.3, 0.4]
     },
     "Ravage": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-    },
-    "Razor Munitions": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
     },
     "Razor Shot": {
         "damage_dist": {
             "slash": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
-    },
-    "Relentless Combination": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.25, 0.5, 0.75, 1.0]
     },
     "Rending Strike": {
         "damage_dist": {
@@ -1086,15 +838,12 @@
         }
     },
     "Repeater Clip": {
-        "damage_dist": {},
-        "conditional_fire_rate": [0.175, 0.35, 0.525, 0.7, 0.875, 1.05]
+        "fire_rate": [0.175, 0.35, 0.525, 0.7, 0.875, 1.05]
     },
     "Rifle Aptitude": {
-        "damage_dist": {},
         "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Rifle Elementalist": {
-        "damage_dist": {},
         "status_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Rime Rounds": {
@@ -1103,24 +852,19 @@
         },
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
-    "Ripper Rounds": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
     "Rupture": {
         "damage_dist": {
             "impact": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
         }
     },
     "Sacrificial Pressure": {
-        "damage_dist": {},
         "base_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1],
-        "conditional_base_damage": [0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275]
+        "faction_damage": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3]
     },
     "Sacrificial Steel": {
-        "damage_dist": {},
         "crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2],
-        "conditional_crit_chance": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]
+        "faction_damage": [0.027, 0.055, 0.082, 0.109, 0.136, 0.164, 0.191, 0.218, 0.245, 0.273, 0.3],
+        "conditional_crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2]
     },
     "Sawtooth Clip": {
         "damage_dist": {
@@ -1152,51 +896,25 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "Secondary Wind": {
-        "damage_dist": {},
         "reload_speed": [0.125, 0.25, 0.375, 0.5]
     },
     "Seeking Fury": {
-        "damage_dist": {},
         "reload_speed": [0.025, 0.05, 0.075, 0.1, 0.125, 0.15]
     },
-    "Seismic Wave": {
-        "damage_dist": {},
-        "base_damage": [0.5, 1.0, 1.5, 2.0]
-    },
     "Semi-Pistol Cannonade": {
-        "damage_dist": {},
         "fire_rate_lock": [true, true, true, true, true, true],
         "base_damage": [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
     },
     "Semi-Rifle Cannonade": {
-        "damage_dist": {},
         "fire_rate_lock": [true, true, true, true, true, true],
         "base_damage": [0.4, 0.8, 1.2, 1.6, 2.0, 2.4]
     },
     "Semi-Shotgun Cannonade": {
-        "damage_dist": {},
         "fire_rate_lock": [true, true, true, true, true, true],
         "base_damage": [0.4, 0.8, 1.2, 1.6, 2.0, 2.4]
     },
-    "Serrated Edges": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
-    "Serrated Rounds": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
-    "Serration": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65]
-    },
-    "Sharpened Blade": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
-    },
     "Sharpened Bullets": {
-        "damage_dist": {},
-        "conditional_crit_damage": [0.125, 0.25, 0.375, 0.5, 0.625, 0.75]
+        "crit_damage": [0.125, 0.25, 0.375, 0.5, 0.625, 0.75]
     },
     "Shell Shock": {
         "damage_dist": {
@@ -1215,30 +933,21 @@
         }
     },
     "Shotgun Barrage": {
-        "damage_dist": {},
         "fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Shotgun Elementalist": {
-        "damage_dist": {},
         "status_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9],
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Shotgun Savvy": {
-        "damage_dist": {},
         "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Shrapnel Shot": {
-        "damage_dist": {},
-        "conditional_crit_damage": [0.165, 0.33, 0.495, 0.66, 0.825, 0.99]
+        "crit_damage": [0.165, 0.33, 0.495, 0.66, 0.825, 0.99]
     },
     "Shred": {
-        "damage_dist": {},
         "fire_rate": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3],
         "conditional_fire_rate": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
-    },
-    "Shred Shot": {
-        "damage_dist": {},
-        "base_damage": [0.05, 0.1, 0.15, 0.2]
     },
     "Shredder": {
         "damage_dist": {
@@ -1246,49 +955,29 @@
         }
     },
     "Slip Magazine": {
-        "damage_dist": {},
         "magazine_capacity": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Smite Corpus": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Smite Grineer": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Smite Infested": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Smite Orokin": {
-        "damage_dist": {},
         "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Smite The Murmur": {
-        "damage_dist": {},
-        "conditional_faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
-    },
-    "Spectral Serration": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0, 3.3]
+        "faction_damage": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
     },
     "Speed Trigger": {
-        "damage_dist": {},
         "fire_rate": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "conditional_fire_rate": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Split Chamber": {
-        "damage_dist": {},
         "multishot": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
-    },
-    "Spoiled Strike": {
-        "damage_dist": {},
-        "base_damage": [0.25, 0.5, 0.75, 1.0]
-    },
-    "Stand Ground": {
-        "damage_dist": {},
-        "base_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Stormbringer": {
         "damage_dist": {
@@ -1296,11 +985,9 @@
         }
     },
     "Strain Infection": {
-        "damage_dist": {},
         "crit_damage": [0.05, 0.1, 0.15, 0.2]
     },
     "Stunning Speed": {
-        "damage_dist": {},
         "reload_speed": [0.1, 0.2, 0.3, 0.4],
         "status_chance": [0.075, 0.15, 0.225, 0.3]
     },
@@ -1310,7 +997,6 @@
         }
     },
     "Sure Shot": {
-        "damage_dist": {},
         "status_chance": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Sweeping Serration": {
@@ -1318,25 +1004,17 @@
             "slash": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         }
     },
-    "Synth Charge": {
-        "damage_dist": {},
-        "conditional_base_damage": [0.5, 1.0, 1.5, 2.0]
-    },
     "Tactical Pump": {
-        "damage_dist": {},
         "reload_speed": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Tainted Clip": {
-        "damage_dist": {},
         "magazine_capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "reload_speed": [-0.05, -0.1, -0.15, -0.2, -0.25, -0.3]
     },
     "Tainted Shell": {
-        "damage_dist": {},
         "fire_rate": [-0.05, -0.1, -0.15, -0.2, -0.25, -0.3, -0.35, -0.4, -0.45, -0.5, -0.55]
     },
     "Target Cracker": {
-        "damage_dist": {},
         "crit_damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     },
     "Thermite Rounds": {
@@ -1352,7 +1030,6 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "True Steel": {
-        "damage_dist": {},
         "crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2],
         "conditional_crit_chance": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
@@ -1362,37 +1039,27 @@
         },
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
-    "Vicious Spread": {
-        "damage_dist": {},
-        "base_damage": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
-    },
     "Vigilante Armaments": {
-        "damage_dist": {},
         "multishot": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
         "vigilante_bonus": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
     },
     "Vigilante Fervor": {
-        "damage_dist": {},
         "fire_rate": [0.075, 0.15, 0.225, 0.3, 0.375, 0.45],
         "vigilante_bonus": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
         "conditional_fire_rate": [0.075, 0.15, 0.225, 0.3, 0.375, 0.45]
     },
     "Vigilante Offense": {
-        "damage_dist": {},
         "vigilante_bonus": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
     },
     "Vigilante Supplies": {
-        "damage_dist": {},
         "vigilante_bonus": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
     },
     "Vile Acceleration": {
-        "damage_dist": {},
         "fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9],
         "base_damage": [-0.025, -0.05, -0.075, -0.1, -0.125, -0.15],
         "conditional_fire_rate": [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
     },
     "Vile Precision": {
-        "damage_dist": {},
         "fire_rate": [-0.06, -0.12, -0.18, -0.24, -0.3, -0.36],
         "conditional_fire_rate": [-0.06, -0.12, -0.18, -0.24, -0.3, -0.36]
     },
@@ -1403,7 +1070,6 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "Vital Sense": {
-        "damage_dist": {},
         "crit_damage": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     },
     "Volcanic Edge": {
@@ -1419,7 +1085,6 @@
         "status_chance": [0.15, 0.3, 0.45, 0.6]
     },
     "Weeping Wounds": {
-        "damage_dist": {},
         "status_chance": [0.067, 0.133, 0.2, 0.267, 0.333, 0.4]
     },
     "Wildfire": {

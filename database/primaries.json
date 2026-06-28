@@ -1629,7 +1629,7 @@
         "reload_speed": 2.0,
         "magazine_capacity": 60,
         "multishot": 1.0,
-        "is_beam": true
+        "is_beam": false
     },
     "Panthera Prime": {
         "damage_dist": {
@@ -1647,7 +1647,7 @@
         "reload_speed": 2.4,
         "magazine_capacity": 80,
         "multishot": 1.0,
-        "is_beam": true
+        "is_beam": false
     },
     "Paracyst": {
         "damage_dist": {
@@ -1734,7 +1734,7 @@
         "reload_speed": 2.0,
         "magazine_capacity": 90,
         "multishot": 7.0,
-        "is_beam": true
+        "is_beam": false
     },
     "Phantasma": {
         "damage_dist": {
