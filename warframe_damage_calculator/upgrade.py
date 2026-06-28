@@ -30,6 +30,7 @@ class Upgrade:
     internal_bleeding: float = 0.0
     primed_chamber: float = 0.0
     vigilante_bonus: float = 0.0
+    secondary_enervate: int = 0
     melee_duplicate: float = 0.0
     fire_rate_lock: bool = False
     multishot_lock: bool = False

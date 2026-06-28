@@ -1,30 +1,30 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-
 from .constants import DOT_MULTIPLIERS
+from .states import SecondaryState
 from .dist import Dist
 from .ranged import Ranged
 
-
-@dataclass
 class Secondary(Ranged):
+    def __init__(self, base: SecondaryState | None = None, *, damage_dist: Dist | None = None, forced_procs: Dist | None = None, crit_chance: float = 0.0, crit_damage: float = 0.0, status_chance: float = 0.0, explosion_damage_dist: Dist | None = None, explosion_forced_procs: Dist | None = None, weakpoint_damage: float = 3.0, fire_rate: float = 0.0, charge_time: float = 0.0, reload_speed: float = 0.0, magazine_capacity: int = 0, multishot: float = 0.0, is_beam: bool = False) -> None:
+        base_stats = base or SecondaryState(damage_dist=damage_dist or Dist(), forced_procs=forced_procs or Dist(), crit_chance=crit_chance, crit_damage=crit_damage, status_chance=status_chance, explosion_damage_dist=explosion_damage_dist or Dist(), explosion_forced_procs=explosion_forced_procs or Dist(), weakpoint_damage=weakpoint_damage, fire_rate=fire_rate, charge_time=charge_time, reload_speed=reload_speed, magazine_capacity=magazine_capacity, multishot=multishot, is_beam=is_beam)
+        super().__init__(base=base_stats)
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
-        self.moded_secondary_enervate = self.config.secondary_enervate
+        self.moded.secondary_enervate = self.config.secondary_enervate
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
-        self.effective_secondary_enervate = self.moded_secondary_enervate
-        self.effective_crit_chance += self.average_secondary_enervate_bonus()
-        self.effective_weakpoint_crit_chance += self.average_weakpoint_secondary_enervate_bonus()
+        self.effective.secondary_enervate = self.moded.secondary_enervate
+        self.effective.crit_chance += self.average_secondary_enervate_bonus()
+        self.effective.weakpoint_crit_chance += self.average_weakpoint_secondary_enervate_bonus()
 
     def _calculate_secondary_enervate_bonus(self, initial_crit_chance: float) -> float:
-        if self.effective_secondary_enervate <= 0:
+        if self.effective.secondary_enervate <= 0:
             return 0.0
 
-        reset_after = self.effective_secondary_enervate
+        reset_after = self.effective.secondary_enervate
         tolerance = 1e-14
         states = [[1.0] + [0.0] * (reset_after - 1)]
         previous_average = -1.0
@@ -61,20 +61,20 @@ class Secondary(Ranged):
             previous_average = average
         
     def average_secondary_enervate_bonus(self) -> float:
-        return self._calculate_secondary_enervate_bonus(self.moded_crit_chance * self.moded_multiplicative_crit_chance + self.moded_flat_crit_chance)
+        return self._calculate_secondary_enervate_bonus(self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance)
 
     def average_weakpoint_secondary_enervate_bonus(self) -> float:
-        return self._calculate_secondary_enervate_bonus(self.moded_weakpoint_crit_chance * (self.moded_multiplicative_crit_chance + self.moded_multiplicative_weakpoint_crit_chance - 1) + self.moded_flat_crit_chance)
+        return self._calculate_secondary_enervate_bonus(self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance)
 
     def flat_dotph_for(self, damage_dist: Dist, forced_procs: Dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage_dist.total_damage <= 0:
             return 0.0
         # Internal bleeding
-        internal_bleeding_expected_procs = (damage_dist.weight("impact") + forced_procs.get("impact")) * self.effective_internal_bleeding * self.effective_status_chance
-        internal_bleeding_damage_per_proc = 2.1 * damage_dist.total_damage * crit_multiplier * self.effective_status_damage * self.effective_faction_damage**2
+        internal_bleeding_expected_procs = (damage_dist.weight("impact") + forced_procs.get("impact")) * self.effective.internal_bleeding * self.effective.status_chance
+        internal_bleeding_damage_per_proc = 2.1 * damage_dist.total_damage * crit_multiplier * self.effective.status_damage * self.effective.faction_damage**2
         internal_bleeding_expected_damage = internal_bleeding_expected_procs * internal_bleeding_damage_per_proc
         # Damage per bullet
-        dot_damage_per_bullet = sum(mult * damage_dist.get(dt) * damage_dist.weight(dt) for dt, mult in DOT_MULTIPLIERS) * self.effective_status_chance * crit_multiplier * self.effective_status_damage * self.effective_faction_damage**2
-        forced_dot_damage_per_bullet = sum(mult * forced_procs.get(dt) * damage_dist.get(dt) for dt, mult in DOT_MULTIPLIERS) * crit_multiplier * self.effective_status_damage * self.effective_faction_damage**2
+        dot_damage_per_bullet = sum(mult * damage_dist.get(dt) * damage_dist.weight(dt) for dt, mult in DOT_MULTIPLIERS) * self.effective.status_chance * crit_multiplier * self.effective.status_damage * self.effective.faction_damage**2
+        forced_dot_damage_per_bullet = sum(mult * forced_procs.get(dt) * damage_dist.get(dt) for dt, mult in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage**2
         # Total dot damage
-        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.effective_multishot * self.beam_dot_multiplier() if include_multishot else 1)
+        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.effective.multishot * self.beam_dot_multiplier() if include_multishot else 1)

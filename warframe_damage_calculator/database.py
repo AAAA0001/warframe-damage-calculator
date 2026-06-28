@@ -4,11 +4,12 @@ import json
 from pathlib import Path
 
 from .constants import UPGRADE_TABLES, WEAPON_TABLES
+from .states import MeleeState, PrimaryState, SecondaryState
 from .dist import Dist
+from .upgrade import Upgrade
 from .melee import Melee
 from .primary import Primary
 from .secondary import Secondary
-from .upgrade import Upgrade
 
 class Database:
     def __init__(self, root: Path | None = None) -> None:
@@ -35,14 +36,14 @@ class Database:
 
     def weapon(self, name: str) -> Melee | Primary | Secondary:
         table, record = self.find(WEAPON_TABLES, name)
-        weapon_common = dict(base_damage_dist=Dist(**record.get("damage_dist", {})), forced_procs=Dist(**record.get("forced_procs", {})), base_crit_chance=record.get("crit_chance", 0.0), base_crit_damage=record.get("crit_damage", 0.0), base_status_chance=record.get("status_chance", 0.0))
+        weapon_common = dict(damage_dist=Dist(**record.get("damage_dist", {})), forced_procs=Dist(**record.get("forced_procs", {})), crit_chance=record.get("crit_chance", 0.0), crit_damage=record.get("crit_damage", 0.0), status_chance=record.get("status_chance", 0.0))
         if table == "melee":
-            return Melee(**weapon_common, base_attack_speed=record.get("attack_speed", 0.0))
-        ranged_common = dict(weapon_common, base_explosion_damage_dist=Dist(**record.get("explosion_damage_dist", {})), explosion_forced_procs=Dist(**record.get("explosion_forced_procs", {})), base_fire_rate=record.get("fire_rate", 0.0), base_charge_time=record.get("charge_time", 0.0), base_reload_speed=record.get("reload_speed", 0.0), base_magazine_capacity=record.get("magazine_capacity", 0), base_multishot=record.get("multishot", 1.0), is_beam=record.get("is_beam", False))
+            return Melee(base=MeleeState(**weapon_common, attack_speed=record.get("attack_speed", 0.0)))
+        ranged_common = dict(weapon_common, explosion_damage_dist=Dist(**record.get("explosion_damage_dist", {})), explosion_forced_procs=Dist(**record.get("explosion_forced_procs", {})), fire_rate=record.get("fire_rate", 0.0), charge_time=record.get("charge_time", 0.0), reload_speed=record.get("reload_speed", 0.0), magazine_capacity=record.get("magazine_capacity", 0), multishot=record.get("multishot", 1.0), weakpoint_damage=record.get("weakpoint_damage", 3.0), is_beam=record.get("is_beam", False))
         if table == "primary":
-            return Primary(**ranged_common)
+            return Primary(base=PrimaryState(**ranged_common))
         if table == "secondary":
-            return Secondary(**ranged_common)
+            return Secondary(base=SecondaryState(**ranged_common))
         raise RuntimeError(f"Unknown weapon table {table}")
 
     def upgrade(self, name: str, rank: int | None = None, stacks: int | None = None, conditional: bool | None = None) -> Upgrade:
