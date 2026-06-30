@@ -34,6 +34,7 @@ class Upgrade:
     melee_duplicate: float = 0.0
     fire_rate_lock: bool = False
     multishot_lock: bool = False
+    compatibility_tag: str | None = None
 
     def __add__(self, other: Upgrade) -> Upgrade:
         combined: dict[str, object] = {}

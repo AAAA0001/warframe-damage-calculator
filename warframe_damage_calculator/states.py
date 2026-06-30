@@ -17,6 +17,7 @@ class WeaponState:
     crit_damage: float = 0.0
     status_chance: float = 0.0
     status_damage: float = 1.0
+    class_tags: tuple | None = None
 
 @dataclass
 class MeleeState(WeaponState):

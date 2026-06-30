@@ -43,7 +43,8 @@ class Database:
 
     def weapon(self, name: str) -> Melee | Primary | Secondary:
         table, record = self.find(WEAPON_TABLES, name)
-        weapon_common = dict(damage_dist=Dist(**record.get("damage_dist", {})), forced_procs=Dist(**record.get("forced_procs", {})), crit_chance=record.get("crit_chance", 0.0), crit_damage=record.get("crit_damage", 0.0), status_chance=record.get("status_chance", 0.0))
+        class_tags = tuple(record.get("class_tags", ()))
+        weapon_common = dict(damage_dist=Dist(**record.get("damage_dist", {})), forced_procs=Dist(**record.get("forced_procs", {})), crit_chance=record.get("crit_chance", 0.0), crit_damage=record.get("crit_damage", 0.0), status_chance=record.get("status_chance", 0.0), class_tags=class_tags)
         if table == "melee":
             return Melee(base=MeleeState(**weapon_common, attack_speed=record.get("attack_speed", 0.0)))
         ranged_common = dict(weapon_common, explosion_damage_dist=Dist(**record.get("explosion_damage_dist", {})), explosion_forced_procs=Dist(**record.get("explosion_forced_procs", {})), fire_rate=record.get("fire_rate", 0.0), charge_time=record.get("charge_time", 0.0), reload_speed=record.get("reload_speed", 0.0), magazine_capacity=record.get("magazine_capacity", 0), multishot=record.get("multishot", 1.0), weakpoint_damage=record.get("weakpoint_damage", 3.0), is_beam=record.get("is_beam", False))
@@ -57,13 +58,14 @@ class Database:
         _, record = self.find(UPGRADE_TABLES, name)
         max_rank = record.get("max_rank", None)
         max_stacks = record.get("max_stacks", None)
+        compatibility_tag = record.get("compatibility_tag", None)
         
         if rank == None: rank = max_rank
-        elif rank < 0: raise ValueError(f"Rank should be greater than 0, got {rank}")
+        elif rank < 0: sys.exit(f"ERROR: Rank should be greater than 0, got {rank}")
         elif rank > max_rank: print(f"WARNING: Max rank exceded on {name}: Max rank is {max_rank}, got {rank}")
 
         if stacks == None: stacks = max_stacks
-        elif stacks < 0: raise ValueError(f"Stacks should be greater than 0, got {stacks}")
+        elif stacks < 0: sys.exit(f"ERROR: Stacks should be greater than 0, got {stacks}")
         elif stacks > max_stacks: print(f"WARNING: Max stacks exceded on {name}: Max stacks is {max_stacks}, got {stacks}")
 
         if conditional == None: conditional = 1
@@ -75,7 +77,7 @@ class Database:
         for key, value in record.items():
             if key == "max_rank": continue
             if key == "max_stacks": continue
-            if key == "compatible_weapons": continue
+            if key == "compatibility_tag": continue
             multiplier = 1
             if key.startswith("stacking_"):
                 multiplier = stacks
@@ -94,8 +96,9 @@ class Database:
                 stats[key] = bool(value)
             else:
                 self.add(stats, key, multiplier * float(value))
+            
 
-        return Upgrade(damage_dist=Dist(**damage_dist), **stats)
+        return Upgrade(damage_dist=Dist(**damage_dist), compatibility_tag=compatibility_tag, **stats)
 
 default_database = Database()
 

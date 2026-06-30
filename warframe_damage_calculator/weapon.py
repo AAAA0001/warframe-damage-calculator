@@ -38,7 +38,17 @@ class Weapon:
         self.effective.status_chance = self.moded.status_chance
         self.effective.status_damage = self.moded.status_damage
 
+    def _validate_upgrade_compatibility(self, upgrade: Upgrade) -> None:
+        compatibility_tag = upgrade.compatibility_tag
+        class_tags = self.base.class_tags
+        if compatibility_tag is None or class_tags is None:
+            return
+        if compatibility_tag not in class_tags:
+            print(f"WARNING: Upgrade compatibility tag '{compatibility_tag}' is not compatible with weapon class tags {self.base.class_tags}")
+
     def configure(self, *upgrades: Upgrade) -> Self:
+        for upgrade in upgrades:
+            self._validate_upgrade_compatibility(upgrade)
         self.config = sum(upgrades)
         self._compute_moded_stats()
         self._compute_effective_stats()
