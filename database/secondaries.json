@@ -1373,7 +1373,7 @@
         "reload_speed": 1,
         "magazine_capacity": 8,
         "is_beam": false,
-        "weapon_type": ["secondary", "pistol", "burst-pistol"]
+        "weapon_type": ["secondary", "pistol", "semi-pistol"]
     },
     "Pandero Prime": {
         "damage_dist": {
@@ -1389,7 +1389,7 @@
         "reload_speed": 1,
         "magazine_capacity": 8,
         "is_beam": false,
-        "weapon_type": ["secondary", "pistol", "burst-pistol"]
+        "weapon_type": ["secondary", "pistol", "semi-pistol"]
     },
     "Plinx": {
         "damage_dist": {
@@ -1780,7 +1780,7 @@
         "reload_speed": 1.05,
         "magazine_capacity": 6,
         "is_beam": false,
-        "weapon_type": ["secondary", "shotgun sidearm", "burst-shotgun sidearm"]
+        "weapon_type": ["secondary", "shotgun sidearm", "semi-shotgun sidearm"]
     },
     "Tenet Diplos": {
         "damage_dist": {

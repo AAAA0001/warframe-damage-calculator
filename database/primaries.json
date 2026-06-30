@@ -1475,13 +1475,13 @@
         "reload_speed": 2.3,
         "magazine_capacity": 9,
         "is_beam": false,
-        "type": ["primary", "crossbow", "burst-crossbow"]
+        "type": ["primary", "crossbow", "semi-crossbow"]
     },
     "Nagantaka Prime": {
         "reload_speed": 2.3,
         "magazine_capacity": 11,
         "is_beam": false,
-        "type": ["primary", "crossbow", "burst-crossbow"]
+        "type": ["primary", "crossbow", "semi-crossbow"]
     },
     "Nataruk": {
         "damage_dist": {
