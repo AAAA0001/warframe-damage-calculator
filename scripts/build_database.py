@@ -466,6 +466,8 @@ MOD_STAT_LINE_RE = re.compile(r".*?([+-]?\d+(?:\.\d+)?)%?\s*(.+)")
 MOD_PERCENT_RE = re.compile(r"([+-]?\d+(?:\.\d+)?)\s*%")
 MOD_MULTIPLIER_RE = re.compile(r"\bx\s*([+-]?\d+(?:\.\d+)?)\b", re.I)
 MOD_STACKS_RE = re.compile(r"Stacks?\s+up\s+to\s+(\d+)x\b", re.I)
+MOD_STACKS_WITH_RE = re.compile(r"stacks?\s+with\b", re.I)
+MOD_PER_RE = re.compile(r"\bper\b", re.I)
 MOD_DURATION_RE = re.compile(r"for\s+\d+(?:\.\d+)?s\b", re.I)
 MOD_IS_MULT_RE = re.compile(r"\bx\d+(?:\.\d+)?\b", re.I)
 
@@ -650,9 +652,14 @@ def apply_mod_conditions(stat: Stats, line: str) -> Stats:
     if stacks := MOD_STACKS_RE.search(line):
         stat = {f"stacking_{key}": value for key, value in stat.items()}
         stat["max_stacks"] = int(stacks.group(1))
-    elif "melee damage per status type" in lowered:
-        stat = {f"stacking_{key}": value for key, value in stat.items()}
-        stat["max_stacks"] = None
+    elif MOD_STACKS_WITH_RE.search(line):
+        if stat:
+            stat = {f"stacking_{key}": value for key, value in stat.items()}
+            stat["max_stacks"] = None
+    elif MOD_PER_RE.search(line) and "per rank" not in lowered:
+        if stat:
+            stat = {f"stacking_{key}": value for key, value in stat.items()}
+            stat["max_stacks"] = None
     elif MOD_DURATION_RE.search(line):
         stat = {f"conditional_{key}": value for key, value in stat.items()}
 
