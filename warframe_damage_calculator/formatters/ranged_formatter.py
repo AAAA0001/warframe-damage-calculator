@@ -28,7 +28,7 @@ class RangedFormatter(WeaponFormatter):
             f"{'TOTAL EXPLOSION DAMAGE:':<25} {f'{self.weapon.base.explosion_total_damage:.2f}':<7} -> {self.weapon.effective.explosion_total_damage:.2f}",
             "----------------------------------------------------------",
             f"{'AVERAGE FIRE RATE:':<25} {calc.average_fire_rate():.2f}rps",
-            f"{'EXPECTED PROCS PER SHOT:':<25} {self.weapon.effective.status_chance * self.weapon.effective.multishot:.2f}",
+            f"{'EXPECTED PROCS PER SHOT:':<25} {calc.average_procs_per_shot():.2f}",
             f"{'FLAT DPH | WEAKPOINT:':<25} {calc.flat_dph():.2f} | {calc.flat_weakpoint_dph():.2f}",
             f"{'FLAT DOTPH | WEAKPOINT:':<25} {calc.flat_dotph():.2f} | {calc.flat_weakpoint_dotph():.2f}",
             f"{'TOTAL DPH | WEAKPOINT:':<25} {calc.total_dph():.2f} | {calc.total_weakpoint_dph():.2f}",

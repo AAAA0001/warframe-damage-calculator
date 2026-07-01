@@ -9,12 +9,15 @@ class RangedCalculator(WeaponCalculator):
         if self.weapon.effective.magazine_capacity == 1:
             return 1 / self.weapon.effective.reload_speed
         return (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency)) / (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) * (1 / self.weapon.effective.fire_rate + self.weapon.effective.charge_time) + self.weapon.effective.reload_speed)
-    
-    def weakpoint_crit_probability_for_tier(self, tier: int) -> float:
-        return max(0, 1 - abs(self.weapon.effective.weakpoint_crit_chance - tier))
+
+    def average_procs_per_shot(self) -> float:
+        return self.weapon.effective.status_chance * self.weapon.effective.multishot
     
     def average_weakpoint_crit_multiplier(self) -> float:
         return 1 + self.weapon.effective.weakpoint_crit_chance * (self.weapon.effective.crit_damage - 1)
+    
+    def weakpoint_crit_probability_for(self, tier: int) -> float:
+        return max(0, 1 - abs(self.weapon.effective.weakpoint_crit_chance - tier))
     
     def beam_dot_multiplier(self) -> float:
         return self.weapon.effective.multishot if self.weapon.base.is_beam else 1
