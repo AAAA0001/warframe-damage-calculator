@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from ..mechanics.functions import true_round
-from ..mechanics.states import RangedState
+from ..mechanics import RangedState, true_round
 from .weapon import Weapon
 
 
-class Ranged(Weapon):
-    def __init__(self, base: RangedState | None = None) -> None:
+class Ranged[TWeaponState: RangedState](Weapon[TWeaponState]):
+    def __init__(self, base: TWeaponState) -> None:
         super().__init__(base)
 
     def __post_init__(self) -> None:

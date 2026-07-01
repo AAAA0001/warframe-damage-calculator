@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import Self
 
-from ..mechanics.states import WeaponState
+from ..mechanics import WeaponState
 from .upgrade import Upgrade
 
 
-class Weapon:
-    def __init__(self, base: WeaponState | None = None) -> None:
+class Weapon[TWeaponState: WeaponState]:
+    def __init__(self, base: TWeaponState) -> None:
         self.base = base
         self.base.total_damage = self.base.damage_dist.total_damage
-        self.moded = type(self.base)()
-        self.effective = type(self.base)()
+        self.moded: TWeaponState = type(self.base)()
+        self.effective: TWeaponState = type(self.base)()
         self.configure(Upgrade())
 
     def _compute_moded_stats(self) -> None:

@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from ..mechanics.constants import DOT_MULTIPLIERS
-from ..mechanics.states import PrimaryState
-from ..mechanics.dist import dist
+from ..mechanics import DOT_MULTIPLIERS, PrimaryState, dist
 from .ranged import Ranged
 
 
-class Primary(Ranged):
+class Primary(Ranged[PrimaryState]):
     def __init__(self, damage_dist: dist | None = None, forced_procs: dist | None = None, explosion_damage_dist: dist | None = None, explosion_forced_procs: dist | None = None, crit_chance: float = 0.0, crit_damage: float = 0.0, status_chance: float = 0.0, weakpoint_damage: float = 3.0, fire_rate: float = 1.0, charge_time: float = 0.0, reload_speed: float = 1.0, magazine_capacity: int = 1, multishot: float = 0.0, is_beam: bool = False) -> None:
         super().__init__(PrimaryState(damage_dist=damage_dist or dist(), forced_procs=forced_procs or dist(), crit_chance=crit_chance, crit_damage=crit_damage, status_chance=status_chance, explosion_damage_dist=explosion_damage_dist or dist(), explosion_forced_procs=explosion_forced_procs or dist(), weakpoint_damage=weakpoint_damage, fire_rate=fire_rate, charge_time=charge_time, reload_speed=reload_speed, magazine_capacity=magazine_capacity, multishot=multishot, is_beam=is_beam))
 
@@ -33,7 +31,7 @@ class Primary(Ranged):
     def flat_weakpoint_dph(self) -> float:
         return super().flat_weakpoint_dph() * self.average_primed_chamber_multiplier()
 
-    def flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Requires In-Game Testing
         if damage_dist.total_damage <= 0:
             return 0.0
         average_primed_chamber_multiplier = self.average_primed_chamber_multiplier()

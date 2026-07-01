@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
 
+from ..mechanics.addable import Addable
 from ..mechanics.dist import dist
 
 
 @dataclass
-class Upgrade:
+class Upgrade(Addable):
     damage_dist: dist = field(default_factory=dist)
     multiplicative_base_damage: float = 0.0
     base_damage: float = 0.0
@@ -37,18 +38,3 @@ class Upgrade:
     melee_doughty: float = 0.0
     fire_rate_lock: bool = False
     multishot_lock: bool = False
-
-    def __add__(self, other: Upgrade) -> Upgrade:
-        combined: dict[str, object] = {}
-        for field in fields(self):
-            left = getattr(self, field.name)
-            right = getattr(other, field.name)
-            if isinstance(left, bool):
-                combined[field.name] = left or right
-            else:
-                combined[field.name] = left + right
-        return type(self)(**combined)
-    
-    def __radd__(self, other: int | float) -> Upgrade:
-        if other == 0: return self
-        else: return NotImplemented

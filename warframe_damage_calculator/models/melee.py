@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from ..mechanics.constants import DOT_MULTIPLIERS
-from ..mechanics.functions import true_round
-from ..mechanics.states import MeleeState
-from ..mechanics.dist import dist
+from ..mechanics import DOT_MULTIPLIERS, MeleeState, dist, true_round
 from .weapon import Weapon
 
 
-class Melee(Weapon):
+class Melee(Weapon[MeleeState]):
     def __init__(self, damage_dist: dist | None = None, forced_procs: dist | None = None, crit_chance: float = 0.0, crit_damage: float = 0.0, status_chance: float = 0.0, attack_speed: float = 0.0) -> None:
         super().__init__(MeleeState(damage_dist=damage_dist or dist(), forced_procs=forced_procs or dist(), crit_chance=crit_chance, crit_damage=crit_damage, status_chance=status_chance, attack_speed=attack_speed))
 

@@ -123,15 +123,15 @@ def main():
     galvanized_hell_stacks = 4
     primary_merciless_satcks = 12
     
-    weapon = Ranged(base_damage_dist=Dist(impact=25.2, puncture=37.8, slash=27), base_fire_rate=1.42, base_reload_speed=3.00, base_magazine_capacity=20, base_multishot=6, base_crit_chance=0.30, base_crit_damage=2.80, base_status_chance=0.09)
-    mod1 = Upgrade(damage_dist=Dist(impact=-0.886), crit_damage=0.855, multishot=1.126, crit_chance=0.887)
+    weapon = Primary(base_damage_dist=dist(impact=25.2, puncture=37.8, slash=27), base_fire_rate=1.42, base_reload_speed=3.00, base_magazine_capacity=20, base_multishot=6, base_crit_chance=0.30, base_crit_damage=2.80, base_status_chance=0.09)
+    mod1 = Upgrade(damage_dist=dist(impact=-0.886), crit_damage=0.855, multishot=1.126, crit_chance=0.887)
     mod2 = Upgrade(multishot=1.10 + 0.30*galvanized_hell_stacks)
     mod3 = Upgrade(base_damage=2.40)
     mod4 = Upgrade(hunter_munitions=0.30)
-    mod5 = Upgrade(damage_dist=Dist(cold=1.65))
+    mod5 = Upgrade(damage_dist=dist(cold=1.65))
     mod6 = Upgrade(crit_damage=1.10)
     mod7 = Upgrade(crit_chance=2.00)
-    mod8 = Upgrade(damage_dist=Dist(toxin=0.60), status_chance=0.60)
+    mod8 = Upgrade(damage_dist=dist(toxin=0.60), status_chance=0.60)
     mod9 = Upgrade(vigilante_bonus=0.05)
     arcane = Upgrade(base_damage=0.30*primary_merciless_satcks, reload_speed=0.30)
     buffs = Upgrade(flat_crit_damage=1.2)

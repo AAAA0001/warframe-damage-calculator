@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Iterator, Iterable
 from types import MappingProxyType
 
-from .constants import ELEMENTAL_COMBINATIONS, ELEMENTAL, DAMAGE_TYPE_ORDER, PHYSICAL
+from .constants import ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, DAMAGE_TYPE_ORDER, PHYSICAL_TYPES
 
 
 @dataclass(frozen=True, init=False)
@@ -54,12 +54,12 @@ class dist:
         return self.dist.get(dt, 0)
     
     def combine(self) -> dist:
-        elements = list(self.include(ELEMENTAL))
+        elements = list(self.include(ELEMENTAL_TYPES))
         combined: dict[str, float] = dict()
         for (dt1, d1), (dt2, d2) in zip(elements[::2], elements[1::2] + [("NONE", 0)]):
             key = ELEMENTAL_COMBINATIONS.get(tuple(sorted((dt1, dt2))), dt1)
             combined[key] = d1 + d2
-        return (self.exclude(ELEMENTAL) + dist(**combined)).positive()
+        return (self.exclude(ELEMENTAL_TYPES) + dist(**combined)).positive()
     
     def include(self, other: Iterable[str]) -> dist:
         return dist(**{dt: d for dt, d in self if dt in other})
@@ -74,4 +74,4 @@ class dist:
         return 0.0 if self.total_damage == 0 else self.get(dt) / self.total_damage
     
     def apply(self, other: dist) -> dist:
-        return dist(**{dt: self.get(dt) * (1 + other.get(dt)) if dt in PHYSICAL else self.get(dt) + self.total_damage * other.get(dt) for dt in self.dist | other.dist})
+        return dist(**{dt: self.get(dt) * (1 + other.get(dt)) if dt in PHYSICAL_TYPES else self.get(dt) + self.total_damage * other.get(dt) for dt in self.dist | other.dist})
