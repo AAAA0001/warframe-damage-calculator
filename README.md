@@ -31,6 +31,7 @@ The calculator is designed to provide fast, deterministic damage calculations wh
 - Critical Damage
 - Flat Critical Damage Bonuses
 - Vigilante Set Bonus
+- Melee Doughty
 
 ### Status
 - Status Chance
