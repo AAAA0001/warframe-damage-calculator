@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Self, overload
+from typing import TYPE_CHECKING, Self
 
 from ..mechanics import WeaponState
 from ..upgrade_models import Upgrade, Build
