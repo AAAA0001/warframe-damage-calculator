@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Self
+from typing import Self
 
 from ..mechanics import WeaponState
 from ..upgrade_models import Upgrade, Build
-
-if TYPE_CHECKING:
-    from ..calculators import WeaponCalculator
-    from ..formatters import WeaponFormatter
+from ..calculators import WeaponCalculator
+from ..formatters import WeaponFormatter
 
 
 class Weapon[TWeaponState: WeaponState]:
-    _calculator_class: type[WeaponCalculator] | None = None
-    _formatter_class: type[WeaponFormatter] | None = None
+    _calculator_class = WeaponCalculator
+    _formatter_class = WeaponFormatter
     
     def __init__(self, base: TWeaponState) -> None:
         self.base = base
@@ -58,13 +56,13 @@ class Weapon[TWeaponState: WeaponState]:
         return self
     
     @property
-    def calculate(self) -> WeaponCalculator:
+    def calculate(self):
         if self._calculator_class is None:
             raise NotImplementedError
         return self._calculator_class(self)
 
     @property
-    def format(self) -> WeaponFormatter:
+    def format(self):
         if self._formatter_class is None:
             raise NotImplementedError
         return self._formatter_class(self, self.calculate)
