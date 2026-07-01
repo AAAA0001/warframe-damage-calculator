@@ -37,7 +37,7 @@ The calculator is designed to provide fast, deterministic damage calculations wh
 - Status Chance
 - Status Damage
 - Hunter Munitions
-- Internal Bleeding
+- Internal Bleeding / Hemorrhage
 - Slash, Heat, Toxin, Electricity & Gas DoTs
 - Forced Procs
 
