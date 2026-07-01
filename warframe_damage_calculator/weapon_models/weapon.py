@@ -44,21 +44,15 @@ class Weapon[TWeaponState: WeaponState]:
         self.effective.crit_damage = self.moded.crit_damage + self.moded.flat_crit_damage
         self.effective.status_chance = self.moded.status_chance
         self.effective.status_damage = self.moded.status_damage
-    
-    @overload
-    def configure(self, build: Build) -> Self: ...
-
-    @overload
-    def configure(self, *upgrades: Upgrade) -> Self: ...
 
     def configure(self, *args: Build | Upgrade) -> Self:
-        if len(args) == 1 and isinstance(args[0], Build):
+        if isinstance(args[0], Build) and len(args) == 1:
             self.build = args[0]
         elif all(isinstance(arg, Upgrade) for arg in args):
             self.build = Build(*args)
         else:
             raise TypeError
-
+        
         self._compute_moded_stats()
         self._compute_effective_stats()
         return self
