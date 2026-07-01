@@ -50,6 +50,7 @@ The calculator is designed to provide fast, deterministic damage calculations wh
 
 ### Special mechanics
 - Primed Chamber / Charged Chamber
+- Secondary enervate
 - Melee Duplicate
 
 ## Calculates
