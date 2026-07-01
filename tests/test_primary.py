@@ -16,7 +16,6 @@ class PrimaryTests(unittest.TestCase):
         self.assertAlmostEqual(weapon.effective.vigilante_bonus, 0.05)
         self.assertAlmostEqual(weapon.effective.internal_bleeding, 1.4)
         self.assertAlmostEqual(weapon.average_primed_chamber_multiplier(), 1.2)
-        
 
     def test_primary_raw_damage_formulas(self) -> None:
         weapon = Primary(damage_dist=dist(impact=40, slash=60), explosion_damage_dist=dist(heat=30), crit_chance=0.6, crit_damage=2.0, status_chance=0.2, fire_rate=3.0, reload_speed=1.0, magazine_capacity=10, multishot=1.5)

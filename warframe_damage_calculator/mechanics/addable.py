@@ -5,12 +5,10 @@ from typing import Self
 
 
 class Addable:
-    """Mixin for dataclasses that support field-wise addition."""
-
     def __add__(self, other: Self) -> Self:
         if not isinstance(other, type(self)):
             return NotImplemented
-
+        
         combined: dict[str, object] = {}
         for field in fields(self):
             left = getattr(self, field.name)
@@ -20,11 +18,9 @@ class Addable:
                 combined[field.name] = left or right
                 continue
 
-            try:
-                combined[field.name] = left + right
-            except TypeError:
-                return NotImplemented
-
+            try: combined[field.name] = left + right
+            except TypeError: return NotImplemented
+            
         return type(self)(**combined)
 
     def __radd__(self, other: int | float) -> Self:
