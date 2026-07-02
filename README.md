@@ -139,5 +139,7 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-# Development progress
-Check checklist.md
+# Development Progress
+
+See `checklist.md` for the current development checklist, assumptions, and remaining tasks.
+
