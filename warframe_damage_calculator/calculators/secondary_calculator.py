@@ -49,10 +49,10 @@ class SecondaryCalculator(RangedCalculator):
     def average_secondary_enervate_bonus(self) -> float:
         return self.calculate_secondary_enervate_bonus(self.weapon.moded.crit_chance * self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.flat_crit_chance)
     
-    def average_weakpoint_secondary_enervate_bonus(self) -> float: # Secondary Ecumber Calculations Need Testing In-Game
+    def average_weakpoint_secondary_enervate_bonus(self) -> float:
         return self.calculate_secondary_enervate_bonus(self.weapon.moded.weakpoint_crit_chance * (self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.multiplicative_weakpoint_crit_chance - 1) + self.weapon.moded.flat_crit_chance)
     
-    def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Secondary Ecumber Calculations Need Testing In-Game
         if damage_dist.total_damage <= 0:
             return 0.0
         secondary_encumber_chance = 1 - (1 - self.weapon.effective.secondary_encumber * min(self.weapon.effective.status_chance, 1))**self.weapon.effective.multishot
