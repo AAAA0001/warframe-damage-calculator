@@ -2,8 +2,6 @@
 
 ## Documentation
 - [ ] Add docstrings.
-- [ ] Expand the README with additional usage examples.
-- [ ] Document the assumptions and limitations of the damage model.
 
 ## Weapons
 - [x] Primary weapons.
@@ -11,11 +9,7 @@
 - [x] Melee weapons (light attacks).
 - [x] Beam weapon support.
 - [x] Hitscan weapon support.
-- [ ] Projectile flight time.
 - [ ] Projectile falloff.
-- [ ] Explosive radial damage.
-- [ ] Incarnon transformations.
-- [ ] Exalted weapons.
 
 ## Damage
 - [x] Physical damage.
@@ -37,7 +31,6 @@
 - [ ] Enemy armor, health, and shields.
 - [ ] Armor stripping.
 - [ ] Damage vulnerability.
-- [ ] Body-part damage modifiers.
 
 ## Status Effects
 - [x] Status chance.
@@ -46,17 +39,11 @@
 - [x] Hunter Munitions.
 - [x] Internal Bleeding (Hemorrhage).
 - [x] Secondary Encumber.
-- [ ] Individual status effect simulation.
-- [ ] Status duration.
-- [ ] Status refresh mechanics.
 - [ ] Heat armor strip.
-- [ ] Slash bleed scaling.
-- [ ] Electric chaining.
-- [ ] Gas clouds.
-- [ ] Blast stagger.
-- [ ] Magnetic shield interactions.
+- [ ] Slash dots ignore armor.
 - [ ] Corrosive armor strip.
-- [ ] Viral health amplification.
+- [ ] Viral damage to health.
+- [ ] Magnetic damage to shields and overguard.
 
 ## Fire Control
 - [x] Fire rate.
@@ -67,18 +54,16 @@
 - [x] Charge weapons.
 - [ ] Burst-fire weapons.
 - [ ] Battery weapons.
-- [ ] Spin-up weapons.
+- [ ] Spool-up weapons.
 
 ## Weapon Effects
 - [x] Primed Chamber / Charged Chamber.
 - [x] Vigilante Set bonus.
 - [x] Melee Duplicate.
-- [ ] Galvanized Aptitude-style scaling.
-- [ ] Condition Overload.
-- [ ] GunCO mechanics.
-- [ ] Punch Through.
-- [ ] Ricochets.
-- [ ] Infinite body punch-through interactions.
+- [x] Melee Doughty.
+- [x] Secondary Enervate.
+- [x] Secondary Encumber.
+- [ ] Automatic Condition Overload bonus.
 
 ## Calculations
 - [x] Flat damage per hit (DPH).
@@ -90,8 +75,6 @@
 - [x] Effective fire rate.
 - [x] Expected status procs per shot.
 - [ ] Time-to-kill (TTK).
-- [ ] Sustained DPS against enemies.
-- [ ] Damage breakdown by source.
 - [ ] Damage contribution percentages.
 
 ## API
@@ -99,16 +82,12 @@
 - [x] Build class.
 - [x] Damage distribution class.
 - [x] Dataclass-based weapon definitions.
-- [ ] Build serialization.
 - [ ] Build import/export.
-- [ ] JSON schema validation.
 
 ## Testing
 - [x] Unit tests.
 - [ ] Increase edge-case coverage.
-- [ ] Property-based tests.
 - [ ] Performance benchmarks.
-- [ ] Continuous integration.
 
 # Assumption Checklist
 
