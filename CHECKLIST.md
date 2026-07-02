@@ -55,7 +55,6 @@
 - [ ] Burst-fire weapons.
 - [ ] Battery weapons.
 - [ ] Spool-up weapons.
-- [ ] Per shell reload.
 
 ## Weapon Effects
 - [x] Primed Chamber / Charged Chamber.
