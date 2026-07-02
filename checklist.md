@@ -13,7 +13,10 @@
 ```text
 wait [charge time] seconds
 [bullet count] -= 1 - [ammo efficiency]
-if [bullet count] == 0 wait [reload time] seconds
-else wait 1 / [fire rate] seconds
+if [bullet count] == 0
+  wait [reload time] seconds
+  [bullet count] = [mag size]
+else
+  wait 1 / [fire rate] seconds
 repeat
 ```
