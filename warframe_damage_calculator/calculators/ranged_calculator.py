@@ -6,9 +6,7 @@ from .weapon_calculator import WeaponCalculator
 class RangedCalculator(WeaponCalculator):
 
     def average_fire_rate(self) -> float:
-        if self.weapon.effective.magazine_capacity == 1:
-            return 1 / self.weapon.effective.reload_speed
-        return (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency)) / (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) * (1 / self.weapon.effective.fire_rate + self.weapon.effective.charge_time) + self.weapon.effective.reload_speed)
+        return self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) / (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) * self.weapon.effective.charge_time + (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) - 1) / self.weapon.effective.fire_rate + self.weapon.effective.reload_speed)
 
     def average_procs_per_shot(self) -> float:
         return self.weapon.effective.status_chance * self.weapon.effective.multishot
@@ -35,13 +33,13 @@ class RangedCalculator(WeaponCalculator):
         return self.average_fire_rate() * self.flat_weakpoint_dph()
     
     def flat_dotph(self) -> float:
-        direct_damage = self._flat_dotph_for(self.weapon.effective.damage_dist, self.weapon.base.forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier())
-        explosion_damage = self._flat_dotph_for(self.weapon.effective.explosion_damage_dist, self.weapon.base.explosion_forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier(), include_multishot=False)
+        direct_damage = self.flat_dotph_for(self.weapon.effective.damage_dist, self.weapon.base.forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier())
+        explosion_damage = self.flat_dotph_for(self.weapon.effective.explosion_damage_dist, self.weapon.base.explosion_forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier(), include_multishot=False)
         return direct_damage + explosion_damage
     
     def flat_weakpoint_dotph(self) -> float:
-        direct_damage = self._flat_dotph_for(self.weapon.effective.damage_dist, self.weapon.base.forced_procs, self.weapon.effective.weakpoint_crit_chance, self.average_weakpoint_crit_multiplier())
-        explosion_damage = self._flat_dotph_for(self.weapon.effective.explosion_damage_dist, self.weapon.base.explosion_forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier(), include_multishot=False)
+        direct_damage = self.flat_dotph_for(self.weapon.effective.damage_dist, self.weapon.base.forced_procs, self.weapon.effective.weakpoint_crit_chance, self.average_weakpoint_crit_multiplier())
+        explosion_damage = self.flat_dotph_for(self.weapon.effective.explosion_damage_dist, self.weapon.base.explosion_forced_procs, self.weapon.effective.crit_chance, self.average_crit_multiplier(), include_multishot=False)
         return direct_damage + explosion_damage
     
     def flat_dotps(self) -> float:
@@ -56,5 +54,5 @@ class RangedCalculator(WeaponCalculator):
     def total_weakpoint_dps(self) -> float:
         return self.flat_weakpoint_dps() + self.flat_weakpoint_dotps()
     
-    def _flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         raise NotImplementedError

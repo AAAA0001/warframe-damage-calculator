@@ -52,7 +52,7 @@ class SecondaryCalculator(RangedCalculator):
     def average_weakpoint_secondary_enervate_bonus(self) -> float:
         return self.calculate_secondary_enervate_bonus(self.weapon.moded.weakpoint_crit_chance * (self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.multiplicative_weakpoint_crit_chance - 1) + self.weapon.moded.flat_crit_chance)
     
-    def _flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage_dist.total_damage <= 0:
             return 0.0
         # Internal bleeding from impact damage

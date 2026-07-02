@@ -24,7 +24,7 @@ class PrimaryTests(unittest.TestCase):
         calc = PrimaryCalculator(weapon)
 
         self.assertAlmostEqual(calc.flat_dph(), 430.92)
-        self.assertAlmostEqual(calc.flat_dps(), 994.4307692307693)
+        self.assertAlmostEqual(calc.flat_dps(), 1077.3)
 
     def test_primary_dot_damage_formulas(self) -> None:
         weapon = Primary(damage_dist=dist(impact=25, slash=75), forced_procs=dist(impact=1, slash=1), explosion_damage_dist=dist(heat=30), explosion_forced_procs=dist(cold=1), crit_chance=0.9, crit_damage=2.4, status_chance=1.0, fire_rate=2.0, reload_speed=5.0, magazine_capacity=2, multishot=2.0, is_beam=True)
@@ -32,7 +32,7 @@ class PrimaryTests(unittest.TestCase):
         calc = PrimaryCalculator(weapon)
 
         self.assertAlmostEqual(calc.flat_dotph(), 6014.9808)
-        self.assertAlmostEqual(calc.flat_dotps(), 2004.9936)
+        self.assertAlmostEqual(calc.flat_dotps(), 2187.2657454545456)
 
 
 if __name__ == "__main__":
