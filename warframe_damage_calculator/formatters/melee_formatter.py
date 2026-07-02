@@ -1,5 +1,3 @@
-"""Formatter for melee weapon stats."""
-
 from __future__ import annotations
 
 from .weapon_formatter import WeaponFormatter

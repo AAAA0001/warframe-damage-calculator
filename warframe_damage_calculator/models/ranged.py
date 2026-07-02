@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ..calculators import RangedCalculator
 from ..formatters import RangedFormatter
-from ..utils import clamp, true_round
+from ..utils import true_round, clamp
 from .states import RangedState
 from .weapon import Weapon
 

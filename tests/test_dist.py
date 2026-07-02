@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from warframe_damage_calculator.mechanics import dist
+from warframe_damage_calculator.models import dist
 
 
 class DistTests(unittest.TestCase):

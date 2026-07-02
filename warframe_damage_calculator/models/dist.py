@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Iterator, Iterable
 from types import MappingProxyType
 
-from ..utils.constants import ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, DAMAGE_TYPE_ORDER, PHYSICAL_TYPES
+from ..utils.constants import ELEMENTAL_TYPES, PHYSICAL_TYPES, ELEMENTAL_COMBINATIONS, DAMAGE_TYPE_ORDER
 
 
 @dataclass(frozen=True, init=False)
@@ -57,7 +57,7 @@ class dist:
         elements = list(self.include(ELEMENTAL_TYPES))
         combined: dict[str, float] = dict()
         for (dt1, d1), (dt2, d2) in zip(elements[::2], elements[1::2] + [("NONE", 0)]):
-            key = ELEMENTAL_COMBINATIONS.get(tuple(sorted((dt1, dt2))), dt1)
+            key = ELEMENTAL_COMBINATIONS.get(frozenset((dt1, dt2)), dt1)
             combined[key] = d1 + d2
         return (self.exclude(ELEMENTAL_TYPES) + dist(**combined)).positive()
     

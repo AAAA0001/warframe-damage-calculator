@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ..calculators.weapon_calculator import WeaponCalculator
-from ..models.weapon import Weapon
+from ..calculators import WeaponCalculator
+from ..models import Weapon
 
 
 class WeaponFormatter:

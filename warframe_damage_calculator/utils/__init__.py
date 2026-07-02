@@ -1,7 +1,5 @@
-from ..utils.constants import (DAMAGE_TYPE_ORDER, DAMAGE_TYPES,
-                               DOT_MULTIPLIERS, ELEMENTAL_COMBINATIONS,
-                               ELEMENTAL_TYPES, PHYSICAL_TYPES)
-from ..utils.functions import clamp, true_round
+from ..utils.constants import DOT_MULTIPLIERS, PHYSICAL_TYPES, ELEMENTAL_TYPES, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, DAMAGE_TYPE_ORDER
+from ..utils.functions import true_round, clamp
 
 __all__ = [
     "DOT_MULTIPLIERS",

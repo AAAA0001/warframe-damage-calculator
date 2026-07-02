@@ -2,10 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from warframe_damage_calculator.mechanics import dist
-from warframe_damage_calculator.upgrade_models import Upgrade
-from warframe_damage_calculator.weapon_models import Melee
 from warframe_damage_calculator.calculators import MeleeCalculator
+from warframe_damage_calculator.models import dist, Upgrade, Melee
 
 
 class MeleeTests(unittest.TestCase):

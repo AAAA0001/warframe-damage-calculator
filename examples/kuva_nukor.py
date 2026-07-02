@@ -1,5 +1,6 @@
 from warframe_damage_calculator import *
 
+
 def main():
     weapon = Secondary(damage_dist=dist(radiation=21), crit_chance=0.07, crit_damage=5.00, status_chance=0.50, fire_rate=10, reload_speed=2.00, magazine_capacity=77, is_beam=True)
     mod1 = Upgrade(multishot=1.10 + 0.30*4)

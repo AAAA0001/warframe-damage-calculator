@@ -1,5 +1,6 @@
 from warframe_damage_calculator import *
 
+
 def main():
     weapon = Melee(damage_dist=dist(slash=155.4, impact=48.8, puncture=17.8), crit_chance=0.31, crit_damage=2.60, status_chance=0.22, attack_speed=0.917)
     mod1 = Upgrade(crit_chance=2.75, faction_damage=0.70)

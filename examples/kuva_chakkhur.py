@@ -1,5 +1,6 @@
 from warframe_damage_calculator import *
 
+
 def main():
     weapon = Primary(damage_dist=dist(impact=260), forced_procs=dist(impact=1.00), explosion_damage_dist=dist(slash=29, puncture=52, blast=25), explosion_forced_procs=dist(impact=1.00), crit_chance=0.50, crit_damage=2.30, status_chance=0.27, fire_rate=1.17, reload_speed=3.30, magazine_capacity=11)
     mod1 = Upgrade(internal_bleeding=0.35)

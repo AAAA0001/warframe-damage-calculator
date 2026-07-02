@@ -3,9 +3,9 @@ from __future__ import annotations
 from ..calculators import PrimaryCalculator
 from ..formatters import PrimaryFormatter
 from ..utils import clamp
+from .states import PrimaryState
 from .dist import dist
 from .ranged import Ranged
-from .states import PrimaryState
 
 
 class Primary(Ranged[PrimaryState]):
