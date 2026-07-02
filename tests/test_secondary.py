@@ -32,11 +32,11 @@ class SecondaryTests(unittest.TestCase):
 
     def test_secondary_dot_damage_formulas(self) -> None:
         weapon = Secondary(damage_dist=dist(impact=30, slash=70), forced_procs=dist(impact=0.1, slash=0.1), crit_chance=0.5, crit_damage=2.0, status_chance=0.7, fire_rate=2.5, reload_speed=1.2, magazine_capacity=12, multishot=2.0, is_beam=True)
-        weapon.configure(Upgrade(internal_bleeding=0.8))
+        weapon.configure(Upgrade(internal_bleeding=0.8, secondary_encumber=0.12))
         calc = SecondaryCalculator(weapon)
 
-        self.assertAlmostEqual(calc.flat_dotph(), 802.62)
-        self.assertAlmostEqual(calc.flat_dotps(), 1719.9)
+        self.assertAlmostEqual(calc.flat_dotph(), 841.2837009230769)
+        self.assertAlmostEqual(calc.flat_dotps(), 1941.4239252071009)
 
 
 if __name__ == "__main__":

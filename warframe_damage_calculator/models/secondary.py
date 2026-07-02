@@ -19,7 +19,9 @@ class Secondary(Ranged[SecondaryState]):
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
         self.moded.secondary_enervate = clamp(self.build.secondary_enervate, 0, 6)
+        self.moded.secondary_encumber = clamp(self.build.secondary_encumber, 0, 0.24)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
         self.effective.secondary_enervate = self.moded.secondary_enervate
+        self.effective.secondary_encumber = self.moded.secondary_encumber

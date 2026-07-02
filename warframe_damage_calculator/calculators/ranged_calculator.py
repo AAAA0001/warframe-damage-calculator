@@ -6,7 +6,8 @@ from .weapon_calculator import WeaponCalculator
 class RangedCalculator(WeaponCalculator):
 
     def average_fire_rate(self) -> float:
-        return self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) / (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) * self.weapon.effective.charge_time + (self.weapon.effective.magazine_capacity / (1 - self.weapon.effective.ammo_efficiency) - 1) / self.weapon.effective.fire_rate + self.weapon.effective.reload_speed)
+        rounds_per_pag = self.weapon.effective.magazine_capacity * (2 if self.weapon.base.is_beam else 1) / (1 - self.weapon.effective.ammo_efficiency)
+        return rounds_per_pag / (rounds_per_pag * self.weapon.effective.charge_time + (rounds_per_pag - 1) / self.weapon.effective.fire_rate + self.weapon.effective.reload_speed)
 
     def average_procs_per_shot(self) -> float:
         return self.weapon.effective.status_chance * self.weapon.effective.multishot

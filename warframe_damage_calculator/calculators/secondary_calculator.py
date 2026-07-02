@@ -49,18 +49,20 @@ class SecondaryCalculator(RangedCalculator):
     def average_secondary_enervate_bonus(self) -> float:
         return self.calculate_secondary_enervate_bonus(self.weapon.moded.crit_chance * self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.flat_crit_chance)
     
-    def average_weakpoint_secondary_enervate_bonus(self) -> float:
+    def average_weakpoint_secondary_enervate_bonus(self) -> float: # Secondary Ecumber Calculations Need Testing In-Game
         return self.calculate_secondary_enervate_bonus(self.weapon.moded.weakpoint_crit_chance * (self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.multiplicative_weakpoint_crit_chance - 1) + self.weapon.moded.flat_crit_chance)
     
     def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage_dist.total_damage <= 0:
             return 0.0
+        secondary_encumber_chance = 1 - (1 - self.weapon.effective.secondary_encumber * min(self.weapon.effective.status_chance, 1))**self.weapon.effective.multishot
+        secondary_encumber_dot = secondary_encumber_chance * damage_dist.total_damage * 14.1/13 * crit_multiplier * self.weapon.effective.status_damage * self.weapon.effective.faction_damage**2
         # Internal bleeding from impact damage
-        internal_bleeding_expected_procs = (damage_dist.weight("impact") + forced_procs.get("impact")) * self.weapon.effective.internal_bleeding * self.weapon.effective.status_chance
+        internal_bleeding_expected_procs = ((damage_dist.weight("impact") + forced_procs.get("impact")) * self.weapon.effective.status_chance + secondary_encumber_chance/13) * self.weapon.effective.internal_bleeding
         internal_bleeding_damage_per_proc = 2.1 * damage_dist.total_damage * crit_multiplier * self.weapon.effective.status_damage * self.weapon.effective.faction_damage ** 2
         internal_bleeding_expected_damage = internal_bleeding_expected_procs * internal_bleeding_damage_per_proc
         # Regular status procs
         dot_damage_per_bullet = sum(mult * damage_dist.get(dt) * damage_dist.weight(dt) for dt, mult in DOT_MULTIPLIERS) * self.weapon.effective.status_chance * crit_multiplier * self.weapon.effective.status_damage * self.weapon.effective.faction_damage ** 2
         forced_dot_damage_per_bullet = sum(mult * forced_procs.get(dt) * damage_dist.get(dt) for dt, mult in DOT_MULTIPLIERS) * crit_multiplier * self.weapon.effective.status_damage * self.weapon.effective.faction_damage ** 2
         # Total DoT damage
-        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.weapon.effective.multishot * self.beam_dot_multiplier() if include_multishot else 1)
+        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.weapon.effective.multishot * self.beam_dot_multiplier() if include_multishot else 1) + secondary_encumber_dot

@@ -32,7 +32,7 @@ class PrimaryTests(unittest.TestCase):
         calc = PrimaryCalculator(weapon)
 
         self.assertAlmostEqual(calc.flat_dotph(), 6014.9808)
-        self.assertAlmostEqual(calc.flat_dotps(), 2187.2657454545456)
+        self.assertAlmostEqual(calc.flat_dotps(), 3701.5266461538467)
 
 
 if __name__ == "__main__":

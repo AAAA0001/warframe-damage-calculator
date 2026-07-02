@@ -33,6 +33,7 @@ class Upgrade:
     primed_chamber: float = 0.0
     vigilante_bonus: float = 0.0
     secondary_enervate: int = 0
+    secondary_encumber: float = 0.0
     melee_duplicate: float = 0.0
     melee_doughty: float = 0.0
     fire_rate_lock: bool = False
