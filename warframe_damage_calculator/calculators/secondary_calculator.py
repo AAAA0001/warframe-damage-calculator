@@ -9,12 +9,14 @@ from ..utils import DOT_MULTIPLIERS
 from .ranged_calculator import RangedCalculator
 
 if TYPE_CHECKING:
-    from ..models import Secondary
+    from ..models.dist import dist
+    from ..models.secondary import Secondary
+    from ..models.states import SecondaryState
 
 
 class SecondaryCalculator(RangedCalculator):
-    def __init__(self, weapon: Secondary) -> None:
-        self.weapon: Secondary = weapon
+    def __init__(self, weapon: Secondary[SecondaryState]) -> None:
+        self.weapon: Secondary[SecondaryState] = weapon
     
     @cached_property
     def average_secondary_enervate_bonus(self) -> float:
@@ -57,7 +59,7 @@ class SecondaryCalculator(RangedCalculator):
         stack_bonus = np.array([0.1 * s for s, _ in states])
         return float(pi @ stack_bonus)
 
-    def _flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Secondary Ecumber Calculations Need Testing In-Game
+    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:  # Secondary Ecumber Calculations Need Testing In-Game
         if damage_dist.total_damage <= 0:
             return 0.0
         secondary_encumber_chance = 1 - (1 - self.weapon.effective.secondary_encumber * min(self.weapon.effective.status_chance, 1))**self.weapon.effective.multishot

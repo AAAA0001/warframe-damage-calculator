@@ -6,8 +6,10 @@ from .upgrade import Upgrade
 
 @dataclass(init=False)
 class Build(Upgrade):
-    def __init__(self, *upgrades: Upgrade):
-        self.upgrades = list(upgrades)
+    def __init__(self, *upgrades: Upgrade) -> None:
+        if any(not isinstance(upgrade, Upgrade) for upgrade in upgrades):
+            raise TypeError
+        self.upgrades: list[Upgrade] = list(upgrades)
 
         for stat in fields(Upgrade):
             default_value = stat.default

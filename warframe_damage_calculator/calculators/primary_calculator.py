@@ -7,12 +7,14 @@ from ..utils import DOT_MULTIPLIERS
 from .ranged_calculator import RangedCalculator
 
 if TYPE_CHECKING:
+    from ..models import dist
+    from ..models import PrimaryState
     from ..models import Primary
 
 
 class PrimaryCalculator(RangedCalculator):
-    def __init__(self, weapon: Primary) -> None:
-        self.weapon: Primary = weapon
+    def __init__(self, weapon: Primary[PrimaryState]) -> None:
+        self.weapon: Primary[PrimaryState] = weapon
 
     @cached_property
     def average_primed_chamber_multiplier(self) -> float:
@@ -26,7 +28,7 @@ class PrimaryCalculator(RangedCalculator):
     def flat_weakpoint_dph(self) -> float:
         return super().flat_weakpoint_dph * self.average_primed_chamber_multiplier
     
-    def _flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage_dist.total_damage <= 0:
             return 0.0
         average_primed_chamber_multiplier = self.average_primed_chamber_multiplier

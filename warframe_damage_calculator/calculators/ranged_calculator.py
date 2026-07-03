@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from .weapon_calculator import WeaponCalculator
 
 if TYPE_CHECKING:
+    from ..models import dist
     from ..models import RangedState
     from ..models import Ranged
 
@@ -78,5 +79,5 @@ class RangedCalculator(WeaponCalculator):
     def total_weakpoint_dps(self) -> float:
         return self.flat_weakpoint_dps + self.flat_weakpoint_dotps
     
-    def _flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
-        return NotImplemented
+    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+        raise NotImplementedError

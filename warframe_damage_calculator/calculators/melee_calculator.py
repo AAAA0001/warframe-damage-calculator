@@ -7,12 +7,13 @@ from ..utils import DOT_MULTIPLIERS, true_round
 from .weapon_calculator import WeaponCalculator
 
 if TYPE_CHECKING:
+    from ..models import MeleeState
     from ..models import Melee
 
 
 class MeleeCalculator(WeaponCalculator):
-    def __init__(self, weapon: Melee) -> None:
-        self.weapon: Melee = weapon
+    def __init__(self, weapon: Melee[MeleeState]) -> None:
+        self.weapon: Melee[MeleeState] = weapon
 
     @cached_property
     def melee_doughty_bonus(self) -> float:

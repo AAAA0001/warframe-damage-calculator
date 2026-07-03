@@ -12,7 +12,7 @@ class dist:
     _dist: dict[DamageType, float] = field(default_factory=dict)
     _total_damage: float = 0.0
     
-    def __init__(self, **kwargs: Unpack[DamageFields]):
+    def __init__(self, **kwargs: Unpack[DamageFields]) -> None:
         if any(dt not in DAMAGE_TYPES for dt in kwargs):
             raise ValueError
         sorted_items = dict(sorted(kwargs.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]]))
@@ -63,17 +63,31 @@ class dist:
             combined[key] = d1 + d2
         return (self.exclude(ELEMENTAL_TYPES) + dist(**combined)).positive()
     
-    def include(self, other: Iterable[str]) -> dist:
+    def include(self, other: Iterable[DamageType]) -> dist:
+        if not isinstance(other, Iterable):
+            raise TypeError
+        if any(dt not in DAMAGE_TYPES for dt in other):
+            raise ValueError
         return dist(**{dt: d for dt, d in self if dt in other})
 
-    def exclude(self, other: Iterable[str]) -> dist:
+    def exclude(self, other: Iterable[DamageType]) -> dist:
+        if not isinstance(other, Iterable):
+            raise TypeError
+        if any(dt not in DAMAGE_TYPES for dt in other):
+            raise ValueError
         return dist(**{dt: d for dt, d in self if dt not in other})
     
     def positive(self) -> dist:
         return dist(**{dt: d for dt, d in self if d > 0})
     
     def weight(self, dt: DamageType) -> float:
+        if not isinstance(dt, str):
+            raise TypeError
+        if dt not in DAMAGE_TYPES:
+            raise ValueError
         return 0.0 if self.total_damage == 0 else self.get(dt) / self.total_damage
     
     def apply(self, other: dist) -> dist:
+        if not isinstance(other, dist):
+            raise TypeError
         return dist(**{dt: self.get(dt) * (1 + other.get(dt)) if dt in PHYSICAL_TYPES else self.get(dt) + self.total_damage * other.get(dt) for dt in self.dist | other.dist})
