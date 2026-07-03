@@ -43,6 +43,9 @@ class Weapon[TWeaponState: WeaponState, TCalculator: WeaponCalculator, TFormatte
         self.effective.status_chance = self.moded.status_chance
         self.effective.status_damage = self.moded.status_damage
 
+    def _clear_calculator_cache(self) -> None:
+        self.calculate.clear_cache()
+
     def configure(self, *args: Build | Upgrade) -> Self:
         if all(isinstance(arg, Upgrade) for arg in args):
             self.build = Build(*args)
@@ -53,4 +56,5 @@ class Weapon[TWeaponState: WeaponState, TCalculator: WeaponCalculator, TFormatte
         
         self._compute_moded_stats()
         self._compute_effective_stats()
+        self._clear_calculator_cache()
         return self
