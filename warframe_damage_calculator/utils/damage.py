@@ -35,6 +35,7 @@ DamageType = Literal[
 	"void",
 ]
 
+
 DOT_MULTIPLIERS = (("slash", 2.1), ("heat", 3.0), ("toxin", 3.0), ("electricity", 3.0), ("gas", 3.0))
 PHYSICAL_TYPES = ("impact", "puncture", "slash")
 ELEMENTAL_TYPES = ("cold", "electricity", "heat", "toxin")

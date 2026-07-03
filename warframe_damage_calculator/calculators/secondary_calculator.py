@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from ..utils import DOT_MULTIPLIERS
 from .ranged_calculator import RangedCalculator
 
@@ -13,51 +15,36 @@ class SecondaryCalculator(RangedCalculator):
     def __init__(self, weapon: Secondary) -> None:
         self.weapon: Secondary = weapon
 
-    def calculate_secondary_enervate_bonus(self, initial_crit_chance: float) -> float:
-        if self.weapon.effective.secondary_enervate <= 0:
-            return 0.0
-
+    def average_secondary_enervate_bonus_for(self, crit_chance: float, max_stacks: int = 100) -> float:
         reset_after = self.weapon.effective.secondary_enervate
-        tolerance = 1e-14
-        states = [[1.0] + [0.0] * (reset_after - 1)]
-        previous_average = -1.0
+        if reset_after == 0:
+            return 0.0
+        states = [(s, c) for s in range(max_stacks + 1) for c in range(reset_after)]
+        index = {state: i for i, state in enumerate(states)}
+        m = len(states)
+        P = np.zeros((m, m))
 
-        while True:
-            current = states[-1]
-            stack = len(states) - 1
-            cc = initial_crit_chance + 0.1 * stack
-            p = min(1.0, max(0.0, cc - 1.0))
-            next_state = [0.0] * reset_after
+        for s, c in states:
+            i = index[(s, c)]
+            p = np.clip(crit_chance + 0.1 * s - 1, 0, 1)
+            next_stack = min(s + 1, max_stacks)
+            P[i, index[(next_stack, c)]] += 1 - p
+            crit_target = (0, 0) if c == reset_after - 1 else (next_stack, c + 1)
+            P[i, index[crit_target]] += p
 
-            for big in range(reset_after):
-                next_state[big] += current[big] * (1.0 - p)
-
-            for big in range(reset_after - 1):
-                next_state[big + 1] += current[big] * p
-
-            states.append(next_state)
-            total_probability = 0.0
-            average = 0.0
-
-            for stack, probs in enumerate(states):
-                weight = sum(probs)
-                total_probability += weight
-                average += 0.1 * stack * weight
-
-            average /= total_probability
-            delta_average = abs(average - previous_average)
-            remaining_probability = sum(states[-1])
-
-            if delta_average < tolerance and remaining_probability < tolerance:
-                return average
-
-            previous_average = average
+        A = P.T - np.eye(m)
+        A[-1] = 1
+        b = np.zeros(m)
+        b[-1] = 1
+        pi = np.linalg.solve(A, b)
+        stack_bonus = np.array([0.1 * s for s, _ in states])
+        return float(pi @ stack_bonus)
     
     def average_secondary_enervate_bonus(self) -> float:
-        return self.calculate_secondary_enervate_bonus(self.weapon.moded.crit_chance * self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.flat_crit_chance)
+        return self.average_secondary_enervate_bonus_for(self.weapon.moded.crit_chance * self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.flat_crit_chance)
     
     def average_weakpoint_secondary_enervate_bonus(self) -> float:
-        return self.calculate_secondary_enervate_bonus(self.weapon.moded.weakpoint_crit_chance * (self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.multiplicative_weakpoint_crit_chance - 1) + self.weapon.moded.flat_crit_chance)
+        return self.average_secondary_enervate_bonus_for(self.weapon.moded.weakpoint_crit_chance * (self.weapon.moded.multiplicative_crit_chance + self.weapon.moded.multiplicative_weakpoint_crit_chance - 1) + self.weapon.moded.flat_crit_chance)
     
     def flat_dotph_for(self, damage_dist, forced_procs, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float: # Secondary Ecumber Calculations Need Testing In-Game
         if damage_dist.total_damage <= 0:
