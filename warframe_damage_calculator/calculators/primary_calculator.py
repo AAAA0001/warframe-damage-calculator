@@ -9,6 +9,18 @@ from .ranged_calculator import RangedCalculator
 
 
 class PrimaryCalculator(RangedCalculator[PrimaryState]):
+    """Calculator for primary weapons.
+
+    Extends the normal ranged calculations with primary-only build
+    effects.
+
+    Vigilante bonuses increase critical chance, Primed Chamber increases
+    expected damage, and Hunter Munitions adds expected slash damage from
+    critical hits. The calculator also accounts for overlap with Internal
+    Bleeding.
+
+    Used by ``Primary`` after a ``Build`` is configured.
+    """
     def __init__(self, base: PrimaryState) -> None:
         super().__init__(base)
 
@@ -26,18 +38,6 @@ class PrimaryCalculator(RangedCalculator[PrimaryState]):
         self.effective.crit_chance += self.effective.vigilante_bonus
         self.effective.weakpoint_crit_chance += self.effective.vigilante_bonus
 
-    @cached_property
-    def average_primed_chamber_multiplier(self) -> float:
-        return 1 + self.effective.primed_chamber / self.effective.magazine_capacity
-
-    @cached_property
-    def flat_dph(self) -> float:
-        return super().flat_dph * self.average_primed_chamber_multiplier
-
-    @cached_property
-    def flat_weakpoint_dph(self) -> float:
-        return super().flat_weakpoint_dph * self.average_primed_chamber_multiplier
-    
     def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage_dist.total_damage <= 0:
             return 0.0
@@ -62,3 +62,15 @@ class PrimaryCalculator(RangedCalculator[PrimaryState]):
         forced_dot_damage_per_bullet = sum(mult * forced_procs.get(dt) * damage_dist.get(dt) for dt, mult in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
         # Total DoT damage, multiplied by multishot if applicable
         return (dot_damage_per_bullet + extra_slash_damage_per_bullet + forced_dot_damage_per_bullet) * (self.effective.multishot * self.beam_dot_multiplier if include_multishot else 1)
+
+    @cached_property
+    def average_primed_chamber_multiplier(self) -> float:
+        return 1 + self.effective.primed_chamber / self.effective.magazine_capacity
+
+    @cached_property
+    def flat_dph(self) -> float:
+        return super().flat_dph * self.average_primed_chamber_multiplier
+
+    @cached_property
+    def flat_weakpoint_dph(self) -> float:
+        return super().flat_weakpoint_dph * self.average_primed_chamber_multiplier

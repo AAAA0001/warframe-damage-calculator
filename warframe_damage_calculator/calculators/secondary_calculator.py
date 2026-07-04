@@ -11,6 +11,17 @@ from .ranged_calculator import RangedCalculator
 
 
 class SecondaryCalculator(RangedCalculator[SecondaryState]):
+    """Calculator for secondary weapons.
+
+    Extends the normal ranged calculations with secondary-only build
+    effects.
+
+    Secondary Enervate increases average critical chance based on its stack
+    behavior. Secondary Encumber adds expected damage over time and extra
+    status-proc interactions.
+
+    Used by ``Secondary`` after a ``Build`` is configured.
+    """
     def __init__(self, base: SecondaryState) -> None:
         super().__init__(base)
 
@@ -23,23 +34,7 @@ class SecondaryCalculator(RangedCalculator[SecondaryState]):
         super()._compute_effective_stats()
         self.effective.secondary_enervate = self.moded.secondary_enervate
         self.effective.secondary_encumber = self.moded.secondary_encumber
-    
-    @cached_property
-    def average_secondary_enervate_bonus(self) -> float:
-        return self._average_secondary_enervate_bonus_for(self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance)
 
-    @cached_property
-    def average_weakpoint_secondary_enervate_bonus(self) -> float:
-        return self._average_secondary_enervate_bonus_for(self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance)
-
-    @cached_property
-    def average_crit_chance(self) -> float:
-        return self.effective.crit_chance + self.average_secondary_enervate_bonus
-
-    @cached_property
-    def average_weakpoint_crit_chance(self) -> float:
-        return self.effective.weakpoint_crit_chance + self.average_weakpoint_secondary_enervate_bonus
-    
     def _average_secondary_enervate_bonus_for(self, crit_chance: float, max_stacks: int = 100) -> float:
         reset_after = self.effective.secondary_enervate
         if reset_after == 0:
@@ -79,3 +74,19 @@ class SecondaryCalculator(RangedCalculator[SecondaryState]):
         forced_dot_damage_per_bullet = sum(mult * forced_procs.get(dt) * damage_dist.get(dt) for dt, mult in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2
         # Total DoT damage
         return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.effective.multishot * self.beam_dot_multiplier if include_multishot else 1) + secondary_encumber_dot
+    
+    @cached_property
+    def average_secondary_enervate_bonus(self) -> float:
+        return self._average_secondary_enervate_bonus_for(self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance)
+
+    @cached_property
+    def average_weakpoint_secondary_enervate_bonus(self) -> float:
+        return self._average_secondary_enervate_bonus_for(self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance)
+
+    @cached_property
+    def average_crit_chance(self) -> float:
+        return self.effective.crit_chance + self.average_secondary_enervate_bonus
+
+    @cached_property
+    def average_weakpoint_crit_chance(self) -> float:
+        return self.effective.weakpoint_crit_chance + self.average_weakpoint_secondary_enervate_bonus

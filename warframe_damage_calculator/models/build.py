@@ -6,6 +6,19 @@ from .upgrade import Upgrade
 
 @dataclass(init=False)
 class Build(Upgrade):
+    """Represents a group of upgrades applied together.
+
+    Pass one or more ``Upgrade`` objects to create the final set of bonuses
+    for a weapon. A build exposes the same fields as ``Upgrade``, but each
+    field contains the combined result.
+
+    Numeric bonuses are added together, damage distributions are merged, and
+    boolean options become true if any upgrade enables them. With no upgrades,
+    the build keeps the default values.
+
+    Pass a ``Build`` to ``Weapon.configure`` to update a weapon's calculated
+    stats.
+    """
     def __init__(self, *upgrades: Upgrade) -> None:
         if any(not isinstance(upgrade, Upgrade) for upgrade in upgrades):
             raise TypeError

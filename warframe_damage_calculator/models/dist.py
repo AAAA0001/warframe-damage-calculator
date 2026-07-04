@@ -11,6 +11,19 @@ from ..fields import DamageField
 
 @dataclass(frozen=True, init=False, slots=True)
 class dist:
+    """Represents an immutable damage distribution grouped by damage type.
+
+    Create one with keyword values such as ``dist(slash=80, heat=20)``. The
+    object stores supplied damage types in a consistent order and keeps their
+    sum in ``total_damage``.
+
+    Missing damage types count as zero when read with ``get``. Operations
+    such as adding, multiplying, filtering, or combining elements return a
+    new ``dist`` instead of changing the existing one.
+
+    Used anywhere the calculator needs values split by damage type, including
+    base damage, elemental bonuses, and forced procs.
+    """
     dist: Mapping[DamageType, float]
     total_damage: float
     

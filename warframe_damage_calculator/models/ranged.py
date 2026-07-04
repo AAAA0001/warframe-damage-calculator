@@ -10,9 +10,20 @@ from .weapon import Weapon
 
 
 class Ranged(Weapon):
-    state_class = RangedState
-    calculator_class = RangedCalculator
-    formatter_class = RangedFormatter
+    """Represents the base model for ranged weapons.
+
+    Ranged weapons add stats such as fire rate, reload speed, magazine size,
+    multishot, weakpoint damage, beam behavior, battery behavior, and
+    explosion damage.
+
+    Connects those inputs to ``RangedCalculator`` and ``RangedFormatter``
+    while keeping the same ``configure`` workflow as ``Weapon``.
+
+    ``Primary`` and ``Secondary`` build on this class for their own mechanics.
+    """
+    _state_class = RangedState
+    _calculator_class = RangedCalculator
+    _formatter_class = RangedFormatter
 
     def __init__(self, **kwargs: Unpack[RangedField]) -> None:
         super().__init__(**kwargs)

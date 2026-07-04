@@ -3,6 +3,17 @@ from .weapon_field import WeaponField
 
 
 class RangedField(WeaponField):
+    """Represents keyword fields for ranged weapons.
+
+    Adds ranged inputs such as fire rate, reload speed, magazine size,
+    multishot, weakpoint damage, beam behavior, battery behavior, and
+    explosion damage.
+
+    These are base weapon stats. ``Build`` and ``Upgrade`` values are applied
+    later by the calculator.
+
+    ``PrimaryField`` and ``SecondaryField`` both reuse this ranged field set.
+    """
     is_beam: bool
     is_battery: bool
     explosion_damage_dist: dist

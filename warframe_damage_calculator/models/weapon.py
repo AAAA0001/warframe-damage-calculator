@@ -10,15 +10,28 @@ from .build import Build
 
 
 class Weapon:
-    state_class = WeaponState
-    calculator_class = WeaponCalculator
-    formatter_class = WeaponFormatter
+    """Represents the base interface shared by weapon models.
+
+    A weapon stores the starting stats passed to its constructor, creates the
+    calculator that evaluates those stats, and creates the formatter that
+    prints a readable summary.
+
+    Use ``stats`` to access calculated values and ``format`` to access text
+    output. Calling ``configure`` applies a ``Build`` and returns the same
+    weapon so calls can be chained.
+
+    Subclasses choose the state, calculator, and formatter used by each weapon
+    family.
+    """
+    _state_class = WeaponState
+    _calculator_class = WeaponCalculator
+    _formatter_class = WeaponFormatter
 
     def __init__(self, **kwargs: Unpack[WeaponField]):
-        base = self.state_class(**kwargs)
-        self.stats = self.calculator_class(base)
-        self.format = self.formatter_class(self.stats)
+        base = self._state_class(**kwargs)
+        self.stats = self._calculator_class(base)
+        self.format = self._formatter_class(self.stats)
 
     def configure(self, build: Build):
-        self.stats.configure(build)
+        self.stats._configure(build)
         return self

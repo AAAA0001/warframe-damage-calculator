@@ -7,6 +7,18 @@ from .dist import dist
 
 @dataclass
 class Upgrade:
+    """Represents a single upgrade that can modify weapon stats.
+
+    Use this for one mod, arcane, buff, or similar effect. Each field is a
+    possible bonus, such as base damage, critical chance, status chance,
+    multishot, or a weapon-specific effect.
+
+    Most upgrades only use a few fields. Any field left at its default value
+    has no effect.
+
+    ``Build`` combines multiple ``Upgrade`` objects before they are applied
+    to a weapon.
+    """
     damage_dist: dist = dist()
     multiplicative_base_damage: float = 0.0
     base_damage: float = 0.0

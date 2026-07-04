@@ -9,6 +9,18 @@ from .weapon_calculator import WeaponCalculator
 
 
 class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]):
+    """Calculator for ranged weapon stats.
+
+    Adds ranged behavior on top of ``WeaponCalculator``, including fire rate,
+    reload time, magazine size, multishot, weakpoint damage, beam and battery
+    rules, and explosion damage.
+
+    Provides ranged hit damage, weakpoint damage, fire rate, status proc
+    rate, and DPS values. Primary and secondary calculators provide their own
+    damage-over-time details through ``_flat_dotph_for``.
+
+    Used by both primary and secondary weapons.
+    """
     def __init__(self, base: TRangedState) -> None:
         super().__init__(base)
         self.base.explosion_total_damage = self.base.explosion_damage_dist.total_damage
@@ -52,6 +64,9 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
         self.effective.multishot = self.moded.multishot
         self.effective.weakpoint_crit_chance = self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance
         self.effective.internal_bleeding = self.moded.internal_bleeding
+
+    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+        raise NotImplementedError
 
     @cached_property
     def average_weakpoint_crit_chance(self) -> float:
@@ -116,6 +131,3 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
     @cached_property
     def total_weakpoint_dps(self) -> float:
         return self.flat_weakpoint_dps + self.flat_weakpoint_dotps
-    
-    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
-        raise NotImplementedError

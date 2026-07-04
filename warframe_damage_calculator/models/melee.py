@@ -10,9 +10,19 @@ from .weapon import Weapon
 
 
 class Melee(Weapon):
-    state_class = MeleeState
-    calculator_class = MeleeCalculator
-    formatter_class = MeleeFormatter
+    """Represents a melee weapon that can be configured and calculated.
+
+    Melee weapons use the shared weapon inputs plus attack speed, then add
+    melee-specific calculations through ``MeleeCalculator``.
+
+    Mechanics such as Melee Duplicate and Melee Doughty come from the active
+    ``Build`` and are handled during calculation.
+
+    Use this class when evaluating a melee weapon build.
+    """
+    _state_class = MeleeState
+    _calculator_class = MeleeCalculator
+    _formatter_class = MeleeFormatter
 
     def __init__(self,  **kwargs: Unpack[MeleeField]) -> None:
         super().__init__(**kwargs)

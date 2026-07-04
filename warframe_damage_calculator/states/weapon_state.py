@@ -1,10 +1,22 @@
 from dataclasses import dataclass
 
-from ..models.dist import dist
+from ..models import dist
 
 
 @dataclass
 class WeaponState:
+    """Represents stats shared by every weapon type.
+
+    Calculators use this class to hold the original base stats, the ``moded``
+    stats after normal build modifiers, and the final ``effective`` stats used
+    for damage output.
+
+    The fields cover common values such as damage, critical chance, critical
+    damage, status chance, status damage, and faction damage.
+
+    Specialized state classes add the extra fields needed by ranged, primary,
+    secondary, and melee weapons.
+    """
     damage_dist: dist = dist()
     forced_procs: dist = dist()
     total_damage: float = 0.0

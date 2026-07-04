@@ -7,18 +7,24 @@ from ..models import Build
 
 
 class WeaponCalculator[TWeaponState: WeaponState]:
+    """Base calculator for weapon stats.
+
+    Takes a weapon's base stats and a ``Build`` and prepares the
+    common stats used by every weapon type.
+
+    Keeps three versions of the stats: ``base`` for the original weapon,
+    ``moded`` for stats after normal build bonuses, and ``effective`` for the
+    final values used by damage calculations.
+
+    Specialized calculators add hit damage, damage over time, and
+    weapon-family mechanics.
+    """
     def __init__(self, base: TWeaponState) -> None:
         self.base: TWeaponState = base
         self.build = Build()
         self.moded: TWeaponState = type(base)()
         self.effective: TWeaponState = type(base)()
-        self.configure(self.build)
-
-    def configure(self, build: Build) -> None:
-        self.build = build
-        self._compute_moded_stats()
-        self._compute_effective_stats()
-        self.clear_cache()
+        self._configure(self.build)
 
     def _compute_moded_stats(self) -> None:
         self.moded.multiplicative_base_damage = max(1 + self.build.multiplicative_base_damage, 1)
@@ -44,6 +50,18 @@ class WeaponCalculator[TWeaponState: WeaponState]:
         self.effective.status_chance = self.moded.status_chance
         self.effective.status_damage = self.moded.status_damage
 
+    def _clear_cached_properties(self) -> None:
+        for cls in type(self).mro():
+            for name, attr in cls.__dict__.items():
+                if isinstance(attr, cached_property):
+                    self.__dict__.pop(name, None)
+
+    def _configure(self, build: Build) -> None:
+        self.build = build
+        self._compute_moded_stats()
+        self._compute_effective_stats()
+        self._clear_cached_properties()
+
     @cached_property
     def average_crit_chance(self) -> float:
         return self.effective.crit_chance
@@ -59,9 +77,3 @@ class WeaponCalculator[TWeaponState: WeaponState]:
     @cached_property
     def total_dps(self) -> float:
         return self.flat_dps + self.flat_dotps
-
-    def clear_cache(self) -> None:
-        for cls in type(self).mro():
-            for name, attr in cls.__dict__.items():
-                if isinstance(attr, cached_property):
-                    self.__dict__.pop(name, None)
