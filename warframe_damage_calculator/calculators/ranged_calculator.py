@@ -37,7 +37,7 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
         self.effective.is_beam = self.moded.is_beam
-        self.effective.is_battery = self.effective.is_battery
+        self.effective.is_battery = self.moded.is_battery
         self.effective.explosion_damage_dist = self.moded.explosion_damage_dist
         self.effective.explosion_total_damage = self.effective.explosion_damage_dist.total_damage
         self.effective.weakpoint_damage = self.moded.weakpoint_damage
