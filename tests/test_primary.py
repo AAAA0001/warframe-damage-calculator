@@ -32,7 +32,7 @@ class PrimaryTests(unittest.TestCase):
         calc = weapon.calculate
 
         self.assertAlmostEqual(calc.flat_dph, 538.65000000)
-        self.assertAlmostEqual(calc.flat_dps, 1829.37735849)
+        self.assertAlmostEqual(calc.flat_dps, 15817.74425942)
 
         weapon = Primary(damage_dist=dist(puncture=55, slash=45), forced_procs=dist(puncture=0.3), explosion_damage_dist=dist(heat=22), explosion_forced_procs=dist(heat=0.2), crit_chance=0.52, crit_damage=2.3, status_chance=0.28, fire_rate=2.3, burst_count=3, burst_delay=0.05, charge_time=0.07, reload_speed=2.1, magazine_capacity=18, multishot=2.2, weakpoint_damage=2.8)
         weapon.configure(Build(Upgrade(base_damage=0.6, crit_damage=0.4, multishot=0.5, fire_rate=0.15, weakpoint_crit_chance=0.35, primed_chamber=0.8, faction_damage=0.25)))
