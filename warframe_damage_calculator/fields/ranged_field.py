@@ -3,7 +3,7 @@ from .weapon_field import WeaponField
 
 
 class RangedField(WeaponField):
-    """Represents keyword fields for ranged weapons.
+    """Keyword fields for ranged weapons.
 
     Adds ranged inputs such as fire rate, reload speed, magazine size,
     multishot, weakpoint damage, beam behavior, battery behavior, and

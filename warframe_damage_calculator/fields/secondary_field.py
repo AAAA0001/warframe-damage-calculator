@@ -2,7 +2,7 @@ from .ranged_field import RangedField
 
 
 class SecondaryField(RangedField):
-    """Represents keyword fields for secondary weapons.
+    """Keyword fields for secondary weapons.
 
     Secondary weapons currently use the same constructor inputs as other
     ranged weapons, so this class does not add fields beyond ``RangedField``.

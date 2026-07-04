@@ -4,7 +4,7 @@ from ..models import dist
 
 
 class WeaponField(TypedDict, total=True):
-    """Represents keyword fields shared by every weapon.
+    """Keyword fields shared by every weapon.
 
     These are the basic values needed to create a weapon: its damage
     distribution, forced status procs, critical chance, critical damage, and

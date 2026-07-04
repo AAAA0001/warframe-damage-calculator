@@ -2,7 +2,7 @@ from typing import TypedDict
 
 
 class DamageField(TypedDict, total=False):
-	"""Represents keyword fields for creating a damage distribution.
+	"""Keyword fields for creating a damage distribution.
 
 	Each optional field is a supported damage type, such as ``slash`` or
 	``heat``, and its value is the amount assigned to that type.
