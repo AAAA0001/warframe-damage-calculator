@@ -21,7 +21,7 @@ class dist:
     such as adding, multiplying, filtering, or combining elements return a
     new ``dist`` instead of changing the existing one.
 
-    Stored values represent diferent things depending on context. They can 
+    Stored values represent different things depending on context. They can 
     either be flat damage values, percentage bonuses, or proc chances.
     """
     dist: Mapping[DamageType, float]
