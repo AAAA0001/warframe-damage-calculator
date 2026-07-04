@@ -13,7 +13,8 @@ def main():
     mod8 = Upgrade(fire_rate=0.90, base_damage=-0.15)
     trait = Upgrade(multiplicative_fire_rate=1.50, ammo_efficiency=1.00, damage_dist=dist(toxin=1.00))
     buffs = Upgrade(flat_crit_damage=1.20)
-    weapon.configure(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, trait, buffs)
+    build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, trait, buffs)
+    weapon.configure(build)
 
     print(weapon.format.summary())
 

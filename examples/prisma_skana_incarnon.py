@@ -12,7 +12,8 @@ def main():
     mod7 = Upgrade(status_chance=0.90)
     mod8 = Upgrade(damage_dist=dist(electricity=0.90))
     buffs = Upgrade(flat_crit_damage=1.20, attack_speed=0.70, base_damage=0.70)
-    weapon.configure(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, buffs)
+    build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, buffs)
+    weapon.configure(build)
 
     print(weapon.format.summary())
 

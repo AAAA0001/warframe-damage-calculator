@@ -119,4 +119,3 @@ repeat
     else
         wait 1 / [fire rate] seconds
 ```
-
