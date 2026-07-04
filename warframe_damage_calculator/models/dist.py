@@ -87,7 +87,7 @@ class dist:
             raise ValueError
         if not isinstance(dt, str):
             raise TypeError
-        return 0.0 if self.total_damage == 0 else self.get(dt) / self.total_damage
+        return self.get(dt) / self.total_damage if self.total_damage else 0.0
     
     def apply(self, other: dist) -> dist:
         if not isinstance(other, dist):
