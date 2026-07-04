@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Iterator, Iterable, Unpack
 from types import MappingProxyType
 from collections.abc import Mapping
