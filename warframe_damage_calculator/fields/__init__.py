@@ -1,15 +1,15 @@
-from .damage_field import DamageField
-from .weapon_field import WeaponField
-from .melee_field import MeleeField
-from .ranged_field import RangedField
-from .primary_field import PrimaryField
-from .secondary_field import SecondaryField
+from .damage_fields import DamageFields
+from .weapon_fields import WeaponFields
+from .melee_fields import MeleeFields
+from .ranged_fields import RangedFields
+from .primary_fields import PrimaryFields
+from .secondary_fields import SecondaryFields
 
 __all__ = [
-    "DamageField",
-    "WeaponField",
-    "MeleeField",
-    "RangedField",
-    "PrimaryField",
-    "SecondaryField",
+    "DamageFields",
+    "WeaponFields",
+    "MeleeFields",
+    "RangedFields",
+    "PrimaryFields",
+    "SecondaryFields",
 ]

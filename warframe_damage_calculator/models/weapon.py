@@ -4,7 +4,7 @@ from typing import Unpack
 
 from ..calculators import WeaponCalculator
 from ..formatters import WeaponFormatter
-from ..fields import WeaponField
+from ..fields import WeaponFields
 from ..states import WeaponState
 from .upgrade import Upgrade
 from .build import Build
@@ -28,7 +28,7 @@ class Weapon:
     _calculator_class = WeaponCalculator
     _formatter_class = WeaponFormatter
 
-    def __init__(self, **kwargs: Unpack[WeaponField]):
+    def __init__(self, **kwargs: Unpack[WeaponFields]):
         base = self._state_class(**kwargs)
         self.stats = self._calculator_class(base)
         self.format = self._formatter_class(self.stats)

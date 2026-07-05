@@ -4,7 +4,7 @@ from typing import Unpack
 
 from ..calculators import MeleeCalculator
 from ..formatters import MeleeFormatter
-from ..fields import MeleeField
+from ..fields import MeleeFields
 from ..states import MeleeState
 from .weapon import Weapon
 
@@ -24,7 +24,7 @@ class Melee(Weapon):
     _calculator_class = MeleeCalculator
     _formatter_class = MeleeFormatter
 
-    def __init__(self,  **kwargs: Unpack[MeleeField]) -> None:
+    def __init__(self,  **kwargs: Unpack[MeleeFields]) -> None:
         super().__init__(**kwargs)
 
         

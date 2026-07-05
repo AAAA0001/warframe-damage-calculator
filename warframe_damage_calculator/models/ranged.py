@@ -4,7 +4,7 @@ from typing import Unpack
 
 from ..calculators import RangedCalculator
 from ..formatters import RangedFormatter
-from ..fields import RangedField
+from ..fields import RangedFields
 from ..states import RangedState
 from .weapon import Weapon
 
@@ -25,6 +25,6 @@ class Ranged(Weapon):
     _calculator_class = RangedCalculator
     _formatter_class = RangedFormatter
 
-    def __init__(self, **kwargs: Unpack[RangedField]) -> None:
+    def __init__(self, **kwargs: Unpack[RangedFields]) -> None:
         super().__init__(**kwargs)
 

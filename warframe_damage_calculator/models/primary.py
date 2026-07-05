@@ -4,7 +4,7 @@ from typing import Unpack
 
 from ..calculators import PrimaryCalculator
 from ..formatters import PrimaryFormatter
-from ..fields import PrimaryField
+from ..fields import PrimaryFields
 from ..states import PrimaryState
 from .ranged import Ranged
 
@@ -24,7 +24,7 @@ class Primary(Ranged):
     _calculator_class = PrimaryCalculator
     _formatter_class = PrimaryFormatter
 
-    def __init__(self, **kwargs: Unpack[PrimaryField]) -> None:
+    def __init__(self, **kwargs: Unpack[PrimaryFields]) -> None:
         super().__init__(**kwargs)
 
     

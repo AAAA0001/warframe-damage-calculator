@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Iterator, Iterable, Unpack
 
 from ..utils import PHYSICAL_TYPES, ELEMENTAL_TYPES, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, DAMAGE_TYPE_ORDER, DamageType
-from ..fields import DamageField
+from ..fields import DamageFields
 
 
 class dist:
@@ -21,7 +21,7 @@ class dist:
     either be flat damage values, percentage bonuses, or proc chances.
     """
     
-    def __init__(self, **kwargs: Unpack[DamageField]) -> None:
+    def __init__(self, **kwargs: Unpack[DamageFields]) -> None:
         self.dist = kwargs
 
     def __add__(self, other: dist) -> dist:
