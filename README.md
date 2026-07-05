@@ -152,16 +152,22 @@ weapon = Primary(...).configure(build)
 -   `multiplicative_base_damage`
 -   `faction_damage`
 -   `weakpoint_damage`
+-   `multishot`
 
 ### Fire Control
 
 -   `attack_speed`
 -   `fire_rate`
 -   `multiplicative_fire_rate`
+-   `burst_count`
+-   `bust_delay`
+-   `charge_time`
 -   `reload_speed`
--   `magazine_capacity`
+-   `recharge_rate`
 -   `ammo_efficiency`
--   `multishot`
+-   `magazine_capacity`
+-   `is_beam`
+-   `is_battery`
 
 ### Critical
 
@@ -175,6 +181,7 @@ weapon = Primary(...).configure(build)
 
 ### Status
 
+-   `forced_procs`
 -   `status_chance`
 -   `status_damage`
 
