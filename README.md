@@ -160,7 +160,6 @@ REPEAT
     ELSE
         WAIT 1 ÷ [fire rate] seconds
     END IF
-
 END REPEAT
 ```
 
