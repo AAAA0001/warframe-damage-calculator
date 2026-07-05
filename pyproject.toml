@@ -8,9 +8,6 @@ dynamic = ["version"]
 description = "Average DPS/DPH calculator for Warframe weapons."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "numpy>=2.0",
-]
 license = { file = "LICENSE" }
 
 authors = [
