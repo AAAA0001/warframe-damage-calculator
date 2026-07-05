@@ -117,14 +117,14 @@ from warframe_damage_calculator import (
 )
 ```
 
-  Object        Description
-  ------------- -------------------------------------------
-  `dist`        Damage distribution.
-  `Upgrade`     A single modifier (mod, arcane, or buff).
-  `Build`       A collection of upgrades.
-  `Primary`     Primary weapon model.
-  `Secondary`   Secondary weapon model.
-  `Melee`       Melee weapon model.
+ | Object      | Description                               |
+ |-------------|-------------------------------------------|
+ |`dist`       | Damage distribution.                      |
+ |`Upgrade`    | A single modifier (mod, arcane, or buff). |
+ |`Build`      | A collection of upgrades.                 |
+ |`Primary`    | Primary weapon model.                     |
+ |`Secondary`  | Secondary weapon model.                   |
+ |`Melee`      | Melee weapon model.                       |
 
 Typical workflow:
 
