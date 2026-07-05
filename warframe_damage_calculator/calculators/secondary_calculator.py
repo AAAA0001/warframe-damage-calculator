@@ -33,7 +33,7 @@ class SecondaryCalculator(RangedCalculator[SecondaryState]):
         self.effective.secondary_enervate = self.moded.secondary_enervate
         self.effective.secondary_encumber = self.moded.secondary_encumber
 
-    def _average_secondary_enervate_bonus_for(self, crit_chance: float, max_stacks: int = 100) -> float:
+    def _average_secondary_enervate_bonus_for(self, crit_chance: float, max_stacks: int = 500) -> float:
         R = self.effective.secondary_enervate
         if R == 0:
             return 0.0
