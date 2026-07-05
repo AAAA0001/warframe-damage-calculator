@@ -1,6 +1,6 @@
-## Architecture
+# Architecture
 
-# Class Inheritance
+## Class Inheritance
 
 ```text
 Build
@@ -39,7 +39,7 @@ WeaponFormatter
 └── MeleeFormatter
 ```
 
-# Class Ownership
+## Class Ownership
 
 ```text
 Weapon
@@ -128,7 +128,7 @@ Secondary
            └─ references ─► SecondaryCalculator
 ```
 
-# Package Architecture
+## Package Architecture
 
 ```text
 warframe_damage_calculator/
