@@ -210,6 +210,8 @@ weapon = Primary(...).configure(build)
 - [x] Charge weapons
 - [x] Battery weapons
 - [x] Burst-fire weapons
+- [ ] Melee heavy attacks
+- [ ] Melee slam attacks
 - [ ] Projectile falloff
 
 ### Damage
@@ -217,20 +219,20 @@ weapon = Primary(...).configure(build)
 - [x] Physical damage
 - [x] Elemental damage
 - [x] Combined elements
-- [x] IPS weighting
-- [x] Base, faction, and weakpoint damage
+- [x] Damage weighting
+- [x] Base, multiplicative, faction, and weakpoint damage
 - [x] Critical calculations
 - [ ] Enemy defenses and damage attenuation
 
 ### Status
 
 - [x] Expected status procs
-- [x] Damage-over-time
+- [x] DoT status effects
 - [x] Forced procs
 - [x] Hunter Munitions
-- [x] Hemorrhage
+- [x] Internal Bleeding / Hemorrhage
 - [x] Secondary Encumber
-- [ ] Viral, Corrosive, Heat, and Magnetic secondary effects
+- [ ] Non-DoT status effects
 
 ### Calculations
 
@@ -280,8 +282,7 @@ average and may not exactly match any single shot fired in-game.
 -   Charge time scales with fire rate. *(Wiki)*
 -   Recharge rate is independent of reload speed. *(Wiki)*
 -   Beam weapons consume **0.5 ammo per tick**. *(Wiki)*
-
-The weapon firing cycle is modeled as follows:
+-   The weapon firing cycle is modeled as follows. *(Testing)*
 
 ``` text
 [ammo cost] ← (1 - [ammo efficiency]) ÷ (IF [is beam] THEN 2 ELSE 1)
