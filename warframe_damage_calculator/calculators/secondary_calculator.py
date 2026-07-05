@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from functools import cached_property
 
-import numpy as np
-
 from ..utils import DOT_MULTIPLIERS, clamp
 from ..states import SecondaryState
 from ..models import dist
@@ -36,29 +34,38 @@ class SecondaryCalculator(RangedCalculator[SecondaryState]):
         self.effective.secondary_encumber = self.moded.secondary_encumber
 
     def _average_secondary_enervate_bonus_for(self, crit_chance: float, max_stacks: int = 100) -> float:
-        reset_after = self.effective.secondary_enervate
-        if reset_after == 0:
+        R = self.effective.secondary_enervate
+        if R == 0:
             return 0.0
-        states = [(s, c) for s in range(max_stacks + 1) for c in range(reset_after)]
-        index = {state: i for i, state in enumerate(states)}
-        m = len(states)
-        P = np.zeros((m, m))
+        M = max_stacks
+        L = [[0.0] * R for _ in range(M + 1)]
+        A = [[0.0] * R for _ in range(M + 1)]
 
-        for s, c in states:
-            i = index[(s, c)]
-            p = np.clip(crit_chance + 0.1 * s - 1, 0, 1)
-            next_stack = min(s + 1, max_stacks)
-            P[i, index[(next_stack, c)]] += 1 - p
-            crit_target = (0, 0) if c == reset_after - 1 else (next_stack, c + 1)
-            P[i, index[crit_target]] += p
+        p = max(0.0, min(1.0, crit_chance + 0.1 * M - 1))
+        q = 1.0 - p
 
-        A = P.T - np.eye(m)
-        A[-1] = 1
-        b = np.zeros(m)
-        b[-1] = 1
-        pi = np.linalg.solve(A, b)
-        stack_bonus = np.array([0.1 * s for s, _ in states])
-        return float(pi @ stack_bonus)
+        if q == 1.0:
+            return float("inf")
+
+        L[M][R - 1] = 1.0 / (1.0 - q)
+        A[M][R - 1] = M / (1.0 - q)
+
+        for k in range(R - 2, -1, -1):
+            L[M][k] = (1.0 + p * L[M][k + 1]) / (1.0 - q)
+            A[M][k] = (M + p * A[M][k + 1]) / (1.0 - q)
+
+        for s in range(M - 1, -1, -1):
+            p = max(0.0, min(1.0, crit_chance + 0.1 * s - 1))
+            q = 1.0 - p
+            
+            L[s][R - 1] = 1.0 + q * L[s + 1][R - 1]
+            A[s][R - 1] = s + q * A[s + 1][R - 1]
+
+            for k in range(R - 2, -1, -1):
+                L[s][k] = 1.0 + q * L[s + 1][k] + p * L[s + 1][k + 1]
+                A[s][k] = s + q * A[s + 1][k] + p * A[s + 1][k + 1]
+
+        return 0.1 * A[0][0] / L[0][0]
 
     def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:  # Secondary Ecumber Calculations Need Testing In-Game
         if damage_dist.total_damage() <= 0:
