@@ -98,6 +98,6 @@ class WeaponCalculator[TWeaponState: WeaponState]:
     
     @cached_property
     def upgrade_contribution_proportions(self) -> dict[str, float]:
-        total = sum(self.upgrade_contributions.values())
+        total = sum(self.upgrade_contributions.values()) or 1
         return {upgrade: contibution / total for upgrade, contibution in self.upgrade_contributions.items()}
         
