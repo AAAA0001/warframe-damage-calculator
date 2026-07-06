@@ -1,4 +1,5 @@
 from dataclasses import MISSING, dataclass, fields
+from typing import Iterator
 
 from .dist import dist
 from .upgrade import Upgrade
@@ -48,3 +49,26 @@ class Build(Upgrade):
                 continue
 
             setattr(self, stat.name, default_value)
+
+    def __add__(self, other: Upgrade | Build) -> Build:
+        if isinstance(other, Upgrade):
+            return Build(*[upgrade for upgrade in [*self.upgrades, other]])
+        if isinstance(other, Build):
+            return Build(*[upgrade for upgrade in [*self.upgrades, other.upgrades]])
+        return NotImplemented
+    
+    def __radd__(self, other: Upgrade) -> Build:
+        if isinstance(other, Upgrade):
+            return Build(*[upgrade for upgrade in [other, *self.upgrades]])
+        return NotImplemented
+    
+    def __sub__(self, other: Upgrade | Build) -> Build:
+        if isinstance(other, Upgrade):
+            return Build(*[upgrade for upgrade in self.upgrades if upgrade != other])
+        if isinstance(other, Build):
+            return Build(*[upgrade for upgrade in self.upgrades if upgrade not in other.upgrades])
+        return NotImplemented
+    
+    def __iter__(self) -> Iterator[Upgrade]:
+        return iter(self.upgrades)
+

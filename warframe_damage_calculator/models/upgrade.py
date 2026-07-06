@@ -19,6 +19,8 @@ class Upgrade:
     ``Build`` combines multiple ``Upgrade`` objects before they are applied
     to a weapon.
     """
+    name: str | None = None
+    category: str = "upgrade"
     damage_dist: dist = field(default_factory=dist)
     multiplicative_base_damage: float = 0.0
     base_damage: float = 0.0

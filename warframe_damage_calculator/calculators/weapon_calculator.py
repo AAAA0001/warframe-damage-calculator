@@ -76,3 +76,28 @@ class WeaponCalculator[TWeaponState: WeaponState]:
     @cached_property
     def total_dps(self) -> float:
         return self.flat_dps + self.flat_dotps
+    
+    @cached_property
+    def upgrade_contributions(self) -> dict[str, float]:
+        full = self.build
+        total = self.total_dps
+        contributions: dict[str, float] = {}
+        category_counts: dict[str, int] = {}
+        for upgrade in full:
+            self.build = full - upgrade
+            self.recompute()
+            if upgrade.name:
+                key = upgrade.name
+            else:
+                category_counts[upgrade.category] = category_counts.get(upgrade.category, 0) + 1
+                key = f"{upgrade.category}{category_counts[upgrade.category]}"
+            contributions[key] = total - self.total_dps
+        self.build = full
+        self.recompute()
+        return contributions
+    
+    @cached_property
+    def upgrade_contribution_proportions(self) -> dict[str, float]:
+        total = sum(self.upgrade_contributions.values())
+        return {upgrade: contibution / total for upgrade, contibution in self.upgrade_contributions.items()}
+        
