@@ -57,7 +57,7 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
         self.effective.burst_count = self.moded.burst_count
         self.effective.burst_delay = self.moded.burst_delay
         self.effective.charge_time = self.moded.charge_time / self.moded.multiplicative_fire_rate
-        self.effective.reload_speed = self.moded.reload_speed + (self.moded.magazine_capacity / self.moded.recharge_rate if self.effective.is_battery else 0)
+        self.effective.reload_speed = self.moded.reload_speed + (0 if not self.effective.is_battery else float("inf") if self.moded.recharge_rate <= 0 else self.moded.magazine_capacity / self.moded.recharge_rate)
         self.effective.recharge_rate = self.moded.recharge_rate
         self.effective.ammo_efficiency = 1 - (1 - self.moded.ammo_efficiency) / (2 if self.effective.is_beam else 1)
         self.effective.magazine_capacity = self.moded.magazine_capacity
@@ -74,7 +74,10 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
 
     @cached_property
     def average_fire_rate(self) -> float:
-        return self.effective.magazine_capacity / (self.effective.magazine_capacity / self.effective.burst_count * (self.effective.charge_time + (self.effective.burst_count - 1) * self.effective.burst_delay) + (self.effective.magazine_capacity / self.effective.burst_count - (1 - self.effective.ammo_efficiency)) / self.effective.fire_rate + (1 - self.effective.ammo_efficiency) * self.effective.reload_speed)
+        cycle_time = self.effective.magazine_capacity / self.effective.burst_count * (self.effective.charge_time + (self.effective.burst_count - 1) * self.effective.burst_delay) + (self.effective.magazine_capacity / self.effective.burst_count - (1 - self.effective.ammo_efficiency)) / self.effective.fire_rate + (1 - self.effective.ammo_efficiency) * self.effective.reload_speed
+        if cycle_time <= 0:
+            return float("inf")
+        return self.effective.magazine_capacity / cycle_time
 
     @cached_property
     def average_procs_per_shot(self) -> float:
