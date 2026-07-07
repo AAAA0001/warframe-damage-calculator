@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import cached_property
 
 from ..states import WeaponState
-from ..models import Build
+from ..models import Build, Upgrade
 
 
 class WeaponCalculator[TWeaponState: WeaponState]:
@@ -78,26 +78,22 @@ class WeaponCalculator[TWeaponState: WeaponState]:
         return self.flat_dps + self.flat_dotps
     
     @cached_property
-    def upgrade_contributions(self) -> dict[str, float]:
+    def contribution(self, other: Upgrade) -> float:
         full = self.build
         total = self.total_dps
-        contributions: dict[str, float] = {}
-        category_counts: dict[str, int] = {}
-        for upgrade in full:
-            self.build = full - upgrade
-            self.recompute()
-            if upgrade.name:
-                key = upgrade.name
-            else:
-                category_counts[upgrade.category] = category_counts.get(upgrade.category, 0) + 1
-                key = f"{upgrade.category} (slot {category_counts[upgrade.category]})"
-            contributions[key] = total - self.total_dps
+        self.build = full - other
+        self.recompute()
+        contribution = total - self.total_dps
         self.build = full
         self.recompute()
-        return contributions
+        return contribution
     
     @cached_property
-    def upgrade_contribution_proportions(self) -> dict[str, float]:
+    def contributions(self) -> dict[Upgrade, float]:
+        return {upgrade: self.contribution(upgrade) for upgrade in self.build}
+    
+    @cached_property
+    def contribution_proportions(self) -> dict[Upgrade, float]:
         total = sum(self.upgrade_contributions.values()) or 1
         return {upgrade: contibution / total for upgrade, contibution in self.upgrade_contributions.items()}
         
