@@ -56,18 +56,10 @@ pip install -e .
 ``` python
 from warframe_damage_calculator import *
 
-weapon = Primary(
-    damage_dist=dist(slash=120),
-    fire_rate=5,
-    crit_chance=0.30,
-    crit_damage=2.0,
-)
-
-build = Build(
-    Upgrade(base_damage=1.65),
-    Upgrade(multishot=1.20),
-    Upgrade(crit_chance=2.00),
-)
+weapon = load_primary("Corinth Prime")
+mod1 = load_mod("Galvanized Hell", stack=4)
+mod2 = load_mod("Primed Cgilling Grasp", rank=3)
+build = Build(mod1, mod2)
 
 weapon.configure(build)
 
