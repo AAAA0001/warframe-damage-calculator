@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from warframe_damage_calculator import Melee, Primary, Secondary, dist, load_arcane, load_melee, load_mod, load_primary, load_secondary
+from warframe_damage_calculator import Melee, Primary, Secondary, arcane_list, dist, load_arcane, load_melee, load_mod, load_primary, load_secondary, melee_list, mod_list, primary_list, secondary_list
 
 
 class TestDatabaseLoader(unittest.TestCase):
@@ -58,6 +58,14 @@ class TestDatabaseLoader(unittest.TestCase):
         self.assertIsInstance(weapon, Melee)
         self.assertAlmostEqual(weapon.stats.base.attack_speed, 0.916667)
         self.assertEqual(weapon.stats.base.damage_dist, dist(impact=48.84, puncture=17.76, slash=155.4))
+
+    def test_database_lists_return_sorted_keys(self):
+        self.assertIn("serration", mod_list())
+        self.assertIn("primary_merciless", arcane_list())
+        self.assertIn("corinth_prime", primary_list())
+        self.assertIn("kuva_nukor", secondary_list())
+        self.assertIn("paracesis", melee_list())
+        self.assertEqual(mod_list(), sorted(mod_list()))
 
 
 if __name__ == "__main__":

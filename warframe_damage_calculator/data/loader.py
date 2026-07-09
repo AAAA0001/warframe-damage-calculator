@@ -230,10 +230,25 @@ def load_melee(name: str) -> Melee:
     return weapon_class(**_to_weapon_kwargs(record, fields))
 
 
-__all__ = [
-    "load_mod",
-    "load_arcane",
-    "load_primary",
-    "load_secondary",
-    "load_melee",
-]
+def _database_keys(filename: str) -> list[str]:
+    return sorted(_load_database_file(filename))
+
+
+def mod_list() -> list[str]:
+    return _database_keys("mods.json")
+
+
+def arcane_list() -> list[str]:
+    return _database_keys("arcanes.json")
+
+
+def primary_list() -> list[str]:
+    return _database_keys("primaries.json")
+
+
+def secondary_list() -> list[str]:
+    return _database_keys("secondaries.json")
+
+
+def melee_list() -> list[str]:
+    return _database_keys("melees.json")
