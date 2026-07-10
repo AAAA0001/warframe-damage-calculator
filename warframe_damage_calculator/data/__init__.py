@@ -1,5 +1,6 @@
-from .loader import db
+from .loader import WarframeDatabase, arsenal
 
 __all__ = [
-    "db",
+    "WarframeDatabase",
+    "arsenal",
 ]

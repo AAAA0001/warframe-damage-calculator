@@ -1,0 +1,321 @@
+from __future__ import annotations
+
+from copy import deepcopy
+from inspect import Parameter, signature
+from typing import Any
+
+from ..models import Upgrade, Primary, Secondary, Melee, dist
+from ..utils import DAMAGE_TYPES, COMMON_WEAPON_PAYLOAD_FIELDS, RANGED_WEAPON_PAYLOAD_FIELDS, MELEE_WEAPON_PAYLOAD_FIELDS, WEAPON_DIST_FIELDS
+from .normalization import normalized_slug
+
+
+class DatabaseConstructionMixin:
+    def _weapon_model_class(self, section: str) -> type:
+        if section == "primaries":
+            return Primary
+        if section == "secondaries":
+            return Secondary
+        if section == "melees":
+            return Melee
+        raise ValueError(f"Unknown weapon section: {section!r}")
+
+    def _make_dist_object(self, values: dict[str, Any] | None) -> dist:
+        """
+        Convert a JSON damage/proc dictionary into your dist model.
+
+        The normal expected constructor is:
+            dist(impact=..., slash=..., heat=...)
+
+        The fallback branches make this tolerant if your dist class changes later.
+        """
+        clean_values: dict[str, Any] = {}
+
+        for key, value in (values or {}).items():
+            damage_key = normalized_slug(key)
+            if damage_key in DAMAGE_TYPES and value not in (None, 0, 0.0):
+                clean_values[damage_key] = value
+
+        try:
+            return dist(**clean_values)
+        except TypeError:
+            pass
+
+        try:
+            return dist(clean_values)
+        except TypeError:
+            pass
+
+        obj = dist()
+        for key, value in clean_values.items():
+            try:
+                setattr(obj, key, value)
+            except Exception:
+                # If dist is immutable or does not expose that field, ignore here;
+                # the constructor error above would have caught the normal case.
+                pass
+        return obj
+
+    def _weapon_payload_fields(self, section: str) -> set[str]:
+        if section in {"primaries", "secondaries"}:
+            return RANGED_WEAPON_PAYLOAD_FIELDS
+        if section == "melees":
+            return MELEE_WEAPON_PAYLOAD_FIELDS
+        return COMMON_WEAPON_PAYLOAD_FIELDS
+
+    def _prepare_weapon_payload(self, section: str, name: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Convert and filter weapon database data before model construction.
+
+        Raw database entries contain fields used for filtering or UI display.
+        Model constructors should only receive calculator/state fields. This is
+        especially important for melees, because fields such as ranged trigger
+        metadata should never be forwarded into ``MeleeState``.
+        """
+        allowed_fields = self._weapon_payload_fields(section)
+        source = deepcopy(data)
+        source.setdefault("name", name)
+
+        payload = {
+            field_name: value
+            for field_name, value in source.items()
+            if field_name in allowed_fields
+        }
+
+        for field_name in WEAPON_DIST_FIELDS:
+            if field_name in allowed_fields:
+                payload[field_name] = self._make_dist_object(payload.get(field_name) or {})
+
+        return payload
+
+    def _resolve_stack_count(self, data: dict[str, Any], stacks: int | None) -> int:
+        """Use max_stacks by default, otherwise use the explicit stack count."""
+        if stacks is None:
+            stacks = data.get("max_stacks") or 0
+
+        try:
+            stack_count = int(stacks)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"stacks must be an int or None, got {stacks!r}") from exc
+
+        if stack_count < 0:
+            raise ValueError("stacks must be >= 0")
+
+        return stack_count
+
+    def _scale_stat_bucket(self, bucket: dict[str, Any], multiplier: int | float) -> dict[str, Any]:
+        """Scale numeric stackable stats while leaving bool/non-numeric values safe."""
+        scaled: dict[str, Any] = {}
+
+        for key, value in (bucket or {}).items():
+            if isinstance(value, bool):
+                scaled[key] = value
+            elif isinstance(value, int | float):
+                scaled[key] = value * multiplier
+            else:
+                scaled[key] = value
+
+        return scaled
+
+    def _merge_stat_buckets(self, *buckets: dict[str, Any]) -> dict[str, Any]:
+        """Merge stat dictionaries, summing numeric duplicates."""
+        merged: dict[str, Any] = {}
+
+        for bucket in buckets:
+            for key, value in (bucket or {}).items():
+                if isinstance(value, bool):
+                    # Locks are effectively on/off flags.
+                    merged[key] = bool(merged.get(key, False)) or value
+                elif isinstance(value, int | float) and isinstance(merged.get(key), int | float) and not isinstance(merged.get(key), bool):
+                    merged[key] += value
+                else:
+                    merged[key] = value
+
+        return merged
+
+    def _effective_upgrade_bucket(
+        self,
+        data: dict[str, Any],
+        *,
+        stacks: int | None,
+        condition: bool,
+    ) -> dict[str, Any]:
+        """
+        Return the effective stat bucket used to build an Upgrade object.
+
+        stats are always included.
+        conditionals are included when condition=True.
+        stackables are included as stackables * stacks, with stacks defaulting
+        to max_stacks.
+        """
+        stack_count = self._resolve_stack_count(data, stacks)
+
+        buckets: list[dict[str, Any]] = [
+            deepcopy(data.get("stats") or {}),
+        ]
+
+        if condition:
+            buckets.append(deepcopy(data.get("conditionals") or {}))
+
+        if stack_count:
+            buckets.append(self._scale_stat_bucket(data.get("stackables") or {}, stack_count))
+
+        return self._merge_stat_buckets(*buckets)
+
+    def _prepare_upgrade_payload_from_bucket(
+        self,
+        bucket_data: dict[str, Any],
+        *,
+        section: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Convert one flat stat bucket into an Upgrade constructor payload.
+
+        Elemental/physical keys are moved into damage_dist.
+        Other calculator keys are passed normally.
+        """
+        source = deepcopy(bucket_data or {})
+        payload: dict[str, Any] = {}
+        damage_values: dict[str, Any] = {}
+
+        for key, value in source.items():
+            stat_key = normalized_slug(key)
+
+            if stat_key in DAMAGE_TYPES:
+                damage_values[stat_key] = value
+            else:
+                payload[stat_key] = value
+
+        payload["damage_dist"] = self._make_dist_object(damage_values)
+
+        if section == "mods":
+            payload.setdefault("category", "mod")
+        elif section == "arcanes":
+            payload.setdefault("category", "arcane")
+
+        return payload
+
+    def _prepare_upgrade_payload(
+        self,
+        data: dict[str, Any],
+        *,
+        section: str | None = None,
+        stacks: int | None = None,
+        condition: bool = True,
+    ) -> dict[str, Any]:
+        """Convert an upgrade database entry into an effective Upgrade payload."""
+        bucket = self._effective_upgrade_bucket(data, stacks=stacks, condition=condition)
+        return self._prepare_upgrade_payload_from_bucket(bucket, section=section)
+
+    def _make_weapon_object(self, section: str, name: str, data: dict[str, Any]) -> Primary | Secondary | Melee:
+        payload = self._prepare_weapon_payload(section, name, data)
+        return self._construct_object(self._weapon_model_class(section), name, payload)
+
+    def _make_upgrade_object(
+        self,
+        name: str,
+        data: dict[str, Any],
+        *,
+        section: str | None = None,
+        stacks: int | None = None,
+        condition: bool = True,
+    ) -> Upgrade:
+        payload = self._prepare_upgrade_payload(data, section=section, stacks=stacks, condition=condition)
+        return self._construct_object(Upgrade, name, payload)
+
+    def _make_upgrade_bucket_object(
+        self,
+        name: str,
+        data: dict[str, Any],
+        *,
+        section: str | None = None,
+        bucket: str = "stats",
+        stacks: int | None = None,
+    ) -> Upgrade:
+        """
+        Build only one raw bucket as an Upgrade object.
+
+        For bucket="stackables", stacks defaults to 1 because this method is
+        meant to expose the per-stack value. Pass stacks=n to scale it.
+        """
+        raw_bucket = deepcopy(data.get(bucket) or {})
+
+        if bucket == "stackables":
+            scale = 1 if stacks is None else self._resolve_stack_count(data, stacks)
+            raw_bucket = self._scale_stat_bucket(raw_bucket, scale)
+
+        payload = self._prepare_upgrade_payload_from_bucket(raw_bucket, section=section)
+        return self._construct_object(Upgrade, name, payload)
+
+    def _construct_object(self, cls: type, name: str, data: dict[str, Any]) -> Any:
+        """
+        Construct a model object without hard-coding the exact constructor style.
+
+        It supports common patterns:
+            Class(name="Serration", **data)
+            Class(**data)
+            Class("Serration", **data)
+            Class(data)
+            Class(name="Serration", **filtered_data)
+
+        This makes the loader work even if your model dataclasses/classes differ
+        slightly in whether they store the name field.
+        """
+        payload = deepcopy(data)
+
+        attempts = []
+
+        if "name" in payload:
+            # If the payload already has a name field, do not also pass
+            # name=name or Python will raise "multiple values for argument".
+            attempts.extend([
+                lambda: cls(**payload),
+                lambda: cls(payload),
+                lambda: cls(name, payload),
+            ])
+        else:
+            attempts.extend([
+                lambda: cls(name=name, **payload),
+                lambda: cls(**payload),
+                lambda: cls(name, **payload),
+                lambda: cls(payload),
+                lambda: cls(name, payload),
+            ])
+
+        for attempt in attempts:
+            try:
+                return attempt()
+            except TypeError:
+                pass
+
+        # Last attempt: inspect the constructor and pass only accepted kwargs.
+        try:
+            sig = signature(cls)
+            params = sig.parameters
+            accepts_var_kwargs = any(p.kind == Parameter.VAR_KEYWORD for p in params.values())
+
+            if accepts_var_kwargs:
+                if "name" not in payload:
+                    payload["name"] = name
+                return cls(**payload)
+
+            filtered = {
+                key: value
+                for key, value in payload.items()
+                if key in params
+            }
+
+            if "name" in params:
+                filtered.setdefault("name", name)
+
+            return cls(**filtered)
+
+        except Exception as exc:
+            raise TypeError(
+                f"Could not construct {cls.__name__} object for {name!r}. "
+                f"Check that the JSON keys match the {cls.__name__} constructor."
+            ) from exc
+
+    # ----------------------------
+    # Direct name lookup: objects
+    # ----------------------------
+
+
