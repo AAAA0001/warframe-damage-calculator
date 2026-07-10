@@ -892,7 +892,7 @@
             "condition": null,
             "stats": {
                 "crit_chance": 2.0,
-                "fire_rate": -0.4
+                "fire_rate": -0.2
             },
             "conditionals": {},
             "stackables": {},
@@ -3206,7 +3206,7 @@
             "max_stacks": null,
             "condition": null,
             "stats": {
-                "fire_rate": 1.1
+                "fire_rate": 0.55
             },
             "conditionals": {},
             "stackables": {},
@@ -3913,7 +3913,7 @@
             "max_stacks": null,
             "condition": null,
             "stats": {
-                "fire_rate": 0.6
+                "fire_rate": 0.3
             },
             "conditionals": {},
             "stackables": {},
@@ -3983,7 +3983,7 @@
             "max_stacks": null,
             "condition": null,
             "stats": {
-                "fire_rate": 1.2
+                "fire_rate": 0.6
             },
             "conditionals": {},
             "stackables": {},
@@ -4449,7 +4449,7 @@
             "max_stacks": null,
             "condition": null,
             "stats": {
-                "fire_rate": 0.9,
+                "fire_rate": 0.45,
                 "vigilante_bonus": 0.05
             },
             "conditionals": {},
@@ -4508,7 +4508,7 @@
             "condition": null,
             "stats": {
                 "base_damage": -0.15,
-                "fire_rate": 1.8
+                "fire_rate": 0.9
             },
             "conditionals": {},
             "stackables": {},
@@ -4525,7 +4525,7 @@
             "max_stacks": null,
             "condition": null,
             "stats": {
-                "fire_rate": -0.72
+                "fire_rate": -0.36
             },
             "conditionals": {},
             "stackables": {},
