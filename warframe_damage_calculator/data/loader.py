@@ -71,6 +71,36 @@ WEAPON_DIST_FIELDS = (
     "explosion_forced_procs",
 )
 
+COMMON_WEAPON_PAYLOAD_FIELDS = {
+    "name",
+    "type",
+    "damage_dist",
+    "forced_procs",
+    "crit_chance",
+    "crit_damage",
+    "status_chance",
+}
+
+RANGED_WEAPON_PAYLOAD_FIELDS = COMMON_WEAPON_PAYLOAD_FIELDS | {
+    "explosion_damage_dist",
+    "explosion_forced_procs",
+    "multishot",
+    "fire_rate",
+    "reload_speed",
+    "magazine_capacity",
+    "weakpoint_damage",
+    "recharge_rate",
+    "charge_time",
+    "burst_count",
+    "burst_delay",
+    "is_beam",
+    "is_battery",
+}
+
+MELEE_WEAPON_PAYLOAD_FIELDS = COMMON_WEAPON_PAYLOAD_FIELDS | {
+    "attack_speed",
+}
+
 PRIMARY_TYPES = {"primary", "rifle", "bow", "shotgun", "sniper"}
 SECONDARY_TYPES = {"secondary", "pistol"}
 MELEE_TYPES = {"melee"}
@@ -196,17 +226,34 @@ class WarframeDatabase:
                 pass
         return obj
 
-    def _prepare_weapon_payload(self, name: str, data: dict[str, Any]) -> dict[str, Any]:
-        """Convert weapon dist dictionaries into dist objects before model construction."""
-        payload = deepcopy(data)
+    def _weapon_payload_fields(self, section: str) -> set[str]:
+        if section in {"primaries", "secondaries"}:
+            return RANGED_WEAPON_PAYLOAD_FIELDS
+        if section == "melees":
+            return MELEE_WEAPON_PAYLOAD_FIELDS
+        return COMMON_WEAPON_PAYLOAD_FIELDS
 
-        # Weapon JSON entries are indexed by name, but the model classes may also
-        # have a real name attribute. Add it here so Primary/Secondary/Melee
-        # constructors receive it.
-        payload.setdefault("name", name)
+    def _prepare_weapon_payload(self, section: str, name: str, data: dict[str, Any]) -> dict[str, Any]:
+        """Convert and filter weapon database data before model construction.
+
+        Raw database entries contain fields used for filtering or UI display.
+        Model constructors should only receive calculator/state fields. This is
+        especially important for melees, because fields such as ranged trigger
+        metadata should never be forwarded into ``MeleeState``.
+        """
+        allowed_fields = self._weapon_payload_fields(section)
+        source = deepcopy(data)
+        source.setdefault("name", name)
+
+        payload = {
+            field_name: value
+            for field_name, value in source.items()
+            if field_name in allowed_fields
+        }
 
         for field_name in WEAPON_DIST_FIELDS:
-            payload[field_name] = self._make_dist_object(payload.get(field_name) or {})
+            if field_name in allowed_fields:
+                payload[field_name] = self._make_dist_object(payload.get(field_name) or {})
 
         return payload
 
@@ -330,7 +377,7 @@ class WarframeDatabase:
         return self._prepare_upgrade_payload_from_bucket(bucket, section=section)
 
     def _make_weapon_object(self, section: str, name: str, data: dict[str, Any]) -> Primary | Secondary | Melee:
-        payload = self._prepare_weapon_payload(name, data)
+        payload = self._prepare_weapon_payload(section, name, data)
         return self._construct_object(self._weapon_model_class(section), name, payload)
 
     def _make_upgrade_object(
