@@ -1,301 +1,216 @@
 from __future__ import annotations
 
-from copy import deepcopy
+from dataclasses import fields, replace
 from typing import Any, Iterable
 
-from ..models import Upgrade, Primary, Secondary, Melee
-from .normalization import normalized_key
-from .records import MatchResult
+from ..models import Melee, Primary, Secondary, Upgrade, dist
+from .normalization import as_list, normalized_key, normalized_slug
+
+
+Weapon = Primary | Secondary | Melee
+ArsenalItem = Weapon | Upgrade
+ArsenalValue = ArsenalItem | str | float | int | bool | dist
 
 
 class DatabaseAccessMixin:
-    def get_weapon(self, name: str, *, include_section: bool = False) -> Primary | Secondary | Melee | MatchResult | None:
-        found = self._weapon_index.get(normalized_key(name))
-        if not found:
+    def _find_weapon(self, name: str) -> tuple[str, str] | None:
+        return self._weapon_index.get(normalized_key(name))
+
+    def _find_upgrade(self, name: str) -> tuple[str, str] | None:
+        return self._upgrade_index.get(normalized_key(name))
+
+    def _normalized_filter(self, value: str | None) -> str | None:
+        if value is None:
+            return None
+
+        key = normalized_slug(value)
+        aliases = {"weapons": "weapon", "primaries": "primary", "secondaries": "secondary", "pistol": "secondary", "pistols": "secondary", "melees": "melee", "upgrades": "upgrade", "mods": "mod", "arcanes": "arcane"}
+        return aliases.get(key, key)
+
+    def _type_filter_set(self, value: str | None) -> set[str]:
+        if value is None:
+            return set()
+        return self._expanded_type_filter(value)
+
+    def _value_matches_requested(self, value: Any, requested: set[str]) -> bool:
+        return bool({normalized_slug(item) for item in as_list(value)} & requested)
+
+    def _requirements_match_type(self, requirements: dict[str, Any], requested: set[str]) -> bool:
+        for key, value in (requirements or {}).items():
+            if normalized_slug(key) in requested:
+                return True
+            if self._value_matches_requested(value, requested):
+                return True
+        return False
+
+    def _weapon_matches_filter(self, section: str, data: dict[str, Any], type: str | None) -> bool:
+        type = self._normalized_filter(type)
+        requested = self._type_filter_set(type)
+
+        if type is None or type == "weapon":
+            return True
+        if type in {"mod", "arcane", "upgrade"}:
+            return False
+
+        if type == "primary":
+            return section == "primaries"
+        if type == "secondary":
+            return section == "secondaries"
+        if type == "melee":
+            return section == "melees"
+
+        return self._weapon_matches_type(section, data, requested) or self._value_matches_requested(data.get("type"), requested) or self._value_matches_requested(data.get("trigger"), requested)
+
+    def _upgrade_matches_filter(self, section: str, data: dict[str, Any], type: str | None) -> bool:
+        type = self._normalized_filter(type)
+        requested = self._type_filter_set(type)
+
+        if type is None or type == "upgrade":
+            return True
+        if type == "mod":
+            return section == "mods"
+        if type == "arcane":
+            return section == "arcanes"
+        if type == "weapon":
+            return False
+
+        return self._upgrade_matches_type(data, requested) or self._requirements_match_type(data.get("requirements") or {}, requested)
+
+    def _rank_multiplier(self, data: dict[str, Any], rank: int | None) -> float:
+        if rank is None:
+            return 1.0
+
+        max_rank = data.get("max_rank")
+        if max_rank is None:
+            max_rank = data.get("rank")
+
+        try:
+            max_rank = int(max_rank)
+        except (TypeError, ValueError):
+            return 1.0
+
+        if max_rank <= 0:
+            return 1.0
+
+        rank = max(0, min(int(rank), max_rank))
+        return (rank + 1) / (max_rank + 1)
+
+    def _scale_upgrade_for_rank(self, upgrade: Upgrade, data: dict[str, Any], rank: int | None) -> Upgrade:
+        multiplier = self._rank_multiplier(data, rank)
+        if multiplier == 1:
+            return upgrade
+
+        scaled = replace(upgrade, damage_dist=upgrade.damage_dist * multiplier)
+
+        for field in fields(Upgrade):
+            if field.name in {"name", "category", "damage_dist"}:
+                continue
+
+            value = getattr(scaled, field.name)
+
+            if isinstance(value, bool):
+                continue
+            if isinstance(value, int):
+                setattr(scaled, field.name, round(value * multiplier))
+            elif isinstance(value, float):
+                setattr(scaled, field.name, value * multiplier)
+
+        return scaled
+
+    def _make_matching_weapon(self, name: str, *, type: str | None) -> Weapon | None:
+        found = self._find_weapon(name)
+        if found is None:
             return None
 
         section, real_name = found
-        obj = self._make_weapon_object(section, real_name, self.weapons[section][real_name])
+        data = self.weapons[section][real_name]
 
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=obj)
-        return obj
+        if not self._weapon_matches_filter(section, data, type):
+            return None
 
-    def get_upgrade(self, name: str, *, stacks: int | None = None, condition: bool = True, include_section: bool = False) -> Upgrade | MatchResult | None:
-        found = self._upgrade_index.get(normalized_key(name))
-        if not found:
+        return self._make_weapon_object(section, real_name, data)
+
+    def _make_matching_upgrade(self, name: str, *, type: str | None, rank: int | None, stacks: int | None, condition: bool) -> Upgrade | None:
+        found = self._find_upgrade(name)
+        if found is None:
             return None
 
         section, real_name = found
-        obj = self._make_upgrade_object(real_name, self.upgrades[section][real_name], section=section, stacks=stacks, condition=condition)
+        data = self.upgrades[section][real_name]
 
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=obj)
-        return obj
-
-    def get_conditional_upgrade(self, name: str, *, include_section: bool = False) -> Upgrade | MatchResult | None:
-        found = self._upgrade_index.get(normalized_key(name))
-        if not found:
+        if not self._upgrade_matches_filter(section, data, type):
             return None
 
-        section, real_name = found
-        obj = self._make_upgrade_bucket_object(real_name, self.upgrades[section][real_name], section=section, bucket="conditionals")
-        
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=obj)
-        return obj
+        upgrade = self._make_upgrade_object(real_name, data, section=section, stacks=stacks, condition=condition)
+        return self._scale_upgrade_for_rank(upgrade, data, rank)
 
-    def get_stackable_upgrade(self, name: str, *, stacks: int | None = None, include_section: bool = False) -> Upgrade | MatchResult | None:
-        """Return only the stackables bucket as an Upgrade object; default is per-stack value."""
-        found = self._upgrade_index.get(normalized_key(name))
-        if not found:
-            return None
-
-        section, real_name = found
-        obj = self._make_upgrade_bucket_object(real_name, self.upgrades[section][real_name], section=section, bucket="stackables", stacks=stacks)
-
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=obj)
-        return obj
-
-    def get_raw_weapon(self, name: str, *, include_section: bool = False) -> dict[str, Any] | MatchResult | None:
-        found = self._weapon_index.get(normalized_key(name))
-        if not found:
-            return None
-
-        section, real_name = found
-        data = deepcopy(self.weapons[section][real_name])
-
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=data)
-        return data
-
-    def get_raw_upgrade(self, name: str, *, include_section: bool = False) -> dict[str, Any] | MatchResult | None:
-        found = self._upgrade_index.get(normalized_key(name))
-        if not found:
-            return None
-
-        section, real_name = found
-        data = deepcopy(self.upgrades[section][real_name])
-
-        if include_section:
-            return MatchResult(section=section, name=real_name, data=data)
-        return data
-
-    def filter_weapons(self, weapon_type: str | Iterable[str] | None = None, *, include_sections: bool = False) -> dict[str, Primary | Secondary | Melee] | dict[str, dict[str, Primary | Secondary | Melee]]:
-        requested = self._expanded_type_filter(weapon_type)
-        result: dict[str, Any] = {}
-
+    def _iter_matching_items(self, *, type: str | None, rank: int | None, stacks: int | None, condition: bool) -> Iterable[tuple[str, ArsenalItem]]:
         for section, entries in self.weapons.items():
-            for name, weapon in entries.items():
-                if self._weapon_matches_type(section, weapon, requested):
-                    obj = self._make_weapon_object(section, name, weapon)
-                    if include_sections:
-                        result.setdefault(section, {})[name] = obj
-                    else:
-                        result[name] = obj
-
-        return result
-
-    def weapon_names(self, weapon_type: str | Iterable[str] | None = None) -> list[str]:
-        return sorted(self.filter_raw_weapons(weapon_type).keys(), key=normalized_key)
-
-    def filter_raw_weapons(self, weapon_type: str | Iterable[str] | None = None, *, include_sections: bool = False) -> dict[str, Any] | dict[str, dict[str, Any]]:
-        requested = self._expanded_type_filter(weapon_type)
-        result: dict[str, Any] = {}
-
-        for section, entries in self.weapons.items():
-            for name, weapon in entries.items():
-                if self._weapon_matches_type(section, weapon, requested):
-                    if include_sections:
-                        result.setdefault(section, {})[name] = deepcopy(weapon)
-                    else:
-                        result[name] = deepcopy(weapon)
-
-        return result
-
-    def filter_upgrades(self, weapon_type: str | Iterable[str] | None = None, *, stacks: int | None = None, condition: bool = True, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Upgrade] | dict[str, dict[str, Upgrade]]:
-        requested = self._expanded_type_filter(weapon_type)
-
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
-
-        result: dict[str, Any] = {}
+            for name, data in entries.items():
+                if self._weapon_matches_filter(section, data, type):
+                    yield name, self._make_weapon_object(section, name, data)
 
         for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
+            for name, data in entries.items():
+                if self._upgrade_matches_filter(section, data, type):
+                    upgrade = self._make_upgrade_object(name, data, section=section, stacks=stacks, condition=condition)
+                    yield name, self._scale_upgrade_for_rank(upgrade, data, rank)
 
-            for name, upgrade in entries.items():
-                if self._upgrade_matches_type(upgrade, requested):
-                    obj = self._make_upgrade_object(name, upgrade, section=section, stacks=stacks, condition=condition)
-                    if include_sections:
-                        result.setdefault(section, {})[name] = obj
-                    else:
-                        result[name] = obj
+    def _extract_attribute(self, item: ArsenalItem, attribute: str) -> ArsenalValue | None:
+        attr = normalized_slug(attribute)
 
-        return result
+        if attr == "name":
+            if isinstance(item, Upgrade):
+                return item.name
+            return getattr(item.stats.base, "name", None)
 
-    def filter_upgrades_for_weapon(self, weapon_name: str, *, stacks: int | None = None, condition: bool = True, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Upgrade] | dict[str, dict[str, Upgrade]]:
-        found = self.get_raw_weapon(weapon_name, include_section=True)
-        if found is None:
-            return {}
+        if hasattr(item, attr):
+            return getattr(item, attr)
 
-        assert isinstance(found, MatchResult)
-        weapon = found.data
-        real_weapon_name = found.name
+        if hasattr(item, "stats"):
+            for source_name in ("base", "effective"):
+                source = getattr(item.stats, source_name, None)
+                if source is not None and hasattr(source, attr):
+                    return getattr(source, attr)
 
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
+            if hasattr(item.stats, attr):
+                return getattr(item.stats, attr)
 
-        result: dict[str, Any] = {}
+        return None
 
-        for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
+    def _apply_attribute(self, item: ArsenalItem, attribute: str | None) -> ArsenalItem | ArsenalValue | None:
+        if attribute is None:
+            return item
+        return self._extract_attribute(item, attribute)
 
-            for upgrade_name, upgrade in entries.items():
-                if self._upgrade_matches_weapon(upgrade, real_weapon_name, weapon, found.section):
-                    obj = self._make_upgrade_object(
-                        upgrade_name,
-                        upgrade,
-                        section=section,
-                        stacks=stacks,
-                        condition=condition,
-                    )
-                    if include_sections:
-                        result.setdefault(section, {})[upgrade_name] = obj
-                    else:
-                        result[upgrade_name] = obj
+    def get(self, name: str | None = None, *, type: str | None = None, rank: int | None = None, stacks: int | None = None, condition: bool | None = None, atribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
+        condition_enabled = True if condition is None else condition
 
-        return result
+        if name is not None:
+            matches: list[ArsenalItem] = []
 
-    def filter_conditional_upgrades_for_weapon(self, weapon_name: str, *, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Upgrade] | dict[str, dict[str, Upgrade]]:
-        found = self.get_raw_weapon(weapon_name, include_section=True)
-        if found is None:
-            return {}
+            weapon = self._make_matching_weapon(name, type=type)
+            if weapon is not None:
+                matches.append(weapon)
 
-        assert isinstance(found, MatchResult)
-        weapon = found.data
-        real_weapon_name = found.name
+            upgrade = self._make_matching_upgrade(name, type=type, rank=rank, stacks=stacks, condition=condition_enabled)
+            if upgrade is not None:
+                matches.append(upgrade)
 
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
+            if not matches:
+                return None
 
-        result: dict[str, Any] = {}
+            if len(matches) > 1:
+                raise ValueError(f"Ambiguous arsenal item name {name!r}. Pass a more specific type, such as type='primary', type='mod', or type='arcane'.")
 
-        for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
+            return self._apply_attribute(matches[0], atribute)
 
-            for upgrade_name, upgrade in entries.items():
-                if self._upgrade_matches_weapon(upgrade, real_weapon_name, weapon, found.section):
-                    obj = self._make_upgrade_bucket_object(upgrade_name, upgrade, section=section, bucket="conditionals")
-                    if include_sections:
-                        result.setdefault(section, {})[upgrade_name] = obj
-                    else:
-                        result[upgrade_name] = obj
+        items = dict(sorted(self._iter_matching_items(type=type, rank=rank, stacks=stacks, condition=condition_enabled), key=lambda item: normalized_key(item[0])))
 
-        return result
+        if atribute is None:
+            return items
 
-    def filter_stackable_upgrades_for_weapon(self, weapon_name: str, *, stacks: int | None = None, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Upgrade] | dict[str, dict[str, Upgrade]]:
-        found = self.get_raw_weapon(weapon_name, include_section=True)
-        if found is None:
-            return {}
+        if normalized_slug(atribute) == "name":
+            return list(items.keys())
 
-        assert isinstance(found, MatchResult)
-        weapon = found.data
-        real_weapon_name = found.name
-
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
-
-        result: dict[str, Any] = {}
-
-        for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
-
-            for upgrade_name, upgrade in entries.items():
-                if self._upgrade_matches_weapon(upgrade, real_weapon_name, weapon, found.section):
-                    obj = self._make_upgrade_bucket_object(upgrade_name, upgrade, section=section, bucket="stackables", stacks=stacks)
-                    if include_sections:
-                        result.setdefault(section, {})[upgrade_name] = obj
-                    else:
-                        result[upgrade_name] = obj
-
-        return result
-
-    def upgrade_names(self, weapon_type: str | Iterable[str] | None = None) -> list[str]:
-        return sorted(self.filter_raw_upgrades(weapon_type).keys(), key=normalized_key)
-
-    def upgrade_names_for_weapon(self, weapon_name: str) -> list[str]:
-        return sorted(self.filter_raw_upgrades_for_weapon(weapon_name).keys(), key=normalized_key)
-
-    def filter_raw_upgrades(self, weapon_type: str | Iterable[str] | None = None, *, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Any] | dict[str, dict[str, Any]]:
-        requested = self._expanded_type_filter(weapon_type)
-
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
-
-        result: dict[str, Any] = {}
-
-        for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
-
-            for name, upgrade in entries.items():
-                if self._upgrade_matches_type(upgrade, requested):
-                    if include_sections:
-                        result.setdefault(section, {})[name] = deepcopy(upgrade)
-                    else:
-                        result[name] = deepcopy(upgrade)
-
-        return result
-
-    def filter_raw_upgrades_for_weapon(self, weapon_name: str, *, include_mods: bool = True, include_arcanes: bool = True, include_sections: bool = False) -> dict[str, Any] | dict[str, dict[str, Any]]:
-        found = self.get_raw_weapon(weapon_name, include_section=True)
-        if found is None:
-            return {}
-
-        assert isinstance(found, MatchResult)
-        weapon = found.data
-        real_weapon_name = found.name
-
-        allowed_sections = set()
-        if include_mods:
-            allowed_sections.add("mods")
-        if include_arcanes:
-            allowed_sections.add("arcanes")
-
-        result: dict[str, Any] = {}
-
-        for section, entries in self.upgrades.items():
-            if section not in allowed_sections:
-                continue
-
-            for upgrade_name, upgrade in entries.items():
-                if self._upgrade_matches_weapon(upgrade, real_weapon_name, weapon, found.section):
-                    if include_sections:
-                        result.setdefault(section, {})[upgrade_name] = deepcopy(upgrade)
-                    else:
-                        result[upgrade_name] = deepcopy(upgrade)
-
-        return result
-
-
+        return {item_name: self._extract_attribute(item, atribute) for item_name, item in items.items()}

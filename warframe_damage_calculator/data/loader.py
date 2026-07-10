@@ -27,13 +27,13 @@ class WarframeDatabase(DatabaseAccessMixin, DatabaseConstructionMixin, DatabaseM
                 self._upgrade_index[normalized_key(name)] = (section, name)
 
     @classmethod
-    def from_files(cls, weapons_path: str | Path = DEFAULT_WEAPONS_PATH, upgrades_path: str | Path = DEFAULT_UPGRADES_PATH) -> "WarframeDatabase":
+    def _from_files(cls, weapons_path: str | Path = DEFAULT_WEAPONS_PATH, upgrades_path: str | Path = DEFAULT_UPGRADES_PATH) -> "WarframeDatabase":
         return cls(load_json(weapons_path), load_json(upgrades_path))
 
     @classmethod
-    def from_folder(cls, folder: str | Path) -> "WarframeDatabase":
+    def _from_folder(cls, folder: str | Path) -> "WarframeDatabase":
         folder = Path(folder)
-        return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
+        return cls._from_files(folder / "weapons.json", folder / "upgrades.json")
 
 
-arsenal = WarframeDatabase.from_files(DEFAULT_WEAPONS_PATH, DEFAULT_UPGRADES_PATH)
+arsenal = WarframeDatabase._from_files(DEFAULT_WEAPONS_PATH, DEFAULT_UPGRADES_PATH)
