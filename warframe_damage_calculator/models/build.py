@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import MISSING, dataclass, fields
 from typing import Iterator
 
