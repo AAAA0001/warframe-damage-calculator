@@ -185,7 +185,6 @@ class DatabaseConstructionMixin:
             "requirements": deepcopy(data.get("requirements") or {}),
             "max_rank": data.get("max_rank"),
             "max_stacks": data.get("max_stacks"),
-            "conditions": deepcopy(data.get("conditions") or {}),
             "is_exilus": bool(data.get("is_exilus", False)),
         }
 

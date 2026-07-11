@@ -9,7 +9,7 @@ def main():
     mod4 = arsenal.get("Hunter Munitions")
     mod5 = arsenal.get("Primed Chilling Grasp")
     mod6 = arsenal.get("Primed Ravage")
-    mod7 = arsenal.get("Critical Deceleration")
+    mod7 = arsenal.get("Critical Delay", condition=True)
     mod8 = arsenal.get("Toxic Barrage")
     mod9 = arsenal.get("Vigilante Supplies")
     arcane = arsenal.get("Primary Merciless")
@@ -17,6 +17,7 @@ def main():
     build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, arcane, buffs)
     weapon.configure(build)
 
+    print(mod7)
     print(weapon.format.upgrades())
 
 if __name__ == "__main__":
