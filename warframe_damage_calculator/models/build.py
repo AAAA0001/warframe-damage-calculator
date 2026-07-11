@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import MISSING, dataclass, fields
 from typing import Iterator
 
-from ..utils import UPGRADE_METADATA_FILEDS
+from ..utils import UPGRADE_METADATA_FIELDS
 from .dist import dist
 from .upgrade import Upgrade
 
@@ -22,7 +22,7 @@ class Build(Upgrade):
                 default_value = stat.default
             values = [getattr(upgrade, stat.name) for upgrade in upgrades]
 
-            if stat.name in UPGRADE_METADATA_FILEDS:
+            if stat.name in UPGRADE_METADATA_FIELDS:
                 setattr(self, stat.name, None)
                 continue
 
