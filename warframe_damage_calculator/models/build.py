@@ -10,7 +10,7 @@ from .upgrade import Upgrade
 
 @dataclass(init=False)
 class Build(Upgrade):
-    def __init__(self, *upgrades: Upgrade, weapon_type: str) -> None:
+    def __init__(self, *upgrades: Upgrade) -> None:
         if any(not isinstance(upgrade, Upgrade) for upgrade in upgrades):
             raise TypeError
         self.upgrades = list(upgrades)

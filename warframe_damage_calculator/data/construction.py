@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from inspect import Parameter, signature
 from typing import Any
 
 from ..models import Upgrade, Primary, Secondary, Melee, dist
@@ -186,7 +185,6 @@ class DatabaseConstructionMixin:
             "requirements": deepcopy(data.get("requirements") or {}),
             "max_rank": data.get("max_rank"),
             "max_stacks": data.get("max_stacks"),
-            "condition": data.get("condition"),
             "conditions": deepcopy(data.get("conditions") or {}),
             "is_exilus": bool(data.get("is_exilus", False)),
         }
@@ -218,55 +216,12 @@ class DatabaseConstructionMixin:
 
     def _construct_object(self, cls: type, name: str, data: dict[str, Any]) -> Any:
         payload = deepcopy(data)
-
-        attempts = []
-
-        if "name" in payload:
-            attempts.extend([
-                lambda: cls(**payload),
-                lambda: cls(payload),
-                lambda: cls(name, payload),
-            ])
-        else:
-            attempts.extend([
-                lambda: cls(name=name, **payload),
-                lambda: cls(**payload),
-                lambda: cls(name, **payload),
-                lambda: cls(payload),
-                lambda: cls(name, payload),
-            ])
-
-        for attempt in attempts:
-            try:
-                return attempt()
-            except TypeError:
-                pass
+        payload.setdefault("name", name)
 
         try:
-            sig = signature(cls)
-            params = sig.parameters
-            accepts_var_kwargs = any(p.kind == Parameter.VAR_KEYWORD for p in params.values())
-
-            if accepts_var_kwargs:
-                if "name" not in payload:
-                    payload["name"] = name
-                return cls(**payload)
-
-            filtered = {
-                key: value
-                for key, value in payload.items()
-                if key in params
-            }
-
-            if "name" in params:
-                filtered.setdefault("name", name)
-
-            return cls(**filtered)
-
-        except Exception as exc:
+            return cls(**payload)
+        except TypeError as exc:
             raise TypeError(
                 f"Could not construct {cls.__name__} object for {name!r}. "
                 f"Check that the JSON keys match the {cls.__name__} constructor."
             ) from exc
-
-
