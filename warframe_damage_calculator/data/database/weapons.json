@@ -5,6 +5,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.06,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0
             },
@@ -34,6 +35,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.18,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.0
             },
@@ -63,6 +65,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.33,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 15.0,
                 "puncture": 23.0,
@@ -94,6 +97,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 60.0,
@@ -122,6 +126,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 40.0,
                 "puncture": 120.0,
@@ -151,6 +156,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 44.64,
                 "slash": 17.36
@@ -176,6 +182,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.4,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 54.0,
                 "slash": 21.0
@@ -201,6 +208,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 29.0
             },
@@ -225,6 +233,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.22,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 22.0
             },
@@ -249,6 +258,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.28,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "radiation": 600.0
             },
@@ -275,6 +285,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.19,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 24.51,
                 "puncture": 6.27,
@@ -301,6 +312,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 235.2,
                 "puncture": 1344.0,
@@ -329,6 +341,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 235.2,
                 "puncture": 1344.0,
@@ -357,6 +370,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.33,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 70.0
             },
@@ -386,6 +400,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.37,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 100.0
             },
@@ -415,6 +430,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.0,
                 "puncture": 60.0,
@@ -441,6 +457,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.18,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 40.0
             },
@@ -465,6 +482,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.29,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 39.0
             },
@@ -491,6 +509,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.18,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 24.0,
                 "magnetic": 42.0
@@ -516,6 +535,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.76,
                 "puncture": 6.72,
@@ -542,6 +562,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.14,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.76,
                 "puncture": 6.72,
@@ -568,6 +589,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.6,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.1,
                 "puncture": 3.3,
@@ -594,6 +616,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.9,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0,
                 "puncture": 6.0,
@@ -620,6 +643,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.14,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.5,
                 "puncture": 20.0,
@@ -646,6 +670,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.6,
                 "puncture": 41.4
@@ -671,6 +696,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.06,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.92,
                 "puncture": 7.92,
@@ -697,6 +723,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.75,
                 "puncture": 12.25,
@@ -723,6 +750,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.25,
                 "puncture": 1.75,
@@ -749,6 +777,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.65,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.0,
                 "puncture": 13.0,
@@ -776,6 +805,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.18,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 10.0,
@@ -802,6 +832,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.8,
                 "puncture": 13.8,
@@ -828,6 +859,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.21,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.0,
                 "puncture": 24.0,
@@ -856,6 +888,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 75.0
             },
@@ -882,6 +915,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.02,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 30.0
             },
@@ -906,6 +940,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.14,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 32.0
             },
@@ -930,6 +965,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.18,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 342.0,
                 "puncture": 19.0,
@@ -956,6 +992,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.9,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 165.6,
                 "puncture": 9.2,
@@ -982,6 +1019,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.32,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 640.0,
                 "slash": 160.0
@@ -1007,6 +1045,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.4,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "blast": 789.0,
                 "radiation": 19.0
@@ -1032,6 +1071,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.71,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 2.0,
                 "puncture": 13.0,
@@ -1059,6 +1099,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "viral": 52.0
             },
@@ -1083,6 +1124,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.55,
             "type": "sniper",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 101.52,
                 "puncture": 116.56,
@@ -1112,6 +1154,7 @@
             "crit_damage": 2.7,
             "status_chance": 0.15,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "corrosive": 26.0
             },
@@ -1136,6 +1179,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.9,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.2,
                 "puncture": 1.2,
@@ -1162,6 +1206,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.36,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.2,
                 "puncture": 37.8,
@@ -1188,6 +1233,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.54,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.2,
                 "puncture": 37.8,
@@ -1214,6 +1260,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.46,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 210.0,
                 "puncture": 280.0,
@@ -1242,6 +1289,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.5,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 225.0,
                 "puncture": 300.0,
@@ -1268,6 +1316,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.22,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 22.5,
@@ -1294,6 +1343,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.4,
                 "puncture": 24.0,
@@ -1320,6 +1370,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.5,
                 "puncture": 18.75,
@@ -1348,6 +1399,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.69,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 7.0,
@@ -1374,6 +1426,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.8,
                 "puncture": 16.8,
@@ -1400,6 +1453,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.25,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 31.0,
                 "slash": 23.0,
@@ -1426,6 +1480,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.32,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 8.0,
                 "corrosive": 20.0
@@ -1451,6 +1506,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.38,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 150.0,
                 "slash": 350.0
@@ -1479,6 +1535,7 @@
             "crit_damage": 1.4,
             "status_chance": 1.08,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 120.0,
@@ -1506,6 +1563,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 38.0,
                 "puncture": 68.4,
@@ -1532,6 +1590,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 35.0,
                 "puncture": 245.0,
@@ -1558,6 +1617,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 4.84,
                 "slash": 17.16
@@ -1583,6 +1643,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 100.0,
                 "electricity": 400.0
@@ -1610,6 +1671,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.22,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 110.0,
                 "electricity": 440.0
@@ -1637,6 +1699,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "cold": 26.0
             },
@@ -1661,6 +1724,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.38,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "cold": 29.0
             },
@@ -1685,6 +1749,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.09,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.75,
                 "puncture": 3.75,
@@ -1711,6 +1776,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.21,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.95,
                 "puncture": 2.7,
@@ -1737,6 +1803,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.27,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 25.0
             },
@@ -1761,6 +1828,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.4,
                 "puncture": 3.667,
@@ -1787,6 +1855,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.35,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 93.5,
                 "puncture": 18.7,
@@ -1813,6 +1882,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.17,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.0,
                 "puncture": 37.5,
@@ -1841,6 +1911,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.75,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.25,
                 "puncture": 48.75,
@@ -1867,6 +1938,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "viral": 47.0
             },
@@ -1891,6 +1963,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.18,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 15.6,
                 "slash": 10.4
@@ -1916,6 +1989,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.5,
                 "puncture": 7.5,
@@ -1942,6 +2016,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.27,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 33.0
             },
@@ -1966,6 +2041,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.29,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 35.0
             },
@@ -1990,6 +2066,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 160.0
             },
@@ -2018,6 +2095,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.05,
                 "puncture": 8.7,
@@ -2044,6 +2122,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.95,
                 "puncture": 9.3,
@@ -2070,6 +2149,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.75,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 3.0,
@@ -2096,6 +2176,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.35,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.7,
                 "puncture": 40.74,
@@ -2124,6 +2205,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.21,
             "type": "bow",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 187.0
             },
@@ -2150,6 +2232,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.27,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 260.0
             },
@@ -2182,6 +2265,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.9,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 4.6,
                 "puncture": 4.6,
@@ -2208,6 +2292,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.93,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 13.05,
                 "puncture": 56.55,
@@ -2234,6 +2319,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.33,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 7.5,
                 "puncture": 7.5,
@@ -2260,6 +2346,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.31,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 7.13,
                 "puncture": 6.21,
@@ -2286,6 +2373,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.9,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 2.0,
                 "puncture": 2.0,
@@ -2312,6 +2400,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.47,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 18.9,
                 "puncture": 8.1
@@ -2343,6 +2432,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.33,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 19.98,
                 "puncture": 15.66,
@@ -2369,6 +2459,7 @@
             "crit_damage": 2.3,
             "status_chance": 1.05,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 57.75,
                 "puncture": 9.625,
@@ -2395,6 +2486,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.17,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "puncture": 59.0
             },
@@ -2423,6 +2515,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.31,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 50.0
             },
@@ -2449,6 +2542,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 525.0
             },
@@ -2473,6 +2567,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.25,
                 "puncture": 38.5,
@@ -2499,6 +2594,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 72.0,
@@ -2525,6 +2621,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.14,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 15.5,
                 "puncture": 43.4,
@@ -2551,6 +2648,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.05,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 50.0
             },
@@ -2580,6 +2678,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.35,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 85.0
             },
@@ -2604,6 +2703,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.5,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.5,
                 "puncture": 12.5,
@@ -2632,6 +2732,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.05,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.5,
                 "puncture": 4.5,
@@ -2658,6 +2759,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.5,
                 "puncture": 184.0,
@@ -2684,6 +2786,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.6,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.9,
                 "puncture": 2.7,
@@ -2710,6 +2813,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.49,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 369.0,
                 "puncture": 20.5,
@@ -2736,6 +2840,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.5,
                 "puncture": 15.0,
@@ -2762,6 +2867,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.39,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.59,
                 "puncture": 14.31,
@@ -2790,6 +2896,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.39,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.73,
                 "puncture": 15.57,
@@ -2818,6 +2925,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.5,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 648.0,
                 "slash": 252.0
@@ -2845,6 +2953,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.75,
                 "puncture": 216.75,
@@ -2871,6 +2980,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "blast": 100.0
             },
@@ -2897,6 +3007,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 50.0,
                 "puncture": 425.0,
@@ -2923,6 +3034,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 140.0,
@@ -2949,6 +3061,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 10.0,
@@ -2975,6 +3088,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 10.0,
@@ -3003,6 +3117,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 33.0
             },
@@ -3027,6 +3142,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.0,
                 "puncture": 256.0,
@@ -3053,6 +3169,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 288.0,
@@ -3079,6 +3196,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 75.0
             },
@@ -3105,6 +3223,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.16,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.64,
                 "puncture": 96.32,
@@ -3131,6 +3250,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.2,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.08,
                 "puncture": 103.04,
@@ -3157,6 +3277,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.93,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "viral": 5.0
             },
@@ -3181,6 +3302,7 @@
             "crit_damage": 1.5,
             "status_chance": 1.11,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.0,
                 "radiation": 10.0
@@ -3206,6 +3328,7 @@
             "crit_damage": 1.9,
             "status_chance": 1.11,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.0,
                 "radiation": 10.0
@@ -3231,6 +3354,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 42.0,
                 "slash": 98.0
@@ -3256,6 +3380,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.15,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.25,
                 "puncture": 3.45,
@@ -3282,6 +3407,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.21,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 5.0,
@@ -3308,6 +3434,7 @@
             "crit_damage": 2.9,
             "status_chance": 0.37,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 74.8,
                 "puncture": 18.7,
@@ -3334,6 +3461,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.16,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 56.0
             },
@@ -3363,6 +3491,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.6,
                 "puncture": 30.4
@@ -3388,6 +3517,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.43,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 103.23,
                 "puncture": 30.69,
@@ -3416,6 +3546,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.19,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 351.45,
                 "puncture": 429.55
@@ -3441,6 +3572,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.48,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 10.0
             },
@@ -3465,6 +3597,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.9,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 13.0
             },
@@ -3489,6 +3622,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.27,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.13,
                 "puncture": 14.21,
@@ -3515,6 +3649,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.38,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.0,
                 "puncture": 22.0,
@@ -3542,6 +3677,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 423.0,
                 "puncture": 23.5,
@@ -3568,6 +3704,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.96,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0,
                 "puncture": 26.0,
@@ -3594,6 +3731,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.0,
                 "puncture": 24.0
@@ -3619,6 +3757,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.12,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 144.0,
                 "puncture": 27.0,
@@ -3645,6 +3784,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.16,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 149.6,
                 "puncture": 28.05,
@@ -3671,6 +3811,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.84,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.0,
                 "puncture": 21.0,
@@ -3697,6 +3838,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "corrosive": 70.0
             },
@@ -3725,6 +3867,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "corrosive": 80.0
             },
@@ -3753,6 +3896,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 75.0
             },
@@ -3779,6 +3923,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.29,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 71.0
             },
@@ -3805,6 +3950,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -3831,6 +3977,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.12,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 144.0,
@@ -3857,6 +4004,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 180.0,
@@ -3883,6 +4031,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.81,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 52.5,
                 "puncture": 8.75,
@@ -3909,6 +4058,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.07,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.2,
                 "puncture": 4.8,
@@ -3935,6 +4085,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.2,
                 "puncture": 4.8,
@@ -3961,6 +4112,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.53,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 100.17,
                 "puncture": 115.01,
@@ -3990,6 +4142,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.22,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.28,
                 "puncture": 16.64,
@@ -4018,6 +4171,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.22,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 130.0,
                 "heat": 190.0
@@ -4043,6 +4197,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.8,
                 "puncture": 9.8,
@@ -4069,6 +4224,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.12,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.5,
                 "puncture": 10.5,
@@ -4095,6 +4251,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.6,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.75,
                 "puncture": 3.75,
@@ -4121,6 +4278,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.8,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 24.3,
                 "puncture": 8.1,
@@ -4147,6 +4305,7 @@
             "crit_damage": 2.2,
             "status_chance": 1.2,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0,
                 "puncture": 6.0,
@@ -4173,6 +4332,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.0,
                 "puncture": 30.0,
@@ -4199,6 +4359,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.0,
                 "puncture": 30.0,
@@ -4225,6 +4386,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.4,
                 "puncture": 26.4,
@@ -4253,6 +4415,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 29.04,
                 "puncture": 29.04,
@@ -4281,6 +4444,7 @@
             "crit_damage": 2.7,
             "status_chance": 0.13,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "corrosive": 20.0
             },
@@ -4305,6 +4469,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -4331,6 +4496,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 27.0
@@ -4356,6 +4522,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "shotgun",
+            "is_progenitor": true,
             "damage_dist": {
                 "radiation": 760.0
             },
@@ -4382,6 +4549,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 100.0
             },
@@ -4408,6 +4576,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 140.0,
@@ -4434,6 +4603,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.26,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "puncture": 4.84,
                 "slash": 17.16
@@ -4459,6 +4629,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.4,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "cold": 34.0
             },
@@ -4483,6 +4654,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.52,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "electricity": 18.0
             },
@@ -4507,6 +4679,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 13.2,
                 "puncture": 33.6,
@@ -4533,6 +4706,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.2,
                 "puncture": 9.6,
@@ -4559,6 +4733,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.24,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.4,
                 "puncture": 11.2,
@@ -4585,6 +4760,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.4,
                 "puncture": 25.6
@@ -4610,6 +4786,7 @@
             "crit_damage": 1.4,
             "status_chance": 0.36,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.332,
                 "puncture": 9.332,
@@ -4636,6 +4813,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.16,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.0,
                 "puncture": 22.0,
@@ -4662,6 +4840,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.4,
                 "puncture": 19.2,
@@ -4688,6 +4867,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.84,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.0,
                 "puncture": 21.0,
@@ -4714,6 +4894,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.9,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.5,
                 "puncture": 19.5,
@@ -4740,6 +4921,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.1,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 75.0
             },
@@ -4766,6 +4948,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.23,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 100.0
             },
@@ -4790,6 +4973,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 29.0,
                 "heat": 53.0
@@ -4815,6 +4999,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.34,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 32.0,
                 "heat": 53.0
@@ -4840,6 +5025,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.18,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 400.0
             },
@@ -4864,6 +5050,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.75,
             "type": "shotgun",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.25,
                 "puncture": 48.75,
@@ -4890,6 +5077,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 90.0,
                 "puncture": 78.75,
@@ -4916,6 +5104,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 140.0,
                 "puncture": 157.5,
@@ -4942,6 +5131,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.22,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 23.4,
                 "puncture": 23.4,
@@ -4968,6 +5158,7 @@
             "crit_damage": 3.2,
             "status_chance": 0.2,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 280.0,
                 "slash": 120.0
@@ -4993,6 +5184,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 180.0,
                 "puncture": 33.75,
@@ -5019,6 +5211,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "sniper",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 245.7,
                 "puncture": 27.3
@@ -5044,6 +5237,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.29,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.0
             },
@@ -5070,6 +5264,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "rifle",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.5,
                 "puncture": 6.0,
@@ -5096,6 +5291,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.0,
                 "puncture": 75.0,
@@ -5122,6 +5318,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "bow",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 22.5,
@@ -5154,6 +5351,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 43.0
             },
@@ -5180,6 +5378,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.19,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.5,
                 "puncture": 1.8,
@@ -5208,6 +5407,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 14.0,
@@ -5234,6 +5434,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.9,
                 "puncture": 18.2,
@@ -5260,6 +5461,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 68.0
             },
@@ -5286,6 +5488,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 68.0
             },
@@ -5312,6 +5515,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.022,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.4,
                 "puncture": 57.6
@@ -5337,6 +5541,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.4,
                 "puncture": 37.84,
@@ -5363,6 +5568,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 33.6,
                 "puncture": 4.2,
@@ -5389,6 +5595,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.9,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 40.0,
                 "puncture": 5.0,
@@ -5415,6 +5622,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.4,
                 "puncture": 5.4,
@@ -5441,6 +5649,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.32,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.8,
                 "puncture": 3.8,
@@ -5467,6 +5676,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.06,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 10.0,
@@ -5493,6 +5703,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.0,
                 "puncture": 104.0,
@@ -5519,6 +5730,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 15.0,
                 "puncture": 120.0,
@@ -5545,6 +5757,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.1,
                 "puncture": 26.95,
@@ -5571,6 +5784,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.1,
                 "puncture": 26.95,
@@ -5597,6 +5811,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.08,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.8,
                 "puncture": 7.2,
@@ -5623,6 +5838,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.18,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.0,
                 "puncture": 8.0,
@@ -5649,6 +5865,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.18,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.8,
                 "puncture": 2.8,
@@ -5675,6 +5892,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.6,
                 "puncture": 3.6,
@@ -5701,6 +5919,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.12,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.5,
                 "puncture": 22.5,
@@ -5727,6 +5946,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.5,
                 "puncture": 16.5,
@@ -5753,6 +5973,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.8,
                 "puncture": 8.4,
@@ -5779,6 +6000,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "blast": 200.0
             },
@@ -5805,6 +6027,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 36.0,
                 "slash": 24.0
@@ -5830,6 +6053,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.08,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 22.0,
                 "heat": 48.0
@@ -5855,6 +6079,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 24.0,
                 "heat": 56.0
@@ -5880,6 +6105,7 @@
             "crit_damage": 1.7,
             "status_chance": 0.21,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 29.0
             },
@@ -5904,6 +6130,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.0,
                 "puncture": 5.0,
@@ -5930,6 +6157,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 1000.0
             },
@@ -5954,6 +6182,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 200.0
             },
@@ -5978,6 +6207,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 80.0,
@@ -6004,6 +6234,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.6,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.8,
                 "puncture": 41.8,
@@ -6030,6 +6261,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.022,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.4,
                 "puncture": 57.6
@@ -6055,6 +6287,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.51,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 5.0,
@@ -6081,6 +6314,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.66,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 33.6,
                 "puncture": 4.2,
@@ -6107,6 +6341,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.9,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 40.0,
                 "puncture": 5.0,
@@ -6133,6 +6368,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 27.0,
                 "slash": 63.0
@@ -6158,6 +6394,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -6184,6 +6421,7 @@
             "crit_damage": 2.9,
             "status_chance": 0.43,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "corrosive": 53.0
             },
@@ -6208,6 +6446,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -6230,6 +6469,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.2,
                 "puncture": 20.8
@@ -6255,6 +6495,7 @@
             "crit_damage": 2.9,
             "status_chance": 0.5,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "corrosive": 56.0
             },
@@ -6279,6 +6520,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.45,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "toxin": 55.0
             },
@@ -6303,6 +6545,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.5,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 32.0,
@@ -6329,6 +6572,7 @@
             "crit_damage": 1.4,
             "status_chance": 0.32,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 50.0
             },
@@ -6355,6 +6599,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 8.0,
                 "slash": 5.0,
@@ -6381,6 +6626,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.16,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.9,
                 "puncture": 46.4,
@@ -6407,6 +6653,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.9,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "radiation": 40.0
             },
@@ -6431,6 +6678,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.4,
                 "puncture": 11.2,
@@ -6457,6 +6705,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.0,
                 "puncture": 16.0,
@@ -6483,6 +6732,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.0,
                 "puncture": 16.0,
@@ -6509,6 +6759,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.2,
                 "puncture": 20.8
@@ -6534,6 +6785,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 17.5,
                 "slash": 32.5
@@ -6559,6 +6811,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.37,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.5,
                 "puncture": 60.0,
@@ -6585,6 +6838,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.17,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 55.0
@@ -6610,6 +6864,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.41,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 35.0
             },
@@ -6634,6 +6889,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.04,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 120.0,
                 "puncture": 45.0,
@@ -6662,6 +6918,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 126.0,
                 "puncture": 47.25,
@@ -6691,6 +6948,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.02,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 292.5,
                 "puncture": 16.25,
@@ -6717,6 +6975,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 14.0,
@@ -6743,6 +7002,7 @@
             "crit_damage": 1.7,
             "status_chance": 0.29,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 30.8,
                 "slash": 46.2
@@ -6768,6 +7028,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "magnetic": 16.0
             },
@@ -6792,6 +7053,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -6814,6 +7076,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -6838,6 +7101,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "electricity": 100.0
             },
@@ -6868,6 +7132,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.6,
                 "puncture": 15.6,
@@ -6894,6 +7159,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.6,
                 "puncture": 30.6,
@@ -6920,6 +7186,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.16,
                 "puncture": 30.96,
@@ -6951,6 +7218,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.76,
                 "puncture": 39.56,
@@ -6982,6 +7250,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.05,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 63.0,
                 "puncture": 69.0,
@@ -7008,6 +7277,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 75.6,
                 "puncture": 82.8,
@@ -7034,6 +7304,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.69,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 3.0,
@@ -7060,6 +7331,7 @@
             "crit_damage": 1.8,
             "status_chance": 1.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "viral": 2.0
             },
@@ -7086,6 +7358,7 @@
             "crit_damage": 1.8,
             "status_chance": 1.44,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "viral": 2.0
             },
@@ -7112,6 +7385,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.13,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 36.75,
                 "puncture": 6.125,
@@ -7138,6 +7412,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.19,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 200.0
             },
@@ -7164,6 +7439,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.08,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.6,
                 "puncture": 34.5,
@@ -7190,6 +7466,7 @@
             "crit_damage": 2.0,
             "status_chance": 1.11,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 6.75,
                 "puncture": 3.75,
@@ -7216,6 +7493,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.29,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 32.25,
                 "puncture": 5.375,
@@ -7242,6 +7520,7 @@
             "crit_damage": 5.0,
             "status_chance": 0.5,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "radiation": 21.0
             },
@@ -7266,6 +7545,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.33,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 26.2,
                 "puncture": 68.12,
@@ -7294,6 +7574,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.31,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 11.61,
                 "puncture": 2.7,
@@ -7320,6 +7601,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 64.0,
                 "slash": 96.0
@@ -7345,6 +7627,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.06,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 10.0,
@@ -7371,6 +7654,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 12.0,
@@ -7397,6 +7681,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.9,
                 "puncture": 11.5,
@@ -7423,6 +7708,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.0,
                 "puncture": 104.0,
@@ -7449,6 +7735,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 144.0,
@@ -7475,6 +7762,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.1,
                 "puncture": 26.95,
@@ -7501,6 +7789,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.1,
                 "puncture": 26.95,
@@ -7527,6 +7816,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.96,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "radiation": 40.0
             },
@@ -7551,6 +7841,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 80.0,
                 "puncture": 16.0,
@@ -7577,6 +7868,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.01,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.95,
                 "puncture": 9.1,
@@ -7603,6 +7895,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.025,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.0,
                 "puncture": 30.0,
@@ -7629,6 +7922,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "slash": 200.0
             },
@@ -7653,6 +7947,7 @@
             "crit_damage": 4.0,
             "status_chance": 0.29,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "radiation": 22.0
             },
@@ -7677,6 +7972,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.24,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 1.0,
                 "radiation": 10.0
@@ -7702,6 +7998,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 220.0
             },
@@ -7726,6 +8023,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 18.0,
@@ -7752,6 +8050,7 @@
             "crit_damage": 2.8,
             "status_chance": 0.24,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0,
                 "puncture": 26.0,
@@ -7778,6 +8077,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.04,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 26.0,
                 "heat": 20.0
@@ -7803,6 +8103,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 50.0
             },
@@ -7827,6 +8128,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "blast": 200.0
             },
@@ -7853,6 +8155,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.23,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.97,
                 "puncture": 12.69,
@@ -7879,6 +8182,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 2.2,
                 "puncture": 2.2,
@@ -7905,6 +8209,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.36,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 1.92,
                 "puncture": 1.92,
@@ -7931,6 +8236,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.27,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 2.0,
@@ -7958,6 +8264,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 15.0,
                 "puncture": 270.0,
@@ -7984,6 +8291,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8006,6 +8314,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 31.25,
                 "puncture": 15.625,
@@ -8032,6 +8341,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 31.25,
                 "puncture": 15.625,
@@ -8058,6 +8368,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 12.0
             },
@@ -8084,6 +8395,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.01,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.3,
                 "puncture": 8.5,
@@ -8110,6 +8422,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8136,6 +8449,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.72,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 8.0,
                 "toxin": 32.0
@@ -8161,6 +8475,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.6,
                 "puncture": 22.4
@@ -8186,6 +8501,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.13,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 33.666,
                 "puncture": 33.666,
@@ -8212,6 +8528,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.6,
                 "puncture": 26.88,
@@ -8242,6 +8559,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.06,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.0,
                 "puncture": 4.5,
@@ -8268,6 +8586,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 15.0,
@@ -8294,6 +8613,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8320,6 +8640,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 7.56,
                 "slash": 10.44
@@ -8345,6 +8666,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 9.24,
                 "slash": 12.76
@@ -8370,6 +8692,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.08,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.2,
                 "puncture": 49.2,
@@ -8396,6 +8719,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 48.0,
@@ -8422,6 +8746,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8444,6 +8769,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "radiation": 44.0
             },
@@ -8470,6 +8796,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.13,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.19,
                 "puncture": 3.3,
@@ -8496,6 +8823,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8520,6 +8848,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "magnetic": 21.0
             },
@@ -8544,6 +8873,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8570,6 +8900,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.29,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 63.0
@@ -8595,6 +8926,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.4,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "heat": 22.0
             },
@@ -8619,6 +8951,7 @@
             "crit_damage": 2.0,
             "status_chance": 1.0,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "radiation": 26.0
             },
@@ -8643,6 +8976,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.14,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 11.2,
                 "puncture": 8.96,
@@ -8669,6 +9003,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.12,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "puncture": 40.0,
                 "heat": 30.0
@@ -8694,6 +9029,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.4,
             "type": "pistol",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 40.0,
                 "puncture": 20.0,
@@ -8724,6 +9060,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -8746,6 +9083,7 @@
             "crit_damage": 2.7,
             "status_chance": 0.33,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.0,
                 "puncture": 3.333,
@@ -8772,6 +9110,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.333,
                 "puncture": 12.333,
@@ -8798,6 +9137,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.69,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.0,
                 "puncture": 3.0,
@@ -8824,6 +9164,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.99,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.8,
                 "puncture": 23.5,
@@ -8850,6 +9191,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.11,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.2,
                 "puncture": 1.7,
@@ -8876,6 +9218,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.09,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.4,
                 "puncture": 1.8,
@@ -8902,6 +9245,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.5,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 23.0,
@@ -8928,6 +9272,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.08,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.5,
                 "puncture": 22.5,
@@ -8954,6 +9299,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.5,
                 "puncture": 16.5,
@@ -8980,6 +9326,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.35,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 96.0,
                 "puncture": 16.0,
@@ -9006,6 +9353,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.22,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.32,
                 "puncture": 8.16,
@@ -9032,6 +9380,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.32,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.48,
                 "puncture": 7.56,
@@ -9058,6 +9407,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "multishot": 1.0,
@@ -9080,6 +9430,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 72.0,
                 "puncture": 108.0
@@ -9105,6 +9456,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.11,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.2,
                 "puncture": 1.7,
@@ -9131,6 +9483,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.09,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.4,
                 "puncture": 1.8,
@@ -9157,6 +9510,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.0,
                 "puncture": 18.0
@@ -9186,6 +9540,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.42,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.0,
                 "puncture": 18.0
@@ -9215,6 +9570,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.8,
                 "puncture": 16.8,
@@ -9241,6 +9597,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.36,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 63.0,
                 "puncture": 21.0,
@@ -9267,6 +9624,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.3,
             "type": "pistol",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.2,
                 "puncture": 13.8
@@ -9298,6 +9656,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.9,
                 "puncture": 14.9,
@@ -9311,6 +9670,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.24,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 37.8,
                 "slash": 88.2
@@ -9323,6 +9683,7 @@
             "crit_damage": 1.7,
             "status_chance": 0.21,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 91.0,
                 "puncture": 19.5,
@@ -9336,6 +9697,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.5,
                 "puncture": 136.0,
@@ -9349,6 +9711,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 63.0,
                 "puncture": 13.5,
@@ -9362,6 +9725,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.16,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 89.6,
                 "puncture": 19.2,
@@ -9375,6 +9739,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.38,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 234.0,
                 "slash": 126.0
@@ -9387,6 +9752,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.24,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 60.0,
                 "slash": 240.0
@@ -9399,6 +9765,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.37,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 35.64,
                 "puncture": 59.4,
@@ -9412,6 +9779,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.2,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.45,
                 "puncture": 6.45,
@@ -9425,6 +9793,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.22,
             "type": "bignikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 51.0,
                 "puncture": 34.0,
@@ -9438,6 +9807,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -9447,6 +9817,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 126.0,
                 "puncture": 14.0
@@ -9459,6 +9830,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.32,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 158.4,
                 "puncture": 17.6
@@ -9471,6 +9843,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.28,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.6,
                 "puncture": 140.8,
@@ -9484,6 +9857,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 125.3,
                 "puncture": 17.9,
@@ -9497,6 +9871,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.2,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.7,
                 "puncture": 18.7,
@@ -9510,6 +9885,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 70.0,
                 "electricity": 60.0
@@ -9522,6 +9898,7 @@
             "crit_damage": 1.4,
             "status_chance": 0.28,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 41.36,
                 "puncture": 63.92,
@@ -9535,6 +9912,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.37,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.0,
                 "puncture": 71.0,
@@ -9549,6 +9927,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.0,
                 "puncture": 126.0
@@ -9561,6 +9940,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.0,
                 "puncture": 36.0,
@@ -9578,6 +9958,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.4,
             "type": "bladewhip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.0,
                 "puncture": 38.0,
@@ -9592,6 +9973,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.36,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 207.2,
                 "puncture": 88.8
@@ -9604,6 +9986,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.38,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 210.0,
                 "puncture": 90.0
@@ -9616,6 +9999,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.41,
             "type": "scythes",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 75.0,
@@ -9630,6 +10014,7 @@
             "crit_damage": 3.1,
             "status_chance": 0.18,
             "type": "sparring",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 26.25,
                 "puncture": 140.0,
@@ -9643,6 +10028,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.4,
             "type": "sword",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 45.0,
                 "puncture": 45.0,
@@ -9657,6 +10043,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.3,
             "type": "hammer",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 83.325,
                 "puncture": 83.325,
@@ -9670,6 +10057,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.35,
             "type": "glaive",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 58.0,
                 "puncture": 55.0,
@@ -9684,6 +10072,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.14,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 96.0,
                 "puncture": 68.0,
@@ -9697,6 +10086,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.18,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 31.8,
                 "puncture": 15.9,
@@ -9710,6 +10100,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -9719,6 +10110,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.18,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.0,
                 "puncture": 17.0,
@@ -9732,6 +10124,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.22,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 58.0,
                 "slash": 36.0,
@@ -9745,6 +10138,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -9754,6 +10148,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.4,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 120.0,
                 "slash": 60.0,
@@ -9767,6 +10162,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -9776,6 +10172,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 250.0
             },
@@ -9787,6 +10184,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 250.0
             },
@@ -9798,6 +10196,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.14,
             "type": "rapier",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.95,
                 "puncture": 134.3,
@@ -9811,6 +10210,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.2,
             "type": "rapier",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.4,
                 "puncture": 119.0,
@@ -9824,6 +10224,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.24,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.2,
                 "puncture": 14.2,
@@ -9837,6 +10238,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.18,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.8,
                 "puncture": 25.2,
@@ -9850,6 +10252,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 52.5,
                 "puncture": 262.5,
@@ -9863,6 +10266,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 52.5,
                 "puncture": 262.5,
@@ -9876,6 +10280,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -9885,6 +10290,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.24,
             "type": "bladewhip",
+            "is_progenitor": false,
             "damage_dist": {
                 "slash": 222.0
             },
@@ -9896,6 +10302,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.4,
                 "puncture": 18.8,
@@ -9909,6 +10316,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 23.55,
                 "puncture": 23.55,
@@ -9922,6 +10330,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 27.0,
                 "puncture": 27.0,
@@ -9935,6 +10344,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.05,
                 "puncture": 22.05,
@@ -9948,6 +10358,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.15,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.0,
                 "puncture": 11.0,
@@ -9962,6 +10373,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.8,
                 "puncture": 9.6,
@@ -9975,6 +10387,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.0,
                 "puncture": 32.0,
@@ -9988,6 +10401,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.14,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.8,
                 "puncture": 34.5,
@@ -10001,6 +10415,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.6,
                 "puncture": 54.0,
@@ -10014,6 +10429,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.1,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.0,
                 "puncture": 33.0,
@@ -10027,6 +10443,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.16,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 18.0,
@@ -10040,6 +10457,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.29,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 51.0,
                 "slash": 51.0,
@@ -10053,6 +10471,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.05,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.5,
                 "puncture": 3.5,
@@ -10066,6 +10485,7 @@
             "crit_damage": 3.2,
             "status_chance": 0.22,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 7.0,
@@ -10079,6 +10499,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.2,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 44.0,
                 "puncture": 66.0,
@@ -10092,6 +10513,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.15,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 340.0
             },
@@ -10103,6 +10525,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.36,
             "type": "rapier",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.0,
                 "puncture": 140.0,
@@ -10116,6 +10539,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 33.6,
                 "puncture": 33.6,
@@ -10129,6 +10553,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 27.0,
                 "puncture": 27.0,
@@ -10142,6 +10567,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.34,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 28.8,
                 "puncture": 28.8,
@@ -10155,6 +10581,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.25,
                 "puncture": 5.25,
@@ -10168,6 +10595,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.25,
                 "puncture": 5.25,
@@ -10181,6 +10609,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 5.25,
                 "puncture": 5.25,
@@ -10194,6 +10623,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.34,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 36.0,
                 "puncture": 18.0,
@@ -10211,6 +10641,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.16,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.2,
                 "puncture": 75.6,
@@ -10224,6 +10655,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.26,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.7,
                 "puncture": 124.6,
@@ -10237,6 +10669,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 140.0,
                 "puncture": 30.0,
@@ -10250,6 +10683,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.18,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 189.0,
                 "puncture": 40.5,
@@ -10263,6 +10697,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.11,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 94.5,
                 "puncture": 20.25,
@@ -10276,6 +10711,7 @@
             "crit_damage": 2.7,
             "status_chance": 0.15,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 97.3,
                 "puncture": 20.85,
@@ -10289,6 +10725,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.32,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.5,
                 "puncture": 191.7,
@@ -10302,6 +10739,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 4.55,
                 "puncture": 4.55,
@@ -10315,6 +10753,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 7.0,
@@ -10328,6 +10767,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.0,
                 "puncture": 38.0,
@@ -10342,6 +10782,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.36,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.0,
                 "puncture": 28.0,
@@ -10355,6 +10796,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.36,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.84,
                 "puncture": 54.56,
@@ -10368,6 +10810,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.8,
                 "puncture": 26.7,
@@ -10381,6 +10824,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.27,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 37.43,
                 "puncture": 45.31,
@@ -10394,6 +10838,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 15.75,
                 "puncture": 15.75,
@@ -10409,6 +10854,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 24.6,
                 "puncture": 24.6,
@@ -10425,6 +10871,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 24.0,
                 "puncture": 24.0,
@@ -10438,6 +10885,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.32,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 60.0,
                 "puncture": 15.0,
@@ -10451,6 +10899,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.04,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 50.5,
                 "puncture": 10.1,
@@ -10464,6 +10913,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.2,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 60.0,
                 "puncture": 12.0,
@@ -10477,6 +10927,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.8,
                 "puncture": 19.2,
@@ -10490,6 +10941,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.0,
                 "puncture": 13.5,
@@ -10503,6 +10955,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.29,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.9,
                 "puncture": 119.2,
@@ -10518,6 +10971,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.35,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.5,
                 "puncture": 180.0,
@@ -10533,6 +10987,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.36,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 168.0,
                 "slash": 72.0
@@ -10545,6 +11000,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.2,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 34.5,
                 "puncture": 34.5,
@@ -10558,6 +11014,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.14,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.0,
                 "puncture": 76.0,
@@ -10572,6 +11029,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 14.7,
                 "puncture": 14.7,
@@ -10585,6 +11043,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 238.0,
                 "puncture": 28.0,
@@ -10598,6 +11057,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.28,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 112.0,
                 "puncture": 33.6,
@@ -10611,6 +11071,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.11,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.5,
                 "puncture": 104.0,
@@ -10624,6 +11085,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 36.0,
                 "puncture": 144.0,
@@ -10637,6 +11099,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 204.0,
                 "slash": 96.0
@@ -10649,6 +11112,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 204.0,
                 "slash": 96.0
@@ -10661,6 +11125,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 160.0,
                 "puncture": 30.0,
@@ -10674,6 +11139,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.19,
             "type": "bladewhip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 79.0,
                 "puncture": 13.0,
@@ -10688,6 +11154,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.16,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 6.0,
                 "puncture": 24.0,
@@ -10701,6 +11168,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.1,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.5,
                 "puncture": 13.5,
@@ -10714,6 +11182,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.26,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.0,
                 "puncture": 84.0,
@@ -10728,6 +11197,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 50.0,
                 "puncture": 96.0,
@@ -10742,6 +11212,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.29,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 79.0,
                 "puncture": 45.0,
@@ -10756,6 +11227,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.23,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 96.4,
                 "puncture": 24.1,
@@ -10769,6 +11241,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 58.8,
                 "puncture": 12.6,
@@ -10782,6 +11255,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.4,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 157.5,
                 "puncture": 21.0,
@@ -10795,6 +11269,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 84.0,
                 "puncture": 18.0,
@@ -10808,6 +11283,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.38,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 169.4,
                 "puncture": 36.3,
@@ -10821,6 +11297,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.09,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 110.01,
                 "puncture": 5.79,
@@ -10834,6 +11311,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 52.0,
                 "puncture": 104.0,
@@ -10847,6 +11325,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.22,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.0,
                 "puncture": 15.0,
@@ -10861,6 +11340,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.19,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.04,
                 "puncture": 39.06,
@@ -10874,6 +11354,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.0,
                 "puncture": 13.0,
@@ -10887,6 +11368,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.2,
                 "puncture": 21.2,
@@ -10900,6 +11382,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -10909,6 +11392,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.32,
             "type": "melee",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 40.09,
                 "puncture": 48.53,
@@ -10922,6 +11406,7 @@
             "crit_damage": 2.7,
             "status_chance": 0.27,
             "type": "hammer",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 75.85,
                 "puncture": 100.45,
@@ -10935,6 +11420,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.45,
             "type": "bladewhip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.0,
                 "puncture": 38.0,
@@ -10949,6 +11435,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 1.0
@@ -10958,6 +11445,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 1.0
@@ -10967,6 +11455,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.25,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 20.0,
                 "slash": 25.0,
@@ -10980,6 +11469,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.37,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 47.4,
                 "puncture": 11.85,
@@ -10993,6 +11483,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 18.0,
@@ -11006,6 +11497,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.33,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 31.65,
                 "puncture": 31.65,
@@ -11019,6 +11511,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 168.0,
                 "puncture": 31.5,
@@ -11032,6 +11525,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 134.96,
                 "slash": 106.04
@@ -11044,6 +11538,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.36,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 145.6,
                 "slash": 114.4
@@ -11056,6 +11551,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11065,6 +11561,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "bladewhip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 53.1,
                 "puncture": 44.25,
@@ -11078,6 +11575,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.31,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 23.0,
                 "puncture": 23.0,
@@ -11092,6 +11590,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 81.0,
                 "puncture": 9.0
@@ -11104,6 +11603,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 63.0,
                 "puncture": 13.5,
@@ -11117,6 +11617,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.15,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.75,
                 "puncture": 18.75,
@@ -11130,6 +11631,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 36.0,
@@ -11143,6 +11645,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.8,
                 "puncture": 25.8,
@@ -11156,6 +11659,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.33,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.0,
                 "puncture": 63.0,
@@ -11170,6 +11674,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.1,
                 "puncture": 14.2,
@@ -11183,6 +11688,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.28,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.9,
                 "puncture": 9.9,
@@ -11196,6 +11702,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "nunchaku",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 90.0,
                 "electricity": 100.0
@@ -11208,6 +11715,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.36,
             "type": "nunchaku",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 66.0,
                 "puncture": 28.0,
@@ -11222,6 +11730,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 84.0,
                 "puncture": 18.0,
@@ -11235,6 +11744,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 76.0,
                 "slash": 38.0,
@@ -11248,6 +11758,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 63.0,
@@ -11261,6 +11772,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "dualdagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.2,
                 "puncture": 64.4,
@@ -11274,6 +11786,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11283,6 +11796,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.18,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 27.75,
                 "puncture": 27.75,
@@ -11296,6 +11810,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.36,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 35.1,
                 "puncture": 35.1,
@@ -11309,6 +11824,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.18,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 39.0,
                 "puncture": 9.75,
@@ -11324,6 +11840,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.4,
                 "puncture": 37.2,
@@ -11337,6 +11854,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.22,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.5,
                 "puncture": 22.5,
@@ -11350,6 +11868,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.22,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 48.84,
                 "puncture": 17.76,
@@ -11363,6 +11882,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.3,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 57.0,
                 "puncture": 55.0,
@@ -11377,6 +11897,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.1,
             "type": "bignikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 140.0,
@@ -11390,6 +11911,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11399,6 +11921,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11408,6 +11931,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.18,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 34.0,
                 "puncture": 12.0,
@@ -11422,6 +11946,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 20.0,
@@ -11435,6 +11960,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 125.0,
                 "slash": 125.0
@@ -11447,6 +11973,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.25,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.3,
                 "puncture": 13.3,
@@ -11460,6 +11987,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.31,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 28.95,
                 "puncture": 28.95,
@@ -11473,6 +12001,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "sparring",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 105.0,
                 "puncture": 22.5,
@@ -11486,6 +12015,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.2,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 82.0,
                 "slash": 44.0,
@@ -11499,6 +12029,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.16,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.5,
                 "puncture": 25.5,
@@ -11512,6 +12043,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.16,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 52.0,
                 "electricity": 76.0
@@ -11524,6 +12056,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.32,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 80.0,
                 "electricity": 118.0
@@ -11536,6 +12069,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.33,
             "type": "nunchaku",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 193.0,
                 "viral": 97.0
@@ -11548,6 +12082,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.27,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 139.0,
                 "viral": 145.0
@@ -11560,6 +12095,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.12,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 27.6,
                 "puncture": 46.0,
@@ -11575,6 +12111,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.18,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.0,
                 "puncture": 52.0,
@@ -11590,6 +12127,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11599,6 +12137,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.3,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 88.0,
                 "slash": 62.0,
@@ -11612,6 +12151,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.25,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.0,
                 "puncture": 30.0,
@@ -11625,6 +12165,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.22,
             "type": "gunblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 36.0,
@@ -11638,6 +12179,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.3,
             "type": "gunblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.2,
                 "puncture": 42.4,
@@ -11651,6 +12193,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 8.65,
                 "puncture": 17.3,
@@ -11664,6 +12207,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.4,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 120.0,
                 "electricity": 180.0
@@ -11676,6 +12220,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.2,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 170.0
             },
@@ -11687,6 +12232,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.28,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 173.6,
                 "puncture": 37.2,
@@ -11700,6 +12246,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 192.0,
                 "puncture": 36.0,
@@ -11713,6 +12260,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 80.0,
                 "puncture": 8.0,
@@ -11726,6 +12274,7 @@
             "crit_damage": 3.0,
             "status_chance": 0.3,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 66.0,
                 "puncture": 8.8,
@@ -11739,6 +12288,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "gunblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 16.0,
                 "puncture": 32.0,
@@ -11752,6 +12302,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.1,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 20.0,
@@ -11765,6 +12316,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.24,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 25.0,
                 "puncture": 25.0,
@@ -11778,6 +12330,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.29,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 22.5,
                 "puncture": 22.5,
@@ -11791,6 +12344,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.3,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 30.0,
                 "slash": 66.0,
@@ -11804,6 +12358,7 @@
             "crit_damage": 1.0,
             "status_chance": 0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 0.0
@@ -11813,6 +12368,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.26,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "slash": 96.0,
                 "electricity": 138.0
@@ -11825,6 +12381,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 72.0,
                 "puncture": 48.0,
@@ -11838,6 +12395,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 72.0,
                 "puncture": 48.0,
@@ -11851,6 +12409,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.33,
                 "puncture": 3.33,
@@ -11864,6 +12423,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.33,
                 "puncture": 3.33,
@@ -11877,6 +12437,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "nunchaku",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 180.0
             },
@@ -11888,6 +12449,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 1.0
@@ -11897,6 +12459,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.0,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {},
             "forced_procs": {},
             "attack_speed": 1.0
@@ -11906,6 +12469,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.25,
             "type": "dagger",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 13.5,
                 "puncture": 13.5,
@@ -11919,6 +12483,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 70.0,
                 "puncture": 20.0,
@@ -11933,6 +12498,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.16,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 38.28,
                 "puncture": 27.84,
@@ -11946,6 +12512,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.2,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 98.0
             },
@@ -11957,6 +12524,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "heat": 318.0
             },
@@ -11968,6 +12536,7 @@
             "crit_damage": 1.5,
             "status_chance": 0.16,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.0,
                 "puncture": 18.0,
@@ -11981,6 +12550,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.26,
             "type": "sword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 31.5,
                 "puncture": 31.5,
@@ -11994,6 +12564,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.3,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 26.25,
                 "puncture": 12.25,
@@ -12007,6 +12578,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.35,
             "type": "machete",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 73.26,
                 "puncture": 93.24,
@@ -12020,6 +12592,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.4,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "toxin": 168.0
             },
@@ -12031,6 +12604,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.14,
             "type": "gunblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 61.6,
                 "puncture": 74.8,
@@ -12044,6 +12618,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.22,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 38.0,
                 "puncture": 45.6,
@@ -12057,6 +12632,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.34,
             "type": "nikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 54.0,
                 "puncture": 108.0,
@@ -12070,6 +12646,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 11.25,
                 "puncture": 213.75
@@ -12082,6 +12659,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.4,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 238.0,
                 "puncture": 28.0,
@@ -12095,6 +12673,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.31,
             "type": "swordshield",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 39.4,
                 "slash": 157.6
@@ -12107,6 +12686,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "bignikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 54.0,
@@ -12121,6 +12701,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.3,
             "type": "bignikana",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 20.0,
                 "puncture": 54.0,
@@ -12135,6 +12716,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 32.0,
                 "puncture": 16.0,
@@ -12148,6 +12730,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.26,
             "type": "fist",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 39.6,
                 "puncture": 25.2,
@@ -12161,6 +12744,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.35,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.0,
                 "puncture": 178.5,
@@ -12174,6 +12758,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.28,
             "type": "swordshield",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 120.0,
                 "electricity": 140.0
@@ -12186,6 +12771,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.22,
             "type": "heavyblade",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 102.6,
                 "slash": 87.4
@@ -12198,6 +12784,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.38,
             "type": "scythes",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 9.12,
                 "puncture": 82.08,
@@ -12211,6 +12798,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.28,
             "type": "bignikana",
+            "is_progenitor": true,
             "damage_dist": {
                 "impact": 9.9,
                 "puncture": 9.9,
@@ -12224,6 +12812,7 @@
             "crit_damage": 2.2,
             "status_chance": 0.24,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 90.0,
                 "slash": 210.0
@@ -12236,6 +12825,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 12.4,
                 "puncture": 12.4,
@@ -12249,6 +12839,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.24,
             "type": "staff",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 17.0,
                 "puncture": 17.0,
@@ -12262,6 +12853,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 18.4,
                 "puncture": 27.6,
@@ -12275,6 +12867,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.21,
             "type": "tonfa",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 33.0,
                 "slash": 132.0
@@ -12287,6 +12880,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.4,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 55.0,
                 "puncture": 15.0,
@@ -12301,6 +12895,7 @@
             "crit_damage": 1.7,
             "status_chance": 0.33,
             "type": "dualsword",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 30.0,
                 "puncture": 45.0,
@@ -12314,6 +12909,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 62.5,
                 "slash": 187.5
@@ -12326,6 +12922,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.1,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 62.5,
                 "slash": 187.5
@@ -12338,6 +12935,7 @@
             "crit_damage": 1.7,
             "status_chance": 0.31,
             "type": "gunblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 19.53,
                 "puncture": 25.11,
@@ -12351,6 +12949,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.33,
             "type": "polearm",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 10.65,
                 "puncture": 202.35
@@ -12363,6 +12962,7 @@
             "crit_damage": 2.1,
             "status_chance": 0.24,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 33.0,
                 "puncture": 110.0,
@@ -12376,6 +12976,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.32,
             "type": "scythes",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 36.75,
                 "puncture": 122.5,
@@ -12389,6 +12990,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 7.0,
                 "puncture": 35.0,
@@ -12402,6 +13004,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.24,
             "type": "claw",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 9.4,
                 "puncture": 37.6,
@@ -12415,6 +13018,7 @@
             "crit_damage": 2.5,
             "status_chance": 0.21,
             "type": "whip",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.3,
                 "puncture": 85.2,
@@ -12428,6 +13032,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.2,
             "type": "warfan",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 21.6,
                 "puncture": 28.8,
@@ -12441,6 +13046,7 @@
             "crit_damage": 2.3,
             "status_chance": 0.33,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 99.9,
                 "puncture": 99.9,
@@ -12454,6 +13060,7 @@
             "crit_damage": 1.6,
             "status_chance": 0.3,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 48.4,
                 "puncture": 70.4,
@@ -12467,6 +13074,7 @@
             "crit_damage": 1.8,
             "status_chance": 0.34,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 55.0,
                 "puncture": 80.0,
@@ -12480,6 +13088,7 @@
             "crit_damage": 2.6,
             "status_chance": 0.26,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 120.0,
                 "puncture": 60.0,
@@ -12495,6 +13104,7 @@
             "crit_damage": 3.2,
             "status_chance": 0.32,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 194.4,
                 "puncture": 32.4,
@@ -12508,6 +13118,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.33,
                 "puncture": 3.33,
@@ -12521,6 +13132,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.25,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 3.33,
                 "puncture": 3.33,
@@ -12534,6 +13146,7 @@
             "crit_damage": 1.9,
             "status_chance": 0.33,
             "type": "hammer",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 132.09,
                 "puncture": 7.77,
@@ -12549,6 +13162,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.15,
             "type": "melee",
+            "is_progenitor": false,
             "damage_dist": {
                 "puncture": 44.0,
                 "slash": 176.0
@@ -12561,6 +13175,7 @@
             "crit_damage": 2.4,
             "status_chance": 0.18,
             "type": "glaive",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 24.0,
                 "puncture": 40.8,
@@ -12576,6 +13191,7 @@
             "crit_damage": 2.0,
             "status_chance": 0.3,
             "type": "heavyblade",
+            "is_progenitor": false,
             "damage_dist": {
                 "impact": 80.0,
                 "slash": 68.0,
