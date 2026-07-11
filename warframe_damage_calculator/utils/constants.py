@@ -19,4 +19,4 @@ SECONDARY_TYPES = {"secondary", "pistol"}
 MELEE_TYPES = {"melee"}
 TYPE_ALIASES = {"primary": {"primary", "rifle", "bow", "shotgun", "sniper"}, "primaries": {"primary", "rifle", "bow", "shotgun", "sniper"}, "secondary": {"pistol"}, "secondaries": {"pistol"}, "pistol": {"pistol"}, "melee": {"melee"}, "melees": {"melee"}}
 
-UPGRADE_METADATA_FIELDS = {"name", "category", "compatibility", "incompatibility", "requirements", "max_rank", "max_stacks", "condition", "is_exilus"}
+UPGRADE_METADATA_FIELDS = {"name", "category", "compatibility", "incompatibility", "requirements", "conditions", "max_rank", "max_stacks", "is_exilus"}

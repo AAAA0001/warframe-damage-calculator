@@ -11,8 +11,8 @@ class Upgrade:
     category: str | None = None
     compatibility: set[str] | None = None
     incompatibility: set[str] | None = None
-    conditions: dict[str, str] | None = None
     requirements: dict[str, str] | None = None
+    conditions: dict[str, str] | None = None
     max_rank: int | None = None
     max_stacks: int | None = None
     is_exilus: bool | None = None
