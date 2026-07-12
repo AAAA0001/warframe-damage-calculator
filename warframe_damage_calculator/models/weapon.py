@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Self, Unpack
 
+from ..utils import Condition
 from ..calculators import WeaponCalculator
 from ..fields import WeaponFields
 from ..formatters import WeaponFormatter
@@ -16,9 +17,9 @@ class Weapon:
         self.stats = WeaponCalculator(base)
         self.format = WeaponFormatter(self.stats)
 
-    def configure(self, *args: Build | Upgrade, context: dict[str, bool | int] | None = None) -> Self:
+    def configure(self, *args: Build | Upgrade, context: dict[Condition, bool | int] | None = None) -> Self:
         if all(type(arg) is Upgrade for arg in args): build = Build(*args)
         elif isinstance(args[0], Build) and len(args) == 1: build = args[0]
         else: raise TypeError
-        self.stats.set_build(build, context)
+        self.stats._set_build(build, context)
         return self

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import cached_property
 
+from ..utils import Condition, Stat, Value
 from ..states import WeaponState
 from ..models import Build, Upgrade, dist
 from .upgrade_resolver import UpgradeResolver
@@ -10,22 +11,22 @@ from .upgrade_resolver import UpgradeResolver
 class WeaponCalculator[TWeaponState: WeaponState]:
     def __init__(self, base: TWeaponState) -> None:
         self.build = Build()
-        self.context: dict[str, bool | int] | None = None
-        self.resolved_stats: dict[str, float | int | bool | dist] = {}
+        self.context: dict[Condition, bool | int] | None = None
+        self.resolved_build = Build()
         self._resolver = UpgradeResolver()
         self.base: TWeaponState = base
         self.moded: TWeaponState = type(base)()
         self.effective: TWeaponState = type(base)()
         self.recompute()
 
-    def set_build(self, build: Build, context: dict[str, bool | int] | None = None) -> None:
+    def _set_build(self, build: Build, context: dict[Condition, bool | int] | None = None) -> None:
         self.build = build
         self.context = None if context is None else dict(context)
-        self.resolved_stats = self._resolver.resolve(self.base, build, self.context)
+        self.resolved_build = self._resolver.resolve(self.base, build, self.context)
         self.recompute()
 
-    def _upgrade(self, stat: str, default: float | int | bool | dist = 0) -> float | int | bool | dist:
-        return self.resolved_stats.get(stat, default)
+    def _upgrade(self, stat: Stat, default: Value = 0) -> Value:
+        return self.resolved_build.get(stat, default)
 
     def _compute_moded_stats(self) -> None:
         self.moded.multiplicative_base_damage = max(1 + self._upgrade("multiplicative_base_damage"), 1)
@@ -82,9 +83,9 @@ class WeaponCalculator[TWeaponState: WeaponState]:
         full = self.build
         full_context = self.context
         total = self.total_dps
-        self.set_build(full - other, full_context)
+        self._set_build(full - other, full_context)
         contribution = total - self.total_dps
-        self.set_build(full, full_context)
+        self._set_build(full, full_context)
         return contribution
     
     @cached_property

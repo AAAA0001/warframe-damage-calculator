@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 from ..utils import Value
 from ..models import dist, Build
 from ..states import WeaponState
@@ -51,13 +53,14 @@ class UpgradeResolver:
         else:
             raise TypeError(f"Cannot merge values for upgrade stat {stat!r}")
 
-    def resolve(self, weapon: WeaponState, build: Build, context: dict[str, bool | int] | None = None) -> dict[str, Value]:
+    def resolve(self, weapon: WeaponState, build: Build, context: dict[str, bool | int] | None = None) -> Build:
         use_defaults = context is None
         context = dict(context or {})
         manual = {self._key(key): value for key, value in context.items()}
-        resolved: dict[str, Value] = {}
+        resolved_upgrades = []
 
         for upgrade in build:
+            resolved: dict[str, Value] = {}
             for stat, value in upgrade.stats.items():
                 self._merge(resolved, stat, value)
 
@@ -75,4 +78,11 @@ class UpgradeResolver:
                 if stack_count:
                     self._merge(resolved, stat, value * stack_count)
 
-        return resolved
+            resolved_upgrades.append(replace(
+                upgrade,
+                stats=resolved,
+                conditional_stats={},
+                stacking_stats={},
+            ))
+
+        return Build(*resolved_upgrades)

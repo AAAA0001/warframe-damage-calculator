@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Iterator
 
+from ..utils import Stat, Value
 from .upgrade import Upgrade
 
 
@@ -35,4 +36,22 @@ class Build:
 
     def __iter__(self) -> Iterator[Upgrade]:
         return iter(self.upgrades)
+
+    def aggregate(self) -> dict[Stat, Value]:
+        stats: dict[Stat, Value] = {}
+        for upgrade in self.upgrades:
+            for stat, value in upgrade.stats.items():
+                current = stats.get(stat)
+                if current is None:
+                    stats[stat] = value
+                elif isinstance(current, bool) and isinstance(value, bool):
+                    stats[stat] = current or value
+                elif not isinstance(current, bool) and not isinstance(value, bool):
+                    stats[stat] = current + value
+                else:
+                    raise TypeError
+        return stats
+
+    def get(self, stat: Stat, default: Value = 0) -> Value:
+        return self.aggregate().get(stat, default)
 
