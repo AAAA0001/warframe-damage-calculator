@@ -7,11 +7,12 @@ from ..formatters import PrimaryFormatter
 from ..fields import PrimaryFields
 from ..states import PrimaryState
 from .ranged import Ranged
+from .weapon import _state_kwargs
 
 
 class Primary(Ranged):
     def __init__(self, **kwargs: Unpack[PrimaryFields]) -> None:
-        base = PrimaryState(**kwargs)
+        base = PrimaryState(**_state_kwargs(kwargs, ranged=True))
         self.stats: PrimaryCalculator = PrimaryCalculator(base)
         self.format: PrimaryFormatter = PrimaryFormatter(self.stats)
     

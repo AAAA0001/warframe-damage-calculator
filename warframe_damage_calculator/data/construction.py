@@ -3,9 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from ..models import Upgrade, Primary, Secondary, Melee, dist
-from ..utils import DAMAGE_TYPES, COMMON_WEAPON_PAYLOAD_FIELDS, RANGED_WEAPON_PAYLOAD_FIELDS, MELEE_WEAPON_PAYLOAD_FIELDS, WEAPON_DIST_FIELDS
-from .normalization import normalized_slug
+from ..models import Upgrade, Primary, Secondary, Melee
+from ..utils import COMMON_WEAPON_PAYLOAD_FIELDS, RANGED_WEAPON_PAYLOAD_FIELDS, MELEE_WEAPON_PAYLOAD_FIELDS
 
 
 class DatabaseConstructionMixin:
@@ -17,32 +16,6 @@ class DatabaseConstructionMixin:
         if section == "melees":
             return Melee
         raise ValueError(f"Unknown weapon section: {section!r}")
-
-    def _make_dist_object(self, values: dict[str, Any] | None) -> dist:
-        clean_values: dict[str, Any] = {}
-
-        for key, value in (values or {}).items():
-            damage_key = normalized_slug(key)
-            if damage_key in DAMAGE_TYPES and value not in (None, 0, 0.0):
-                clean_values[damage_key] = value
-
-        try:
-            return dist(**clean_values)
-        except TypeError:
-            pass
-
-        try:
-            return dist(clean_values)
-        except TypeError:
-            pass
-
-        obj = dist()
-        for key, value in clean_values.items():
-            try:
-                setattr(obj, key, value)
-            except Exception:
-                pass
-        return obj
 
     def _weapon_payload_fields(self, section: str) -> set[str]:
         if section in {"primaries", "secondaries"}:
@@ -58,9 +31,9 @@ class DatabaseConstructionMixin:
 
         payload = {field_name: value for field_name, value in source.items() if field_name in allowed_fields}
 
-        for field_name in WEAPON_DIST_FIELDS:
-            if field_name in allowed_fields:
-                payload[field_name] = self._make_dist_object(payload.get(field_name) or {})
+        payload["damage"] = payload.pop("damage_dist", {})
+        if section in {"primaries", "secondaries"}:
+            payload["explosion_damage"] = payload.pop("explosion_damage_dist", {})
 
         return payload
 

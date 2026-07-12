@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any, Iterable
 
-from ..models import Melee, Primary, Secondary, Upgrade, dist
+from ..models import Melee, Primary, Secondary, Upgrade
+from ..models.dist import dist
 from .normalization import as_list, normalized_key, normalized_slug
 
 

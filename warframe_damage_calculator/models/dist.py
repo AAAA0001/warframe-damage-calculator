@@ -1,97 +1,89 @@
 from __future__ import annotations
 
-from typing import Iterator, Iterable, Unpack
+from collections.abc import Iterable, Iterator, Mapping
 
-from ..utils import PHYSICAL_TYPES, ELEMENTAL_TYPES, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, DAMAGE_TYPE_ORDER, DamageType
-from ..fields import DamageFields
+from ..utils import DAMAGE_TYPE_ORDER, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, PHYSICAL_TYPES, DamageType
 
 
 class dist:
-    def __init__(self, **kwargs: Unpack[DamageFields]) -> None:
-        self.dist = kwargs
+    __slots__ = ("_values",)
 
-    def __add__(self, other: dist) -> dist:
-        if isinstance(other, dist):
-            return dist(**{dt: self.get(dt) + other.get(dt) for dt in self.dist | other.dist})
-        else: return NotImplemented
-    
-    def __radd__(self, other: int | float) -> dist:
-        if other == 0: return self
-        else: return NotImplemented
-    
-    def __mul__(self, other: int | float) -> dist:
-        if isinstance(other, (int, float)):
-            return dist(**{dt: d * other for dt, d in self})
-        else: return NotImplemented
-    
-    def __rmul__(self, other: int | float) -> dist:
-        if isinstance(other, (int, float)):
-            return dist(**{dt: other * d for dt, d in self})
-        else: return NotImplemented
+    def __init__(self, values: Mapping[DamageType, float] | None = None, /, **kwargs: float) -> None:
+        merged = dict(values or {})
+        merged.update(kwargs)
+        unknown = set(merged) - set(DAMAGE_TYPES)
+        if unknown:
+            raise ValueError(f"Unknown damage types: {', '.join(sorted(unknown))}")
+        if any(isinstance(value, bool) or not isinstance(value, (int, float)) for value in merged.values()):
+            raise TypeError("Damage values must be numbers")
+        self._values = {damage_type: float(value) for damage_type, value in merged.items() if value != 0}
 
-    def __eq__(self, other: dist) -> bool:
-        if isinstance(other, dist):
-            return self.dist == other.dist
-        return False
-    
     def __iter__(self) -> Iterator[tuple[DamageType, float]]:
-        return iter(self.dist.items())
+        return iter(self._values.items())
+
+    def __repr__(self) -> str:
+        return f"dist({self._values!r})"
 
     def __str__(self) -> str:
-        return ", ".join(f"{dt}: {d}" for dt, d in self)
-    
-    def __repr__(self) -> str:
-        return f"dist({', '.join(f'{dt}={d}' for dt, d in self)})"
-    
-    def include(self, other: Iterable[DamageType]) -> dist:
-        if not isinstance(other, Iterable):
-            raise TypeError
-        if any(dt not in DAMAGE_TYPES for dt in other):
-            raise ValueError
-        return dist(**{dt: d for dt, d in self if dt in other})
+        return ", ".join(f"{damage_type}: {value}" for damage_type, value in self)
 
-    def exclude(self, other: Iterable[DamageType]) -> dist:
-        if not isinstance(other, Iterable):
-            raise TypeError
-        if any(dt not in DAMAGE_TYPES for dt in other):
-            raise ValueError
-        return dist(**{dt: d for dt, d in self if dt not in other})
-    
-    def positive(self) -> dist:
-        return dist(**{dt: d for dt, d in self if d > 0})
-    
-    def get(self, dt: DamageType) -> float:
-        if dt not in DAMAGE_TYPES:
-            raise ValueError
-        if not isinstance(dt, str):
-            raise TypeError
-        return self.dist.get(dt, 0)
-    
-    def weight(self, dt: DamageType) -> float:
-        if dt not in DAMAGE_TYPES:
-            raise ValueError
-        if not isinstance(dt, str):
-            raise TypeError
-        total = self.total_damage()
-        return self.get(dt) / total if total else 0.0
-    
-    def total_damage(self):
-        return sum(self.dist.values())
-    
-    def apply(self, other: dist) -> dist:
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, dist) and self._values == other._values
+
+    def __add__(self, other: dist) -> dist:
         if not isinstance(other, dist):
-            raise TypeError
-        return dist(**{dt: self.get(dt) * (1 + other.get(dt)) if dt in PHYSICAL_TYPES else self.get(dt) + self.total_damage() * other.get(dt) for dt in self.dist | other.dist})
-    
+            return NotImplemented
+        return dist({damage_type: self.get(damage_type) + other.get(damage_type) for damage_type in self._values | other._values})
+
+    def __radd__(self, other: int) -> dist:
+        return self if other == 0 else NotImplemented
+
+    def __mul__(self, multiplier: int | float) -> dist:
+        if isinstance(multiplier, bool) or not isinstance(multiplier, (int, float)):
+            return NotImplemented
+        return dist({damage_type: value * multiplier for damage_type, value in self})
+
+    __rmul__ = __mul__
+
+    def get(self, damage_type: DamageType) -> float:
+        if damage_type not in DAMAGE_TYPES:
+            raise ValueError(f"Unknown damage type: {damage_type!r}")
+        return self._values.get(damage_type, 0.0)
+
+    def total_damage(self) -> float:
+        return sum(self._values.values())
+
+    def weight(self, damage_type: DamageType) -> float:
+        total = self.total_damage()
+        return self.get(damage_type) / total if total else 0.0
+
+    def include(self, damage_types: Iterable[DamageType]) -> dist:
+        included = set(damage_types)
+        return dist({damage_type: value for damage_type, value in self if damage_type in included})
+
+    def exclude(self, damage_types: Iterable[DamageType]) -> dist:
+        excluded = set(damage_types)
+        return dist({damage_type: value for damage_type, value in self if damage_type not in excluded})
+
+    def positive(self) -> dist:
+        return dist({damage_type: value for damage_type, value in self if value > 0})
+
+    def apply(self, upgrades: dist) -> dist:
+        total = self.total_damage()
+        return dist({
+            damage_type: self.get(damage_type) * (1 + upgrades.get(damage_type))
+            if damage_type in PHYSICAL_TYPES
+            else self.get(damage_type) + total * upgrades.get(damage_type)
+            for damage_type in self._values | upgrades._values
+        })
+
     def combine(self) -> dist:
         elements = list(self.include(ELEMENTAL_TYPES))
-        combined: dict[str, float] = dict()
-        for (dt1, d1), (dt2, d2) in zip(elements[::2], elements[1::2] + [("NONE", 0)]):
-            key = ELEMENTAL_COMBINATIONS.get(frozenset((dt1, dt2)), dt1)
-            combined[key] = d1 + d2
-        return (self.exclude(ELEMENTAL_TYPES) + dist(**combined)).positive()
-    
+        combined: dict[DamageType, float] = {}
+        for (first_type, first_value), (second_type, second_value) in zip(elements[::2], elements[1::2] + [(None, 0.0)]):
+            result_type = ELEMENTAL_COMBINATIONS.get(frozenset((first_type, second_type)), first_type)
+            combined[result_type] = first_value + second_value
+        return (self.exclude(ELEMENTAL_TYPES) + dist(combined)).positive()
+
     def sorted(self) -> dist:
-        return dist(**dict(sorted(self.dist.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])))
-    
-    
+        return dist(dict(sorted(self._values.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])))

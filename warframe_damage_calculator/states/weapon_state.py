@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from ..models import dist
+from ..models.dist import dist
 
 
 @dataclass

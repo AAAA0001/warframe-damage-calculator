@@ -124,7 +124,6 @@ builds.
 
 ``` python
 from warframe_damage_calculator import (
-    dist,
     Upgrade,
     Build,
     Primary,
@@ -135,7 +134,6 @@ from warframe_damage_calculator import (
 
  | Object      | Description                               |
  |-------------|-------------------------------------------|
- |`dist`       | Damage distribution.                      |
  |`Upgrade`    | A single modifier (mod, arcane, or buff). |
  |`Build`      | A collection of upgrades.                 |
  |`Primary`    | Primary weapon model.                     |
@@ -155,6 +153,18 @@ Since `configure()` returns the weapon, the following is also valid:
 
 ``` python
 weapon = Primary(...).configure(build)
+```
+
+Weapon damage uses ordinary mappings; the optimized distribution object is
+an internal calculator detail:
+
+```python
+weapon = Primary(
+    damage={"impact": 20, "puncture": 30, "slash": 50},
+    forced_procs={"slash": 1},
+    explosion_damage={"heat": 100},
+    explosion_forced_procs={"heat": 1},
+)
 ```
 
 ------------------------------------------------------------------------
@@ -197,7 +207,7 @@ limits, and bucket merging are handled by `UpgradeResolver`.
 
 ### Damage
 
--   `damage_dist`
+-   `damage`
 -   `base_damage`
 -   `multiplicative_base_damage`
 -   `faction_damage`

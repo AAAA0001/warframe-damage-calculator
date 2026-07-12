@@ -1,4 +1,4 @@
-from ..models import dist
+from ..utils import DamageType
 from .weapon_fields import WeaponFields
 
 
@@ -6,8 +6,8 @@ class RangedFields(WeaponFields):
     trigger: str | None
     is_beam: bool
     is_battery: bool
-    explosion_damage_dist: dist
-    explosion_forced_procs: dist
+    explosion_damage: dict[DamageType, float]
+    explosion_forced_procs: dict[DamageType, float]
     multishot: float
     fire_rate: float
     burst_count: int

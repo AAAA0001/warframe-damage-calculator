@@ -4,7 +4,7 @@ from functools import cached_property
 
 from ..utils import DOT_MULTIPLIERS, clamp
 from ..states import SecondaryState
-from ..models import dist
+from ..models.dist import dist
 from .ranged_calculator import RangedCalculator
 
 

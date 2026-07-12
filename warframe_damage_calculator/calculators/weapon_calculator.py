@@ -4,7 +4,8 @@ from functools import cached_property
 
 from ..utils import Condition, Stat, Value
 from ..states import WeaponState
-from ..models import Build, Upgrade, dist
+from ..models import Build, Upgrade
+from ..models.dist import dist
 from .upgrade_resolver import UpgradeResolver
 
 

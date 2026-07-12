@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import replace
 
 from ..utils import Value
-from ..models import dist, Build
+from ..models import Build
+from ..models.dist import dist
 from ..states import WeaponState
 from ..utils import DAMAGE_TYPES
 

@@ -1,4 +1,3 @@
-from .dist import dist
 from .upgrade import Upgrade
 from .build import Build
 from .weapon import Weapon
@@ -8,7 +7,6 @@ from .primary import Primary
 from .secondary import Secondary
 
 __all__ = [
-    "dist",
     "Upgrade",
     "Build",
     "Weapon",

@@ -4,7 +4,7 @@ from functools import cached_property
 
 from ..utils import true_round, clamp
 from ..states import RangedState
-from ..models import dist
+from ..models.dist import dist
 from .weapon_calculator import WeaponCalculator
 
 
