@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from typing import Any
 
 
-def normalized_key(value: Any) -> str:
+def normalize_name(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip().casefold()
 
 
-def normalized_slug(value: Any) -> str:
-    return re.sub(r"[^a-z0-9]+", "_", normalized_key(value)).strip("_")
+def normalize_identifier(value: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", normalize_name(value)).strip("_")
 
 
 def as_list(value: Any) -> list[Any]:
@@ -17,6 +18,11 @@ def as_list(value: Any) -> list[Any]:
         return []
     if isinstance(value, list):
         return value
-    if isinstance(value, tuple | set):
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes, dict)):
         return list(value)
     return [value]
+
+
+# Backwards-compatible aliases for code that imported the old helper names.
+normalized_key = normalize_name
+normalized_slug = normalize_identifier

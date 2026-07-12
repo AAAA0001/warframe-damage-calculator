@@ -5,10 +5,12 @@
 - Utils should contain common constants or functions.
 - Weapon models should contain almost no logic.
 - Calculators perform all computations.
-- Formaters only format the output.
-- Fileds only store base stats data.
+- Formatters only format the output.
+- Fields only store base stats data.
 - States only store weapon data.
-- All the variables must be typed.
+- Database JSON uses the same field names as the public model constructors.
+- The database loader handles lookup, matching, and attribute access; the factory handles construction.
+- All variables must be typed.
 
 ## Add a Weapon Stat
 

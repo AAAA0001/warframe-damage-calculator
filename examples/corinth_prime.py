@@ -1,22 +1,36 @@
-from warframe_damage_calculator import *
+from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
 
-def main():
-    weapon = arsenal.get('Corinth Prime')
-    mod1 = Upgrade(name='riven', stats={'impact': -0.886, 'crit_damage': 0.855, 'multishot': 1.126, 'crit_chance': 0.887})
-    mod2 = arsenal.get('Galvanized Hell')
-    mod3 = arsenal.get('Semi-Shotgun Cannonade')
-    mod4 = arsenal.get('Hunter Munitions')
-    mod5 = arsenal.get('Primed Chilling Grasp')
-    mod6 = arsenal.get('Primed Ravage')
-    mod7 = arsenal.get('Critical Delay')
-    mod8 = arsenal.get('Toxic Barrage')
-    mod9 = arsenal.get('Vigilante Supplies')
-    arcane = arsenal.get('Primary Merciless')
-    buffs = Upgrade(name='buff', stats={'flat_crit_damage': 1.2})
-    build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, arcane, buffs)
 
-    weapon.configure(build)
+def main() -> None:
+    weapon = arsenal.get("Corinth Prime", type="primary")
+    upgrades = [
+        Upgrade(
+            name="Riven",
+            stats={
+                "impact": -0.886,
+                "crit_damage": 0.855,
+                "multishot": 1.126,
+                "crit_chance": 0.887,
+            },
+        ),
+        arsenal.get("Galvanized Hell", type="mod"),
+        arsenal.get("Semi-Shotgun Cannonade", type="mod"),
+        arsenal.get("Hunter Munitions", type="mod"),
+        arsenal.get("Primed Chilling Grasp", type="mod"),
+        arsenal.get("Primed Ravage", type="mod"),
+        arsenal.get("Critical Delay", type="mod"),
+        arsenal.get("Toxic Barrage", type="mod"),
+        arsenal.get("Vigilante Supplies", type="mod"),
+        arsenal.get("Primary Merciless", type="arcane"),
+        Upgrade(name="Buff", stats={"flat_crit_damage": 1.2}),
+    ]
+
+    assert isinstance(weapon, Primary)
+    assert all(isinstance(upgrade, Upgrade) for upgrade in upgrades)
+
+    weapon.configure(Build(*upgrades))
     print(weapon.format.summary())
-    
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     main()

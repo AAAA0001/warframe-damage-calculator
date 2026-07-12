@@ -19,12 +19,12 @@ WeaponState
 └── MeleeState
 
 TypedDict
-├── WeaponField
-│   ├── RangedField
-│   │   ├── PrimaryField
-│   │   └── SecondaryField
-│   └── MeleeField
-└── DamageField
+├── WeaponFields
+│   ├── RangedFields
+│   │   ├── PrimaryFields
+│   │   └── SecondaryFields
+│   └── MeleeFields
+└── DamageFields
 
 WeaponCalculator
 ├── RangedCalculator
@@ -135,6 +135,18 @@ warframe_damage_calculator/
 │
 ├── __init__.py
 │
+├── data/
+│   │
+│   ├── loader.py          # Public database access
+│   ├── construction.py    # Model factory
+│   ├── matching.py        # Category/type filtering
+│   ├── normalization.py   # Name normalization
+│   ├── schema.py          # Database record types
+│   ├── paths.py           # JSON loading and paths
+│   └── database/
+│       ├── weapons.json
+│       └── upgrades.json
+│
 ├── models/
 │   │
 │   ├── dist.py
@@ -157,12 +169,12 @@ warframe_damage_calculator/
 │
 ├── fields/
 │   │
-│   ├── weapon_field.py
-│   ├── ranged_field.py
-│   ├── damage_field.py
-│   ├── primary_field.py
-│   ├── secondary_field.py
-│   └── melee_field.py
+│   ├── weapon_fields.py
+│   ├── ranged_fields.py
+│   ├── damage_fields.py
+│   ├── primary_fields.py
+│   ├── secondary_fields.py
+│   └── melee_fields.py
 │
 ├── calculators/
 │   │
@@ -182,6 +194,19 @@ warframe_damage_calculator/
 │
 └── utils/
     │
-    ├── damage.py
-    └── functions.py
+    ├── constants.py
+    ├── functions.py
+    └── types.py
 ```
+## Database Construction
+
+`WarframeDatabase` is responsible for lookup and filtering, while
+`DatabaseFactory` converts a `DatabaseEntry` into a public weapon or upgrade
+model.
+
+Normal values in `stats`, `conditional_stats`, and `stacking_stats` scale with
+the selected rank. Static effects that unlock at a particular rank are stored
+in `rank_locked_stats` as `[value, required_rank]`. The factory adds an unlocked
+value to `Upgrade.stats`; it does not expose rank requirements as combat
+conditions. For example, Deadhead's headshot multiplier is absent at ranks 0–4
+and becomes a permanent `weakpoint_damage` stat at rank 5.

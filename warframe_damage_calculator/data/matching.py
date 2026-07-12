@@ -1,120 +1,102 @@
 from __future__ import annotations
 
-from typing import Any, Iterable
+from collections.abc import Mapping
+from typing import Any
 
-from ..utils import MELEE_TYPES, PRIMARY_TYPES, SECONDARY_TYPES, TYPE_ALIASES
-from .normalization import as_list, normalized_slug
+from .normalization import as_list, normalize_identifier
+from .schema import DatabaseEntry
 
 
-class DatabaseMatchingMixin:
-    def _expanded_type_filter(self, value: str | Iterable[str] | None) -> set[str]:
-        if value is None:
-            return set()
+PRIMARY_TYPES = frozenset({"primary", "rifle", "bow", "shotgun", "sniper"})
+SECONDARY_TYPES = frozenset({"secondary", "pistol"})
+MELEE_TYPES = frozenset({"melee"})
 
-        raw_values = as_list(value)
-        result: set[str] = set()
+_FILTER_ALIASES = {
+    "weapons": "weapon",
+    "primaries": "primary",
+    "secondaries": "secondary",
+    "pistols": "secondary",
+    "melees": "melee",
+    "upgrades": "upgrade",
+    "mods": "mod",
+    "arcanes": "arcane",
+}
 
-        for raw in raw_values:
-            key = normalized_slug(raw)
-            result.update(TYPE_ALIASES.get(key, {key}))
+_TYPE_ALIASES = {
+    "primary": PRIMARY_TYPES,
+    "secondary": SECONDARY_TYPES,
+    "pistol": frozenset({"pistol"}),
+    "melee": MELEE_TYPES,
+}
 
-        return result
 
-    def _weapon_matches_type(self, section: str, weapon: dict[str, Any], requested: set[str]) -> bool:
-        if not requested:
+def normalize_filter(value: str | None) -> str | None:
+    if value is None:
+        return None
+    key = normalize_identifier(value)
+    return _FILTER_ALIASES.get(key, key)
+
+
+def expand_type_filter(value: str | None) -> set[str]:
+    if value is None:
+        return set()
+    key = normalize_identifier(value)
+    return set(_TYPE_ALIASES.get(key, {key}))
+
+
+def _normalized_values(value: Any) -> set[str]:
+    return {normalize_identifier(item) for item in as_list(value)}
+
+
+def _requirements_match_type(requirements: Mapping[str, Any], requested: set[str]) -> bool:
+    for key, value in requirements.items():
+        if normalize_identifier(key) in requested:
             return True
-
-        weapon_type = normalized_slug(weapon.get("type"))
-
-        if section == "primaries" and requested & PRIMARY_TYPES:
-            if requested & {"primary"}:
-                return True
-            return weapon_type in requested
-
-        if section == "secondaries" and requested & SECONDARY_TYPES:
-            if requested & {"secondary"}:
-                return True
-            return weapon_type in requested
-
-        if section == "melees" and requested & MELEE_TYPES:
-            if requested & {"melee"}:
-                return True
-            return weapon_type in requested
-
-        return weapon_type in requested
-
-    def _upgrade_matches_type(self, upgrade: dict[str, Any], requested: set[str]) -> bool:
-        if not requested:
+        if _normalized_values(value) & requested:
             return True
+    return False
 
-        compatibility = {normalized_slug(item) for item in upgrade.get("compatibility", [])}
 
-        if "pistol" in requested and "pistol" in compatibility:
-            return True
+def weapon_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+    item_type = normalize_filter(item_type)
+    if item_type is None or item_type == "weapon":
+        return True
+    if item_type in {"upgrade", "mod", "arcane"}:
+        return False
 
-        if "primary" in requested and compatibility & PRIMARY_TYPES:
-            return True
+    if item_type in {"primary", "secondary", "melee"}:
+        return entry.category == item_type
 
-        return bool(compatibility & requested)
+    requested = expand_type_filter(item_type)
+    weapon_type = normalize_identifier(entry.data.get("type"))
+    trigger = normalize_identifier(entry.data.get("trigger"))
+    return weapon_type in requested or trigger in requested
 
-    def _upgrade_matches_weapon(self, upgrade: dict[str, Any], weapon_name: str, weapon: dict[str, Any], weapon_section: str) -> bool:
-        compatibility = {normalized_slug(item) for item in upgrade.get("compatibility", [])}
 
-        weapon_name_key = normalized_slug(weapon_name)
-        weapon_type = normalized_slug(weapon.get("type"))
+def upgrade_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+    item_type = normalize_filter(item_type)
+    if item_type is None or item_type == "upgrade":
+        return True
+    if item_type in {"mod", "arcane"}:
+        return entry.category == item_type
+    if item_type == "weapon":
+        return False
 
-        if weapon_section == "primaries":
-            weapon_family = "primary"
-        elif weapon_section == "secondaries":
-            weapon_family = "pistol"
-        elif weapon_section == "melees":
-            weapon_family = "melee"
-        else:
-            weapon_family = ""
+    requested = expand_type_filter(item_type)
+    compatibility = _normalized_values(entry.data.get("compatibility"))
 
-        compatible = any(value in compatibility for value in (weapon_name_key, weapon_type, weapon_family))
-
-        if not compatible:
-            return False
-
-        return self._requirements_match(weapon, upgrade.get("requirements") or {})
-
-    def _requirements_match(self, weapon: dict[str, Any], requirements: dict[str, Any]) -> bool:
-        if not requirements:
-            return True
-
-        for key, expected in requirements.items():
-            key = normalized_slug(key)
-
-            if key == "trigger":
-                allowed = {normalized_slug(v) for v in as_list(expected)}
-                if normalized_slug(weapon.get("trigger")) not in allowed:
-                    return False
-
-            elif key == "type":
-                allowed = {normalized_slug(v) for v in as_list(expected)}
-                if normalized_slug(weapon.get("type")) not in allowed:
-                    return False
-
-            elif key in {"is_beam", "is_battery"}:
-                if bool(weapon.get(key)) != bool(expected):
-                    return False
-
-            elif key.startswith("min_"):
-                field = key.removeprefix("min_")
-                if float(weapon.get(field, 0) or 0) < float(expected):
-                    return False
-
-            elif key.startswith("max_"):
-                field = key.removeprefix("max_")
-                if float(weapon.get(field, 0) or 0) > float(expected):
-                    return False
-
-            else:
-                if key not in weapon:
-                    return False
-                if weapon.get(key) != expected:
-                    return False
-
+    if item_type == "primary" and compatibility & PRIMARY_TYPES:
+        return True
+    if item_type == "secondary" and compatibility & SECONDARY_TYPES:
+        return True
+    if item_type == "melee" and compatibility & MELEE_TYPES:
         return True
 
+    requirements = entry.data.get("requirements") or {}
+    return bool(compatibility & requested) or _requirements_match_type(requirements, requested)
+
+
+def entry_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+    if entry.is_weapon:
+        return weapon_matches(entry, item_type)
+    return upgrade_matches(entry, item_type)

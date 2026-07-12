@@ -54,19 +54,50 @@ pip install -e .
 ## Quick Start
 
 ``` python
-from warframe_damage_calculator import *
+from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
 
-weapon = load_primary("Corinth Prime")
-mod1 = load_mod("Galvanized Hell", stack=4)
-mod2 = load_mod("Primed Cgilling Grasp", rank=3)
-build = Build(mod1, mod2)
+weapon = arsenal.get("Corinth Prime", type="primary")
+multishot = arsenal.get("Galvanized Hell", type="mod")
+cold = arsenal.get("Primed Chilling Grasp", type="mod", rank=3)
 
-weapon.configure(build)
+assert isinstance(weapon, Primary)
+assert isinstance(multishot, Upgrade)
+assert isinstance(cold, Upgrade)
 
+weapon.configure(Build(multishot, cold), context={"kill": 4})
 print(weapon.format.summary())
 ```
 
 For more complete examples, see the `examples/` directory.
+
+------------------------------------------------------------------------
+
+## Database Loader
+
+The bundled database uses the same names as the public model constructors. The
+main entry point is `arsenal.get()`:
+
+```python
+weapon = arsenal.get("Acceltra Prime", type="primary")
+mod = arsenal.get("Critical Delay", type="mod", rank=5)
+shotgun_names = arsenal.get(type="shotgun", attribute="name")
+crit_values = arsenal.get(type="mod", attribute="crit_chance")
+```
+
+When `name` is omitted, `get()` returns all matching items. Passing
+`attribute="name"` returns only their names without constructing every model.
+Filters accept broad categories such as `weapon`, `upgrade`, `primary`, `mod`,
+and `arcane`, as well as weapon types and triggers such as `shotgun`, `bow`, or
+`semi`.
+
+The JSON schema mirrors the model API:
+
+- Weapon sections: `primary`, `secondary`, and `melee`.
+- Upgrade sections: `mod` and `arcane`.
+- Weapon damage fields: `damage` and `explosion_damage`.
+- Upgrade buckets: `stats`, `conditional_stats`, and `stacking_stats`.
+- Conditional entries are stored as `[value, condition]`.
+- Rank-gated passive effects use `rank_locked_stats` with `[value, required_rank]`; the loader resolves them into `Upgrade.stats` only after that rank is reached.
 
 ------------------------------------------------------------------------
 
