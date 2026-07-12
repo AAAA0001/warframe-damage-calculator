@@ -71,7 +71,7 @@ class UpgradeResolver:
             resolved: dict[str, Value] = {}
             rank = context.get("rank", 0)
             if isinstance(rank, bool) or not isinstance(rank, int) or rank < 0:
-                raise ValueError(f"Invalid rank for {upgrade.name or 'upgrade'!r}: {rank!r}")
+                raise ValueError
             if upgrade.max_rank is not None:
                 rank = min(rank, upgrade.max_rank)
                 context["rank"] = rank
