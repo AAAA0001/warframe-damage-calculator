@@ -64,7 +64,8 @@ assert isinstance(weapon, Primary)
 assert isinstance(multishot, Upgrade)
 assert isinstance(cold, Upgrade)
 
-weapon.configure(Build(multishot, cold), context={"kill": 4})
+multishot.context["kill"] = 4
+weapon.configure(Build(multishot, cold))
 print(weapon.format.summary())
 ```
 
@@ -216,22 +217,19 @@ upgrade = Upgrade(
 ```
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
-automatically. Combat conditions and stack counts are supplied when the build
-is configured:
+automatically. Combat conditions and stack counts are stored on each upgrade:
 
 ```python
-context = {
-    "headshot": True,
-    "kill": 3,
-}
-
-weapon.configure(build, context=context)
+upgrade.context.update({"headshot": True, "kill": 3})
+weapon.configure(build)
 ```
 
-When `context` is omitted, conditional stats default to active and stacking
-stats use their upgrade's `max_stacks`. Pass `context={}` to disable all manual
-conditions and use zero stacks while retaining automatic weapon/build
-conditions.
+The resolver automatically adds weapon and build context to resolved upgrade
+copies. When an upgrade has no context, its conditional stats default to active
+and its stacking stats use `max_stacks`. Once context is supplied, omitted
+manual conditions are inactive and omitted stack counts are zero. Rank-locked
+stats use `upgrade.context["rank"]`. During resolution it defaults to
+`max_rank`, or zero when the upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models only store data. Condition matching, stack
 limits, and bucket merging are handled by `UpgradeResolver`.

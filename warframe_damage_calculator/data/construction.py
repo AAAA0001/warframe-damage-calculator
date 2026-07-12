@@ -60,10 +60,12 @@ class DatabaseFactory:
             "compatibility": set(entry.data.get("compatibility") or ()),
             "incompatibility": set(entry.data.get("incompatibility") or ()),
             "requirements": deepcopy(entry.data.get("requirements") or {}),
+            "context": {"rank": effective_rank or 0},
             "max_rank": entry.data.get("max_rank"),
             "max_stacks": entry.data.get("max_stacks"),
             "is_exilus": bool(entry.data.get("is_exilus", False)),
-            "stats": self._resolved_stats(entry.data, effective_rank, multiplier),
+            "stats": self._scaled_stats(entry.data.get("stats"), multiplier),
+            "rank_locked_stats": self._rank_locked_stats(entry.data.get("rank_locked_stats"), effective_rank),
             "conditional_stats": self._scaled_conditioned_stats(
                 entry.data.get("conditional_stats"), multiplier
             ),
@@ -97,30 +99,15 @@ class DatabaseFactory:
         return effective_rank, (effective_rank + 1) / (max_rank + 1)
 
     @classmethod
-    def _resolved_stats(
-        cls,
-        data: Mapping[str, Any],
-        effective_rank: int | None,
-        multiplier: float,
-    ) -> dict[str, Value]:
-        result = cls._scaled_stats(data.get("stats"), multiplier)
-        unlocked = cls._unlocked_rank_stats(
-            data.get("rank_locked_stats"),
-            effective_rank,
-        )
-        cls._merge_stats(result, unlocked)
-        return result
-
-    @classmethod
-    def _unlocked_rank_stats(
+    def _rank_locked_stats(
         cls,
         values: Mapping[str, Any] | None,
         effective_rank: int | None,
-    ) -> dict[str, Value]:
+    ) -> dict[str, tuple[Value, int]]:
         if values and effective_rank is None:
             raise ValueError("rank_locked_stats require max_rank in the upgrade database")
 
-        result: dict[str, Value] = {}
+        result: dict[str, tuple[Value, int]] = {}
         for stat, raw_pair in (values or {}).items():
             if not isinstance(raw_pair, (list, tuple)) or len(raw_pair) != 2:
                 raise ValueError(
@@ -135,28 +122,8 @@ class DatabaseFactory:
                 raise ValueError(
                     f"Required rank for database stat {stat!r} cannot be negative"
                 )
-            if effective_rank is not None and effective_rank >= required_rank:
-                result[stat] = cls._scale_value(value, 1.0)
+            result[stat] = (cls._scale_value(value, 1.0), required_rank)
         return result
-
-    @staticmethod
-    def _merge_stats(target: dict[str, Value], source: Mapping[str, Value]) -> None:
-        for stat, value in source.items():
-            if stat not in target:
-                target[stat] = value
-                continue
-
-            current = target[stat]
-            if isinstance(current, bool) or isinstance(value, bool):
-                if current != value:
-                    raise ValueError(
-                        f"Conflicting boolean values for upgrade stat {stat!r}"
-                    )
-                continue
-
-            if not isinstance(current, (int, float)) or not isinstance(value, (int, float)):
-                raise TypeError(f"Upgrade stat values must be numeric or bool, got {value!r}")
-            target[stat] = current + value
 
     @classmethod
     def _scaled_stats(

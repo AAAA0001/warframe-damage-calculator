@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Any, Self, TypeVar, Unpack
 
-from ..utils import Condition
 from ..calculators import WeaponCalculator
 from ..fields import WeaponFields
 from ..formatters import WeaponFormatter
@@ -32,12 +31,12 @@ class Weapon:
                 state_fields[field_name] = dist(state_fields[field_name])
         return state_class(**state_fields)
 
-    def configure(self, *upgrades: Build | Upgrade, context: dict[Condition, bool | int] | None = None) -> Self:
+    def configure(self, *upgrades: Build | Upgrade) -> Self:
         if all(type(upgrade) is Upgrade for upgrade in upgrades):
             build = Build(*upgrades)
         elif len(upgrades) == 1 and isinstance(upgrades[0], Build):
             build = upgrades[0]
         else:
-            raise TypeError("Expected a Build or one or more Upgrade objects")
-        self.stats._set_build(build, context)
+            raise TypeError
+        self.stats._set_build(build)
         return self

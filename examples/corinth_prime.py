@@ -29,7 +29,7 @@ def main() -> None:
     assert all(isinstance(upgrade, Upgrade) for upgrade in upgrades)
 
     weapon.configure(Build(*upgrades))
-    print(weapon.format.summary())
+    print(weapon.format.upgrades())
 
 
 if __name__ == "__main__":
