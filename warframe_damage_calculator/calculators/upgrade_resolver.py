@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from ..models import dist, Build, StatValue
+from ..utils import Value
+from ..models import dist, Build
 from ..states import WeaponState
 from ..utils import DAMAGE_TYPES
 
@@ -34,7 +35,7 @@ class UpgradeResolver:
         return bool(manual.get(condition, default))
 
     @staticmethod
-    def _merge(target: dict[str, StatValue], stat: str, value: StatValue) -> None:
+    def _merge(target: dict[str, Value], stat: str, value: Value) -> None:
         if stat in DAMAGE_TYPES:
             value = dist(**{stat: value})
             stat = "damage_dist"
@@ -50,11 +51,11 @@ class UpgradeResolver:
         else:
             raise TypeError(f"Cannot merge values for upgrade stat {stat!r}")
 
-    def resolve(self, weapon: WeaponState, build: Build, context: dict[str, bool | int] | None = None) -> dict[str, StatValue]:
+    def resolve(self, weapon: WeaponState, build: Build, context: dict[str, bool | int] | None = None) -> dict[str, Value]:
         use_defaults = context is None
         context = dict(context or {})
         manual = {self._key(key): value for key, value in context.items()}
-        resolved: dict[str, StatValue] = {}
+        resolved: dict[str, Value] = {}
 
         for upgrade in build:
             for stat, value in upgrade.stats.items():

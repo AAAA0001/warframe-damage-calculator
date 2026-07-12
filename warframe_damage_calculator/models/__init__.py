@@ -1,5 +1,5 @@
 from .dist import dist
-from .upgrade import StatValue, Upgrade
+from .upgrade import Upgrade
 from .build import Build
 from .weapon import Weapon
 from .melee import Melee
@@ -10,7 +10,6 @@ from .secondary import Secondary
 __all__ = [
     "dist",
     "Upgrade",
-    "StatValue",
     "Build",
     "Weapon",
     "Melee",

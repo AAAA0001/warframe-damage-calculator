@@ -16,7 +16,7 @@ def main():
     build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, arcane, buffs)
 
     weapon.configure(build)
-    print(weapon.format.upgrades())
+    print(weapon.format.summary())
     
 if __name__ == '__main__':
     main()
