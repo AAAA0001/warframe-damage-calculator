@@ -6,8 +6,6 @@ from ..utils import DAMAGE_TYPES
 
 
 class UpgradeResolver:
-    """Resolve upgrade buckets into the flat stat dictionary calculators consume."""
-
     WEAPON_CONDITIONS = {"primary", "rifle", "bow", "shotgun", "sniper", "secondary", "pistol", "melee"}
 
     @staticmethod
