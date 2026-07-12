@@ -1,6 +1,6 @@
 from __future__ import annotations
 import unittest
-from warframe_damage_calculator.models import Build, Melee, Upgrade, dist
+from warframe_damage_calculator import Build, Melee, Upgrade, dist
 
 class MeleeTests(unittest.TestCase):
 
