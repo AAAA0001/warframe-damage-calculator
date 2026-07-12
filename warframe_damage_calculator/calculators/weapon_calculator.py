@@ -21,8 +21,8 @@ class WeaponCalculator[TWeaponState: WeaponState]:
 
     def _set_build(self, build: Build, context: dict[Condition, bool | int] | None = None) -> None:
         self.build = build
-        self.context = None if context is None else dict(context)
-        self.resolved_build = UpgradeResolver().resolve(self.base, build, self.context)
+        self.context = context
+        self.resolved_build = UpgradeResolver().resolve(self.base, build, context)
         self.recompute()
 
     def _upgrade(self, stat: Stat, default: Value = 0) -> Value:
