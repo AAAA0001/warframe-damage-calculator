@@ -29,8 +29,11 @@ class Build:
         return NotImplemented
 
     def __sub__(self, other: Upgrade | Build) -> Build:
-        excluded = {other} if isinstance(other, Upgrade) else set(other.upgrades) if isinstance(other, Build) else None
-        if excluded is None:
+        if isinstance(other, Upgrade):
+            excluded = {other}
+        elif isinstance(other, Build):
+            excluded = set(other.upgrades)
+        else:
             return NotImplemented
         return Build(*(upgrade for upgrade in self.upgrades if upgrade not in excluded))
 
@@ -39,7 +42,7 @@ class Build:
 
     def aggregate(self) -> dict[Stat, Value]:
         stats: dict[Stat, Value] = {}
-        for upgrade in self.upgrades:
+        for upgrade in self:
             for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
                 if current is None:
@@ -49,7 +52,7 @@ class Build:
                 elif not isinstance(current, bool) and not isinstance(value, bool):
                     stats[stat] = current + value
                 else:
-                    raise TypeError
+                    raise TypeError(f"Cannot combine values for build stat {stat!r}")
         return stats
 
     def get(self, stat: Stat, default: Value = 0) -> Value:

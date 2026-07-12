@@ -5,11 +5,4 @@ from .ranged_fields import RangedFields
 from .primary_fields import PrimaryFields
 from .secondary_fields import SecondaryFields
 
-__all__ = [
-    "DamageFields",
-    "WeaponFields",
-    "MeleeFields",
-    "RangedFields",
-    "PrimaryFields",
-    "SecondaryFields",
-]
+__all__ = ["DamageFields", "WeaponFields", "MeleeFields", "RangedFields", "PrimaryFields", "SecondaryFields"]

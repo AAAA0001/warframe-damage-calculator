@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from ..utils import Value
 from ..models import Build
 from ..models.dist import dist
 from ..states import WeaponState
-from ..utils import DAMAGE_TYPES
+from ..utils import DAMAGE_TYPES, Value
 
 
 class UpgradeResolver:
@@ -70,7 +69,7 @@ class UpgradeResolver:
                     self._merge(resolved, stat, value)
 
             for stat, (value, condition) in upgrade.stacking_stats.items():
-                default_stacks = upgrade.max_stacks or 0 if use_defaults else 0
+                default_stacks = (upgrade.max_stacks or 0) if use_defaults else 0
                 stack_count = manual.get(self._key(condition), default_stacks)
                 if isinstance(stack_count, bool) or not isinstance(stack_count, int) or stack_count < 0:
                     raise ValueError(f"Invalid stack count for condition {condition!r}: {stack_count!r}")
@@ -79,11 +78,6 @@ class UpgradeResolver:
                 if stack_count:
                     self._merge(resolved, stat, value * stack_count)
 
-            resolved_upgrades.append(replace(
-                upgrade,
-                stats=resolved,
-                conditional_stats={},
-                stacking_stats={},
-            ))
+            resolved_upgrades.append(replace(upgrade, stats=resolved, conditional_stats={}, stacking_stats={}))
 
         return Build(*resolved_upgrades)

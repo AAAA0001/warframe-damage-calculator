@@ -70,20 +70,17 @@ class dist:
 
     def apply(self, upgrades: dist) -> dist:
         total = self.total_damage()
-        return dist({
-            damage_type: self.get(damage_type) * (1 + upgrades.get(damage_type))
-            if damage_type in PHYSICAL_TYPES
-            else self.get(damage_type) + total * upgrades.get(damage_type)
-            for damage_type in self._values | upgrades._values
-        })
+        return dist({damage_type: self.get(damage_type) * (1 + upgrades.get(damage_type)) if damage_type in PHYSICAL_TYPES else self.get(damage_type) + total * upgrades.get(damage_type) for damage_type in self._values | upgrades._values})
 
     def combine(self) -> dist:
         elements = list(self.include(ELEMENTAL_TYPES))
         combined: dict[DamageType, float] = {}
-        for (first_type, first_value), (second_type, second_value) in zip(elements[::2], elements[1::2] + [(None, 0.0)]):
+        pairs = zip(elements[::2], elements[1::2] + [(None, 0.0)])
+        for (first_type, first_value), (second_type, second_value) in pairs:
             result_type = ELEMENTAL_COMBINATIONS.get(frozenset((first_type, second_type)), first_type)
             combined[result_type] = first_value + second_value
         return (self.exclude(ELEMENTAL_TYPES) + dist(combined)).positive()
 
     def sorted(self) -> dist:
-        return dist(dict(sorted(self._values.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])))
+        ordered = sorted(self._values.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])
+        return dist(dict(ordered))

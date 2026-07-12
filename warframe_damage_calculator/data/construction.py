@@ -3,8 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from ..models import Upgrade, Primary, Secondary, Melee
-from ..utils import COMMON_WEAPON_PAYLOAD_FIELDS, RANGED_WEAPON_PAYLOAD_FIELDS, MELEE_WEAPON_PAYLOAD_FIELDS
+from ..models import Melee, Primary, Secondary, Upgrade
+from ..utils import COMMON_WEAPON_PAYLOAD_FIELDS, MELEE_WEAPON_PAYLOAD_FIELDS, RANGED_WEAPON_PAYLOAD_FIELDS
 
 
 class DatabaseConstructionMixin:
@@ -39,30 +39,13 @@ class DatabaseConstructionMixin:
 
     def _prepare_upgrade_metadata(self, data: dict[str, Any]) -> dict[str, Any]:
         """Convert database metadata into the types used by ``Upgrade``."""
-        return {
-            "compatibility": set(data.get("compatibility") or ()),
-            "incompatibility": set(data.get("incompatibility") or ()),
-            "requirements": deepcopy(data.get("requirements") or {}),
-            "max_rank": data.get("max_rank"),
-            "max_stacks": data.get("max_stacks"),
-            "is_exilus": bool(data.get("is_exilus", False)),
-        }
+        return {"compatibility": set(data.get("compatibility") or ()), "incompatibility": set(data.get("incompatibility") or ()), "requirements": deepcopy(data.get("requirements") or {}), "max_rank": data.get("max_rank"), "max_stacks": data.get("max_stacks"), "is_exilus": bool(data.get("is_exilus", False))}
 
     def _prepare_upgrade_payload(self, data: dict[str, Any], *, section: str | None = None) -> dict[str, Any]:
         conditions = data.get("conditions") or {}
         fallback_condition = data.get("condition") or "condition"
         payload = self._prepare_upgrade_metadata(data)
-        payload.update({
-            "stats": deepcopy(data.get("stats") or {}),
-            "conditional_stats": {
-                stat: (value, conditions.get(stat, fallback_condition))
-                for stat, value in (data.get("conditionals") or {}).items()
-            },
-            "stacking_stats": {
-                stat: (value, conditions.get(stat, data.get("condition") or "stacks"))
-                for stat, value in (data.get("stackables") or {}).items()
-            },
-        })
+        payload.update({"stats": deepcopy(data.get("stats") or {}), "conditional_stats": {stat: (value, conditions.get(stat, fallback_condition)) for stat, value in (data.get("conditionals") or {}).items()}, "stacking_stats": {stat: (value, conditions.get(stat, data.get("condition") or "stacks")) for stat, value in (data.get("stackables") or {}).items()}})
         if section == "mods":
             payload["category"] = "mod"
         elif section == "arcanes":
@@ -94,7 +77,4 @@ class DatabaseConstructionMixin:
         try:
             return cls(**payload)
         except TypeError as exc:
-            raise TypeError(
-                f"Could not construct {cls.__name__} object for {name!r}. "
-                f"Check that the JSON keys match the {cls.__name__} constructor."
-            ) from exc
+            raise TypeError(f"Could not construct {cls.__name__} object for {name!r}. Check that the JSON keys match the {cls.__name__} constructor.") from exc

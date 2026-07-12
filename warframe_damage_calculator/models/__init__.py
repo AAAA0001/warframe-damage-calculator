@@ -6,12 +6,4 @@ from .ranged import Ranged
 from .primary import Primary
 from .secondary import Secondary
 
-__all__ = [
-    "Upgrade",
-    "Build",
-    "Weapon",
-    "Melee",
-    "Ranged",
-    "Primary",
-    "Secondary",
-]
+__all__ = ["Upgrade", "Build", "Weapon", "Melee", "Ranged", "Primary", "Secondary"]

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from ..models import Melee, Primary, Secondary, Upgrade
 from ..models.dist import dist
@@ -108,12 +109,7 @@ class DatabaseAccessMixin:
                 return value * multiplier
             return value
 
-        return replace(
-            upgrade,
-            stats={key: scale(value) for key, value in upgrade.stats.items()},
-            conditional_stats={key: (scale(value), condition) for key, (value, condition) in upgrade.conditional_stats.items()},
-            stacking_stats={key: (scale(value), condition) for key, (value, condition) in upgrade.stacking_stats.items()},
-        )
+        return replace(upgrade, stats={key: scale(value) for key, value in upgrade.stats.items()}, conditional_stats={key: (scale(value), condition) for key, (value, condition) in upgrade.conditional_stats.items()}, stacking_stats={key: (scale(value), condition) for key, (value, condition) in upgrade.stacking_stats.items()})
 
     def _make_matching_weapon(self, name: str, *, type: str | None) -> Weapon | None:
         found = self._find_weapon(name)
@@ -155,24 +151,24 @@ class DatabaseAccessMixin:
                     yield name, self._scale_upgrade_for_rank(upgrade, data, rank)
 
     def _extract_attribute(self, item: ArsenalItem, attribute: str) -> ArsenalValue | None:
-        attr = normalized_slug(attribute)
+        attribute_key = normalized_slug(attribute)
 
-        if attr == "name":
+        if attribute_key == "name":
             if isinstance(item, Upgrade):
                 return item.name
             return getattr(item.stats.base, "name", None)
 
-        if hasattr(item, attr):
-            return getattr(item, attr)
+        if hasattr(item, attribute_key):
+            return getattr(item, attribute_key)
 
         if hasattr(item, "stats"):
             for source_name in ("base", "effective"):
                 source = getattr(item.stats, source_name, None)
-                if source is not None and hasattr(source, attr):
-                    return getattr(source, attr)
+                if source is not None and hasattr(source, attribute_key):
+                    return getattr(source, attribute_key)
 
-            if hasattr(item.stats, attr):
-                return getattr(item.stats, attr)
+            if hasattr(item.stats, attribute_key):
+                return getattr(item.stats, attribute_key)
 
         return None
 
@@ -181,7 +177,7 @@ class DatabaseAccessMixin:
             return item
         return self._extract_attribute(item, attribute)
 
-    def get(self, name: str | None = None, *, type: str | None = None, rank: int | None = None, atribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
+    def get(self, name: str | None = None, *, type: str | None = None, rank: int | None = None, attribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
         if name is not None:
             matches: list[ArsenalItem] = []
 
@@ -199,14 +195,15 @@ class DatabaseAccessMixin:
             if len(matches) > 1:
                 raise ValueError(f"Ambiguous arsenal item name {name!r}. Pass a more specific type, such as type='primary', type='mod', or type='arcane'.")
 
-            return self._apply_attribute(matches[0], atribute)
+            return self._apply_attribute(matches[0], attribute)
 
-        items = dict(sorted(self._iter_matching_items(type=type, rank=rank), key=lambda item: normalized_key(item[0])))
+        matching_items = self._iter_matching_items(type=type, rank=rank)
+        items = dict(sorted(matching_items, key=lambda item: normalized_key(item[0])))
 
-        if atribute is None:
+        if attribute is None:
             return items
 
-        if normalized_slug(atribute) == "name":
+        if normalized_slug(attribute) == "name":
             return list(items.keys())
 
-        return {item_name: self._extract_attribute(item, atribute) for item_name, item in items.items()}
+        return {item_name: self._extract_attribute(item, attribute) for item_name, item in items.items()}

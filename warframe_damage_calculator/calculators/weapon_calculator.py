@@ -14,7 +14,6 @@ class WeaponCalculator[TWeaponState: WeaponState]:
         self.build = Build()
         self.context: dict[Condition, bool | int] | None = None
         self.resolved_build = Build()
-        self._resolver = UpgradeResolver()
         self.base: TWeaponState = base
         self.moded: TWeaponState = type(base)()
         self.effective: TWeaponState = type(base)()
@@ -23,7 +22,7 @@ class WeaponCalculator[TWeaponState: WeaponState]:
     def _set_build(self, build: Build, context: dict[Condition, bool | int] | None = None) -> None:
         self.build = build
         self.context = None if context is None else dict(context)
-        self.resolved_build = self._resolver.resolve(self.base, build, self.context)
+        self.resolved_build = UpgradeResolver().resolve(self.base, build, self.context)
         self.recompute()
 
     def _upgrade(self, stat: Stat, default: Value = 0) -> Value:
@@ -80,23 +79,23 @@ class WeaponCalculator[TWeaponState: WeaponState]:
     def total_dps(self) -> float:
         return self.flat_dps + self.flat_dotps
     
-    def contribution(self, other: Upgrade) -> float:
-        full = self.build
+    def contribution(self, upgrade: Upgrade) -> float:
+        full_build = self.build
         full_context = self.context
-        total = self.total_dps
-        self._set_build(full - other, full_context)
-        contribution = total - self.total_dps
-        self._set_build(full, full_context)
-        return contribution
-    
+        full_dps = self.total_dps
+        try:
+            self._set_build(full_build - upgrade, full_context)
+            return full_dps - self.total_dps
+        finally:
+            self._set_build(full_build, full_context)
+
     @cached_property
-    def contribution_values(self) -> dict[Upgrade, float]:
+    def contribution_values(self) -> dict[str, float]:
         if not all(upgrade.name for upgrade in self.build):
             raise ValueError("All upgrades need to be named")
         return {upgrade.name: self.contribution(upgrade) for upgrade in self.build}
-    
+
     @cached_property
-    def contribution_proportions(self) -> dict[Upgrade, float]:
+    def contribution_proportions(self) -> dict[str, float]:
         total = sum(self.contribution_values.values()) or 1
-        return {name: contibution / total for name, contibution in self.contribution_values.items()}
-        
+        return {name: contribution / total for name, contribution in self.contribution_values.items()}

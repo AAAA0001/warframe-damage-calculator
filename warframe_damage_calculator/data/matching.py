@@ -48,7 +48,7 @@ class DatabaseMatchingMixin:
             return True
 
         compatibility = {normalized_slug(item) for item in upgrade.get("compatibility", [])}
-        
+
         if "pistol" in requested and "pistol" in compatibility:
             return True
 
@@ -72,7 +72,7 @@ class DatabaseMatchingMixin:
         else:
             weapon_family = ""
 
-        compatible = weapon_name_key in compatibility or weapon_type in compatibility or weapon_family in compatibility
+        compatible = any(value in compatibility for value in (weapon_name_key, weapon_type, weapon_family))
 
         if not compatible:
             return False
@@ -117,6 +117,4 @@ class DatabaseMatchingMixin:
                     return False
 
         return True
-
-
 
