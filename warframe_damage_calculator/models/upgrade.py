@@ -3,11 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TypeAlias
 
+from ..utils import UpgradeStat
 from .dist import dist
 
 
 StatValue: TypeAlias = float | int | bool | dist
-ConditionalStat: TypeAlias = tuple[StatValue, str]
 
 
 @dataclass(eq=False)
@@ -21,6 +21,6 @@ class Upgrade:
     max_stacks: int | None = None
     is_exilus: bool = False
 
-    stats: dict[str, StatValue] = field(default_factory=dict)
-    conditional_stats: dict[str, ConditionalStat] = field(default_factory=dict)
-    stacking_stats: dict[str, ConditionalStat] = field(default_factory=dict)
+    stats: dict[UpgradeStat, StatValue] = field(default_factory=dict)
+    conditional_stats: dict[UpgradeStat, tuple[StatValue, str]] = field(default_factory=dict)
+    stacking_stats: dict[UpgradeStat, tuple[StatValue, str]] = field(default_factory=dict)
