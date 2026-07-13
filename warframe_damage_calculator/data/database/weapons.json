@@ -77,9 +77,6 @@
                 "magazine_capacity": 40,
                 "explosion_damage": {
                     "blast": 25.0
-                },
-                "forced_procs": {
-                    "impact": 1
                 }
             }
         },
@@ -282,10 +279,7 @@
                 "fire_rate": 1.0,
                 "reload_speed": 0.85,
                 "magazine_capacity": 1,
-                "charge_time": 1.0,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "charge_time": 1.0
             }
         },
         "Artemis Bow Prime": {
@@ -308,10 +302,7 @@
                 "fire_rate": 1.0,
                 "reload_speed": 0.85,
                 "magazine_capacity": 1,
-                "charge_time": 1.0,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "charge_time": 1.0
             }
         },
         "Astilla": {
@@ -1180,10 +1171,7 @@
                 "reload_speed": 1.5,
                 "magazine_capacity": 14,
                 "burst_count": 2,
-                "burst_delay": 0.09,
-                "forced_procs": {
-                    "blast": 1
-                }
+                "burst_delay": 0.09
             }
         },
         "Drakgoon": {
@@ -1619,10 +1607,7 @@
                 "reload_speed": 2.0,
                 "magazine_capacity": 45,
                 "burst_count": 3,
-                "burst_delay": 0.1,
-                "forced_procs": {
-                    "puncture": 1
-                }
+                "burst_delay": 0.1
             }
         },
         "Hek": {
@@ -1779,9 +1764,6 @@
                 "charge_time": 0.3,
                 "explosion_damage": {
                     "heat": 120.0
-                },
-                "explosion_forced_procs": {
-                    "impact": 1
                 }
             }
         },
@@ -2461,7 +2443,7 @@
                 "reload_speed": 2.3,
                 "magazine_capacity": 9,
                 "forced_procs": {
-                    "impact": 2
+                    "impact": 1
                 }
             }
         },
@@ -2486,7 +2468,7 @@
                 "reload_speed": 2.3,
                 "magazine_capacity": 11,
                 "forced_procs": {
-                    "impact": 2
+                    "impact": 1
                 }
             }
         },
@@ -2511,10 +2493,7 @@
                 "reload_speed": 0.6,
                 "magazine_capacity": 1,
                 "recharge_rate": 10.0,
-                "charge_time": 1.0,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "charge_time": 1.0
             }
         },
         "Neutralizer": {
@@ -3288,9 +3267,6 @@
                 "magazine_capacity": 40,
                 "explosion_damage": {
                     "corrosive": 55.0
-                },
-                "explosion_forced_procs": {
-                    "impact": 1
                 }
             }
         },
@@ -3314,9 +3290,6 @@
                 "magazine_capacity": 40,
                 "explosion_damage": {
                     "corrosive": 60.0
-                },
-                "explosion_forced_procs": {
-                    "impact": 1
                 }
             }
         },
@@ -3547,10 +3520,7 @@
                 "multishot": 1.0,
                 "fire_rate": 6.0,
                 "reload_speed": 1.4,
-                "magazine_capacity": 40,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "magazine_capacity": 40
             }
         },
         "Steflos": {
@@ -3749,10 +3719,7 @@
                 "reload_speed": 2.0,
                 "magazine_capacity": 10,
                 "burst_count": 2,
-                "burst_delay": 0.101,
-                "forced_procs": {
-                    "blast": 1
-                }
+                "burst_delay": 0.101
             }
         },
         "Sybaris Prime": {
@@ -3776,10 +3743,7 @@
                 "reload_speed": 2.0,
                 "magazine_capacity": 20,
                 "burst_count": 2,
-                "burst_delay": 0.062,
-                "forced_procs": {
-                    "blast": 1
-                }
+                "burst_delay": 0.062
             }
         },
         "Synapse": {
@@ -5824,7 +5788,7 @@
                 "magazine_capacity": 1,
                 "charge_time": 0.36,
                 "forced_procs": {
-                    "impact": 2
+                    "impact": 1
                 }
             }
         },
@@ -5851,7 +5815,7 @@
                 "charge_time": 0.36,
                 "forced_procs": {
                     "cold": 1,
-                    "impact": 2
+                    "impact": 1
                 }
             }
         },
@@ -6002,12 +5966,6 @@
                 "magazine_capacity": 10,
                 "explosion_damage": {
                     "electricity": 50.0
-                },
-                "forced_procs": {
-                    "electricity": 1
-                },
-                "explosion_forced_procs": {
-                    "electricity": 1
                 }
             }
         },
@@ -6076,9 +6034,6 @@
                 "reload_speed": 1.7,
                 "magazine_capacity": 16,
                 "forced_procs": {
-                    "cold": 1,
-                    "electricity": 1,
-                    "heat": 1,
                     "toxin": 1
                 }
             }
@@ -6104,9 +6059,6 @@
                 "reload_speed": 1.6,
                 "magazine_capacity": 16,
                 "forced_procs": {
-                    "cold": 1,
-                    "electricity": 1,
-                    "heat": 1,
                     "toxin": 1
                 }
             }
@@ -7175,9 +7127,6 @@
                 "burst_count": 2,
                 "explosion_damage": {
                     "heat": 46.0
-                },
-                "forced_procs": {
-                    "impact": 1
                 }
             }
         },
@@ -7448,9 +7397,6 @@
                 "magazine_capacity": 4,
                 "explosion_damage": {
                     "blast": 120.0
-                },
-                "explosion_forced_procs": {
-                    "puncture": 1
                 }
             }
         },
@@ -8452,11 +8398,7 @@
                     "slash": 52.0,
                     "toxin": 76.0
                 },
-                "attack_speed": 1.0,
-                "forced_procs": {
-                    "impact": 1,
-                    "toxin": 1
-                }
+                "attack_speed": 1.0
             }
         },
         "Ceti Lacera": {
@@ -9336,11 +9278,7 @@
                     "slash": 92.0,
                     "electricity": 84.0
                 },
-                "attack_speed": 0.833,
-                "forced_procs": {
-                    "electricity": 1,
-                    "impact": 1
-                }
+                "attack_speed": 0.833
             }
         },
         "Fang": {
@@ -9611,10 +9549,7 @@
                     "puncture": 15.75,
                     "slash": 73.5
                 },
-                "attack_speed": 1.0,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "attack_speed": 1.0
             }
         },
         "Glaive Prime": {
@@ -9632,11 +9567,7 @@
                     "puncture": 24.6,
                     "slash": 114.8
                 },
-                "attack_speed": 1.25,
-                "forced_procs": {
-                    "impact": 2,
-                    "slash": 2
-                }
+                "attack_speed": 1.25
             }
         },
         "Gram": {
@@ -9762,10 +9693,7 @@
                     "puncture": 119.2,
                     "slash": 14.9
                 },
-                "attack_speed": 1.167,
-                "forced_procs": {
-                    "impact": 2
-                }
+                "attack_speed": 1.167
             }
         },
         "Halikar Wraith": {
@@ -9783,10 +9711,7 @@
                     "puncture": 180.0,
                     "slash": 22.5
                 },
-                "attack_speed": 1.167,
-                "forced_procs": {
-                    "impact": 2
-                }
+                "attack_speed": 1.167
             }
         },
         "Harmony": {
@@ -10885,10 +10810,7 @@
                     "puncture": 9.75,
                     "slash": 146.25
                 },
-                "attack_speed": 0.75,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "attack_speed": 0.75
             }
         },
         "Pangolin Prime": {
@@ -11237,10 +11159,7 @@
                     "puncture": 46.0,
                     "slash": 156.4
                 },
-                "attack_speed": 0.833,
-                "forced_procs": {
-                    "slash": 2
-                }
+                "attack_speed": 0.833
             }
         },
         "Quassus Prime": {
@@ -11258,10 +11177,7 @@
                     "puncture": 52.0,
                     "slash": 182.0
                 },
-                "attack_speed": 0.833,
-                "forced_procs": {
-                    "slash": 2
-                }
+                "attack_speed": 0.833
             }
         },
         "Rabvee": {
@@ -12599,10 +12515,7 @@
                     "puncture": 7.77,
                     "slash": 119.14
                 },
-                "attack_speed": 1.0,
-                "forced_procs": {
-                    "impact": 1
-                }
+                "attack_speed": 1.0
             }
         },
         "Wrath": {
@@ -12637,10 +12550,7 @@
                     "puncture": 40.8,
                     "slash": 55.2
                 },
-                "attack_speed": 1.167,
-                "forced_procs": {
-                    "impact": 2
-                }
+                "attack_speed": 1.167
             }
         },
         "Zenistar": {
