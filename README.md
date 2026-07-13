@@ -203,10 +203,13 @@ an internal calculator detail:
 
 ```python
 weapon = Primary(
-    damage={"impact": 20, "puncture": 30, "slash": 50},
-    forced_procs={"slash": 1},
-    explosion_damage={"heat": 100},
-    explosion_forced_procs={"heat": 1},
+    stats={
+        "damage": {"impact": 20, "puncture": 30, "slash": 50},
+        "forced_procs": {"slash": 1},
+        "explosion_damage": {"heat": 100},
+        "explosion_forced_procs": {"heat": 1},
+    },
+    context={"type": "rifle"},
 )
 ```
 
@@ -219,13 +222,22 @@ entries use a `(value, condition)` tuple:
 
 ```python
 upgrade = Upgrade(
-    name="Example Arcane",
-    max_stacks=3,
+    context={"name": "Example Arcane", "max_stacks": 3},
     stats={"reload_speed": 0.3},
-    conditional_stats={"crit_chance": (0.5, "headshot")},
-    stacking_stats={"base_damage": (0.3, "kill")},
+    conditional_stats={"crit_chance": [0.5, "headshot"]},
+    stacking_stats={"base_damage": [0.3, "kill"]},
 )
 ```
+
+Descriptive metadata is stored only in `context`. Upgrade contexts include
+`name`, `category`, `compatibility`, `incompatibility`, `requirements`,
+`max_rank`, `max_stacks`, and `is_exilus`; weapon contexts include `name`,
+`category`, `type`, and ranged trigger/beam/battery metadata when applicable.
+Runtime conditions remain in the same dictionary.
+
+Weapon calculations use plain `base`, `moded`, and `effective` stat buckets.
+Read calculated values from, for example,
+`weapon.stats.effective["crit_chance"]`.
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
 automatically. Combat conditions and stack counts are stored on each upgrade:
@@ -244,6 +256,13 @@ stats use `upgrade.context["rank"]`. During resolution it defaults to
 
 The `Upgrade` and `Build` models only store data. Condition matching, stack
 limits, and bucket merging are handled by `UpgradeResolver`.
+
+`Build.contextualize()` returns a copied build with shared context applied to every copied upgrade. `Build.global_context()` updates every upgrade in the current build:
+
+```python
+contextualized = build.contextualize(weapon.context)
+build.global_context({"kill": 3})
+```
 
 ### Damage
 

@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Iterator
+from collections.abc import Mapping
+from typing import Iterator, Self
 
 from ..utils import Stat, Value
 from .upgrade import Upgrade
 
 
-@dataclass(init=False)
 class Build:
-    upgrades: list[Upgrade] = field(default_factory=list)
-
     def __init__(self, *upgrades: Upgrade) -> None:
         if any(not isinstance(upgrade, Upgrade) for upgrade in upgrades):
             raise TypeError("Build only accepts Upgrade objects")
@@ -39,6 +36,21 @@ class Build:
 
     def __iter__(self) -> Iterator[Upgrade]:
         return iter(self.upgrades)
+
+    @staticmethod
+    def _normalize(value: str) -> str:
+        return " ".join(value.casefold().replace("_", " ").replace("-", " ").split())
+
+    def global_context(self, context: Mapping[str, object]) -> Self:
+        for upgrade in self:
+            upgrade.context.update(context)
+        return self
+
+    def contextualize(self, context: Mapping[str, object]) -> Build:
+        names = {self._normalize(str(upgrade.context.get("name") or "")) for upgrade in self}
+        shared_context = dict(context)
+        shared_context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
+        return Build(*(upgrade.copy(context={**shared_context, **upgrade.context}) for upgrade in self))
 
     def aggregate(self) -> dict[Stat, Value]:
         stats: dict[Stat, Value] = {}

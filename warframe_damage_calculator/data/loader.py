@@ -13,30 +13,9 @@ from .paths import DEFAULT_UPGRADES_PATH, DEFAULT_WEAPONS_PATH, load_json
 from .schema import DatabaseEntry, DatabaseRecords, ItemCategory
 
 
-ArsenalValue = (
-    ArsenalItem
-    | str
-    | float
-    | int
-    | bool
-    | dist
-    | tuple[Any, str]
-    | set[str]
-    | dict[str, Any]
-)
+ArsenalValue = ArsenalItem | str | float | int | bool | dist | tuple[Any, str] | set[str] | dict[str, Any]
 
-_SECTION_ALIASES: dict[str, ItemCategory] = {
-    "primary": "primary",
-    "primaries": "primary",
-    "secondary": "secondary",
-    "secondaries": "secondary",
-    "melee": "melee",
-    "melees": "melee",
-    "mod": "mod",
-    "mods": "mod",
-    "arcane": "arcane",
-    "arcanes": "arcane",
-}
+_SECTION_ALIASES: dict[str, ItemCategory] = {"primary": "primary", "primaries": "primary", "secondary": "secondary", "secondaries": "secondary", "melee": "melee", "melees": "melee", "mod": "mod", "mods": "mod", "arcane": "arcane", "arcanes": "arcane"}
 
 class WarframeDatabase:
     def __init__(self, weapons: Mapping[str, Any], upgrades: Mapping[str, Any]) -> None:
@@ -54,11 +33,7 @@ class WarframeDatabase:
         self._name_index = index
 
     @classmethod
-    def from_files(
-        cls,
-        weapons_path: str | Path = DEFAULT_WEAPONS_PATH,
-        upgrades_path: str | Path = DEFAULT_UPGRADES_PATH,
-    ) -> WarframeDatabase:
+    def from_files(cls, weapons_path: str | Path = DEFAULT_WEAPONS_PATH, upgrades_path: str | Path = DEFAULT_UPGRADES_PATH) -> WarframeDatabase:
         return cls(load_json(weapons_path), load_json(upgrades_path))
 
     @classmethod
@@ -66,68 +41,26 @@ class WarframeDatabase:
         folder = Path(folder)
         return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
 
-    # Preserve the previous private constructor names for existing callers.
-    _from_files = from_files
-    _from_folder = from_folder
+    @overload
+    def get(self, name: str, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: None = None) -> ArsenalItem | None: ...
 
     @overload
-    def get(
-        self,
-        name: str,
-        *,
-        type: str | None = None,
-        context: Mapping[str, Any] | None = None,
-        attribute: None = None,
-    ) -> ArsenalItem | None: ...
+    def get(self, name: str, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str) -> ArsenalValue | None: ...
 
     @overload
-    def get(
-        self,
-        name: str,
-        *,
-        type: str | None = None,
-        context: Mapping[str, Any] | None = None,
-        attribute: str,
-    ) -> ArsenalValue | None: ...
+    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: Literal["name"]) -> list[str]: ...
 
     @overload
-    def get(
-        self,
-        name: None = None,
-        *,
-        type: str | None = None,
-        context: Mapping[str, Any] | None = None,
-        attribute: Literal["name"],
-    ) -> list[str]: ...
+    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> dict[str, ArsenalItem | ArsenalValue | None]: ...
 
-    @overload
-    def get(
-        self,
-        name: None = None,
-        *,
-        type: str | None = None,
-        context: Mapping[str, Any] | None = None,
-        attribute: str | None = None,
-    ) -> dict[str, ArsenalItem | ArsenalValue | None]: ...
-
-    def get(
-        self,
-        name: str | None = None,
-        *,
-        type: str | None = None,
-        context: Mapping[str, Any] | None = None,
-        attribute: str | None = None,
-    ) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
+    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
         if name is not None:
             entry = self._name_index.get(normalize_name(name))
             if entry is None or not entry_matches(entry, type):
                 return None
             return self._apply_attribute(self._create(entry, context), attribute)
 
-        entries = sorted(
-            (entry for entry in self._entries if entry_matches(entry, type)),
-            key=lambda entry: normalize_name(entry.name),
-        )
+        entries = sorted((entry for entry in self._entries if entry_matches(entry, type)), key=lambda entry: normalize_name(entry.name))
 
         if attribute is not None and normalize_identifier(attribute) == "name":
             return [entry.name for entry in entries]
@@ -143,14 +76,11 @@ class WarframeDatabase:
         if context is not None:
             if not isinstance(item, Upgrade):
                 raise TypeError("context can only be applied to upgrades")
-            item.context = dict(context)
+            item.context.update(context)
         return item
 
     @staticmethod
-    def _normalize_sections(
-        data: Mapping[str, Any],
-        allowed_categories: set[ItemCategory],
-    ) -> DatabaseRecords:
+    def _normalize_sections(data: Mapping[str, Any], allowed_categories: set[ItemCategory]) -> DatabaseRecords:
         normalized: DatabaseRecords = {}
         for raw_category, entries in data.items():
             category = _SECTION_ALIASES.get(normalize_identifier(raw_category))
@@ -170,11 +100,7 @@ class WarframeDatabase:
                 yield DatabaseEntry(category=category, name=name, data=data)
 
     @classmethod
-    def _apply_attribute(
-        cls,
-        item: ArsenalItem,
-        attribute: str | None,
-    ) -> ArsenalItem | ArsenalValue | None:
+    def _apply_attribute(cls, item: ArsenalItem, attribute: str | None) -> ArsenalItem | ArsenalValue | None:
         if attribute is None:
             return item
         return cls._extract_attribute(item, attribute)
@@ -184,11 +110,11 @@ class WarframeDatabase:
         key = normalize_identifier(attribute)
 
         if key == "name":
-            if isinstance(item, Upgrade):
-                return item.name
-            return item.stats.base.name
+            return item.context.get("name")
 
         if isinstance(item, Upgrade):
+            if key in item.context:
+                return item.context[key]
             if hasattr(item, key):
                 return getattr(item, key)
             if key in item.stats:
@@ -199,10 +125,13 @@ class WarframeDatabase:
                 return item.stacking_stats[key]
             return None
 
+        if key in item.context:
+            return item.context[key]
+
         for state_name in ("base", "effective"):
             state = getattr(item.stats, state_name, None)
-            if state is not None and hasattr(state, key):
-                return getattr(state, key)
+            if state is not None and key in state:
+                return state[key]
 
         if hasattr(item.stats, key):
             return getattr(item.stats, key)

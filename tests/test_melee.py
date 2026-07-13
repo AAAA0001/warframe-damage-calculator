@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 
 from warframe_damage_calculator import Melee, Upgrade, arsenal
+from warframe_damage_calculator.calculators import UpgradeResolver
 
 
 class MeleeTests(unittest.TestCase):
@@ -21,8 +22,9 @@ class MeleeTests(unittest.TestCase):
         self.assertIsInstance(pressure, Upgrade)
         self.assertIsInstance(steel, Upgrade)
         weapon.configure(pressure, steel)
-        self.assertAlmostEqual(weapon.stats.resolved_build.get("base_damage"), 1.375)
-        self.assertAlmostEqual(weapon.stats.resolved_build.get("crit_chance"), 2.75)
+        resolved = UpgradeResolver(weapon.context).resolve(weapon.build)
+        self.assertAlmostEqual(resolved.get("base_damage"), 1.375)
+        self.assertAlmostEqual(resolved.get("crit_chance"), 2.75)
 
 
 if __name__ == "__main__":

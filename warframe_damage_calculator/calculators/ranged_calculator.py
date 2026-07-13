@@ -1,91 +1,90 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from functools import cached_property
+from typing import Any, ClassVar
 
 from ..utils import true_round, clamp
-from ..states import RangedState
 from ..models.dist import dist
 from .weapon_calculator import WeaponCalculator
 
 
-class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]):
-    def __init__(self, base: TRangedState) -> None:
-        super().__init__(base)
-        self.base.explosion_total_damage = self.base.explosion_damage.total_damage()
+class RangedCalculator(WeaponCalculator):
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.DEFAULT_STATS | {"explosion_damage": dist(), "explosion_forced_procs": dist(), "explosion_total_damage": 0.0, "multishot": 1.0, "multiplicative_fire_rate": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "ammo_efficiency": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
+
+    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
+        super().__init__(stats, context)
+        self.base["explosion_total_damage"] = self.base["explosion_damage"].total_damage()
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
-        self.moded.is_beam = self.base.is_beam
-        self.moded.is_battery = self.base.is_battery
-        self.moded.explosion_damage = self.moded.base_damage * self.base.explosion_damage.apply(self._upgrade("damage", dist())).combine().sorted()
-        self.moded.explosion_total_damage = self.moded.explosion_damage.total_damage()
-        self.moded.weakpoint_damage = max(self.base.weakpoint_damage + self._upgrade("weakpoint_damage"), 1)
-        self.moded.multiplicative_fire_rate = 1 if self._upgrade("fire_rate_lock", False) else max(1 + self._upgrade("multiplicative_fire_rate"), 1)
-        self.moded.fire_rate = max(self.base.fire_rate * (1 if self._upgrade("fire_rate_lock", False) else (1 + self._upgrade("fire_rate"))), 0.05)
-        self.moded.burst_count = max(self.base.burst_count, 1)
-        self.moded.burst_delay = max(self.base.burst_delay, 0) / (1 if self._upgrade("fire_rate_lock", False) else max(1 + self._upgrade("fire_rate"), 1))
-        self.moded.charge_time = max(self.base.charge_time, 0) / (1 if self._upgrade("fire_rate_lock", False) else max(1 + self._upgrade("fire_rate"), 0.01))
-        self.moded.reload_speed = max(self.base.reload_speed, 0) / max(1 + self._upgrade("reload_speed"), 0.01)
-        self.moded.recharge_rate = max(self.base.recharge_rate, 0)
-        self.moded.ammo_efficiency = clamp(self._upgrade("ammo_efficiency"), 0, 1)
-        self.moded.magazine_capacity = max(true_round(self.base.magazine_capacity * (1 + self._upgrade("magazine_capacity"))), 1)
-        self.moded.multishot = max(self.base.multishot * (1 if self._upgrade("multishot_lock", False) else (1 + self._upgrade("multishot"))), 1)
-        self.moded.multiplicative_weakpoint_crit_chance = max(1 + self._upgrade("multiplicative_weakpoint_crit_chance"), 1)
-        self.moded.weakpoint_crit_chance = max(self.base.crit_chance * (1 + self._upgrade("crit_chance") + self._upgrade("weakpoint_crit_chance")), 0)
-        self.moded.internal_bleeding = max(self._upgrade("internal_bleeding") * (2 if self.moded.fire_rate * self.moded.multiplicative_fire_rate < 2.5 else 1), 0)
+        self.moded["explosion_damage"] = self.moded["base_damage"] * self.base["explosion_damage"].apply(self.build.get("damage", dist())).combine().sorted()
+        self.moded["explosion_total_damage"] = self.moded["explosion_damage"].total_damage()
+        self.moded["weakpoint_damage"] = max(self.base["weakpoint_damage"] + self.build.get("weakpoint_damage"), 1)
+        self.moded["multiplicative_fire_rate"] = 1 if self.build.get("fire_rate_lock", False) else max(1 + self.build.get("multiplicative_fire_rate"), 1)
+        self.moded["fire_rate"] = max(self.base["fire_rate"] * (1 if self.build.get("fire_rate_lock", False) else (1 + self.build.get("fire_rate"))), 0.05)
+        self.moded["burst_count"] = max(self.base["burst_count"], 1)
+        self.moded["burst_delay"] = max(self.base["burst_delay"], 0) / (1 if self.build.get("fire_rate_lock", False) else max(1 + self.build.get("fire_rate"), 1))
+        self.moded["charge_time"] = max(self.base["charge_time"], 0) / (1 if self.build.get("fire_rate_lock", False) else max(1 + self.build.get("fire_rate"), 0.01))
+        self.moded["reload_speed"] = max(self.base["reload_speed"], 0) / max(1 + self.build.get("reload_speed"), 0.01)
+        self.moded["recharge_rate"] = max(self.base["recharge_rate"], 0)
+        self.moded["ammo_efficiency"] = clamp(self.build.get("ammo_efficiency"), 0, 1)
+        self.moded["magazine_capacity"] = max(true_round(self.base["magazine_capacity"] * (1 + self.build.get("magazine_capacity"))), 1)
+        self.moded["multishot"] = max(self.base["multishot"] * (1 if self.build.get("multishot_lock", False) else (1 + self.build.get("multishot"))), 1)
+        self.moded["multiplicative_weakpoint_crit_chance"] = max(1 + self.build.get("multiplicative_weakpoint_crit_chance"), 1)
+        self.moded["weakpoint_crit_chance"] = max(self.base["crit_chance"] * (1 + self.build.get("crit_chance") + self.build.get("weakpoint_crit_chance")), 0)
+        self.moded["internal_bleeding"] = max(self.build.get("internal_bleeding") * (2 if self.moded["fire_rate"] * self.moded["multiplicative_fire_rate"] < 2.5 else 1), 0)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
-        self.effective.is_beam = self.moded.is_beam
-        self.effective.is_battery = self.moded.is_battery
-        self.effective.explosion_damage = self.moded.explosion_damage
-        self.effective.explosion_total_damage = self.effective.explosion_damage.total_damage()
-        self.effective.weakpoint_damage = self.moded.weakpoint_damage
-        self.effective.fire_rate = self.moded.fire_rate * self.moded.multiplicative_fire_rate
-        self.effective.burst_count = self.moded.burst_count
-        self.effective.burst_delay = self.moded.burst_delay
-        self.effective.charge_time = self.moded.charge_time / self.moded.multiplicative_fire_rate
-        self.effective.reload_speed = self.moded.reload_speed + (0 if not self.effective.is_battery else float("inf") if self.moded.recharge_rate <= 0 else self.moded.magazine_capacity / self.moded.recharge_rate)
-        self.effective.recharge_rate = self.moded.recharge_rate
-        self.effective.ammo_efficiency = 1 - (1 - self.moded.ammo_efficiency) / (2 if self.effective.is_beam else 1)
-        self.effective.magazine_capacity = self.moded.magazine_capacity
-        self.effective.multishot = self.moded.multishot
-        self.effective.weakpoint_crit_chance = self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance
-        self.effective.internal_bleeding = self.moded.internal_bleeding
+        self.effective["explosion_damage"] = self.moded["explosion_damage"]
+        self.effective["explosion_total_damage"] = self.effective["explosion_damage"].total_damage()
+        self.effective["weakpoint_damage"] = self.moded["weakpoint_damage"]
+        self.effective["fire_rate"] = self.moded["fire_rate"] * self.moded["multiplicative_fire_rate"]
+        self.effective["burst_count"] = self.moded["burst_count"]
+        self.effective["burst_delay"] = self.moded["burst_delay"]
+        self.effective["charge_time"] = self.moded["charge_time"] / self.moded["multiplicative_fire_rate"]
+        self.effective["reload_speed"] = self.moded["reload_speed"] + (0 if not self.context.get("is_battery", False) else float("inf") if self.moded["recharge_rate"] <= 0 else self.moded["magazine_capacity"] / self.moded["recharge_rate"])
+        self.effective["recharge_rate"] = self.moded["recharge_rate"]
+        self.effective["ammo_efficiency"] = 1 - (1 - self.moded["ammo_efficiency"]) / (2 if self.context.get("is_beam", False) else 1)
+        self.effective["magazine_capacity"] = self.moded["magazine_capacity"]
+        self.effective["multishot"] = self.moded["multishot"]
+        self.effective["weakpoint_crit_chance"] = self.moded["weakpoint_crit_chance"] * (self.moded["multiplicative_crit_chance"] + self.moded["multiplicative_weakpoint_crit_chance"] - 1) + self.moded["flat_crit_chance"]
+        self.effective["internal_bleeding"] = self.moded["internal_bleeding"]
 
     def _flat_dotph_for(self, damage: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         raise NotImplementedError
 
     @cached_property
     def average_weakpoint_crit_chance(self) -> float:
-        return self.effective.weakpoint_crit_chance
+        return self.effective["weakpoint_crit_chance"]
 
     @cached_property
     def average_fire_rate(self) -> float:
-        cycle_time = self.effective.magazine_capacity / self.effective.burst_count * (self.effective.charge_time + (self.effective.burst_count - 1) * self.effective.burst_delay) + (self.effective.magazine_capacity / self.effective.burst_count - (1 - self.effective.ammo_efficiency)) / self.effective.fire_rate + (1 - self.effective.ammo_efficiency) * self.effective.reload_speed
+        cycle_time = self.effective["magazine_capacity"] / self.effective["burst_count"] * (self.effective["charge_time"] + (self.effective["burst_count"] - 1) * self.effective["burst_delay"]) + (self.effective["magazine_capacity"] / self.effective["burst_count"] - (1 - self.effective["ammo_efficiency"])) / self.effective["fire_rate"] + (1 - self.effective["ammo_efficiency"]) * self.effective["reload_speed"]
         if cycle_time <= 0:
             return float("inf")
-        return self.effective.magazine_capacity / cycle_time
+        return self.effective["magazine_capacity"] / cycle_time
 
     @cached_property
     def average_procs_per_shot(self) -> float:
-        return self.effective.status_chance * self.effective.multishot
+        return self.effective["status_chance"] * self.effective["multishot"]
 
     @cached_property
     def average_weakpoint_crit_multiplier(self) -> float:
-        return 1 + self.effective.weakpoint_crit_chance * (self.effective.crit_damage - 1)
+        return 1 + self.effective["weakpoint_crit_chance"] * (self.effective["crit_damage"] - 1)
     
     @cached_property
     def beam_dot_multiplier(self) -> float:
-        return self.effective.multishot if self.effective.is_beam else 1
+        return self.effective["multishot"] if self.context.get("is_beam", False) else 1
 
     @cached_property
     def flat_dph(self) -> float:
-        return (self.effective.total_damage * self.effective.multishot + self.effective.explosion_total_damage) * self.effective.faction_damage * self.average_crit_multiplier
+        return (self.effective["total_damage"] * self.effective["multishot"] + self.effective["explosion_total_damage"]) * self.effective["faction_damage"] * self.average_crit_multiplier
 
     @cached_property
     def flat_weakpoint_dph(self) -> float:
-        return (self.effective.total_damage * self.effective.multishot * self.effective.weakpoint_damage * self.average_weakpoint_crit_multiplier + self.effective.explosion_total_damage * self.average_crit_multiplier) * self.effective.faction_damage
+        return (self.effective["total_damage"] * self.effective["multishot"] * self.effective["weakpoint_damage"] * self.average_weakpoint_crit_multiplier + self.effective["explosion_total_damage"] * self.average_crit_multiplier) * self.effective["faction_damage"]
 
     @cached_property
     def flat_dps(self) -> float:
@@ -97,14 +96,14 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
 
     @cached_property
     def flat_dotph(self) -> float:
-        direct_damage = self._flat_dotph_for(self.effective.damage, self.base.forced_procs, self.effective.crit_chance, self.average_crit_multiplier)
-        explosion_damage = self._flat_dotph_for(self.effective.explosion_damage, self.base.explosion_forced_procs, self.effective.crit_chance, self.average_crit_multiplier, include_multishot=False)
+        direct_damage = self._flat_dotph_for(self.effective["damage"], self.base["forced_procs"], self.effective["crit_chance"], self.average_crit_multiplier)
+        explosion_damage = self._flat_dotph_for(self.effective["explosion_damage"], self.base["explosion_forced_procs"], self.effective["crit_chance"], self.average_crit_multiplier, include_multishot=False)
         return direct_damage + explosion_damage
 
     @cached_property
     def flat_weakpoint_dotph(self) -> float:
-        direct_damage = self._flat_dotph_for(self.effective.damage, self.base.forced_procs, self.effective.weakpoint_crit_chance, self.average_weakpoint_crit_multiplier)
-        explosion_damage = self._flat_dotph_for(self.effective.explosion_damage, self.base.explosion_forced_procs, self.effective.crit_chance, self.average_crit_multiplier, include_multishot=False)
+        direct_damage = self._flat_dotph_for(self.effective["damage"], self.base["forced_procs"], self.effective["weakpoint_crit_chance"], self.average_weakpoint_crit_multiplier)
+        explosion_damage = self._flat_dotph_for(self.effective["explosion_damage"], self.base["explosion_forced_procs"], self.effective["crit_chance"], self.average_crit_multiplier, include_multishot=False)
         return direct_damage + explosion_damage
 
     @cached_property

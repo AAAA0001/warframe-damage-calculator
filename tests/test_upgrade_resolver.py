@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from dataclasses import is_dataclass
 
 from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
 from warframe_damage_calculator.calculators import UpgradeResolver
@@ -12,9 +13,17 @@ class UpgradeResolverTests(unittest.TestCase):
         self.weapon = arsenal.get("Braton")
         self.assertIsInstance(self.weapon, Primary)
 
+    def resolve(self) -> Build:
+        return UpgradeResolver(self.weapon.context).resolve(self.weapon.build)
+
+    def test_upgrade_is_a_normal_class(self) -> None:
+        self.assertFalse(is_dataclass(Upgrade))
+
     def test_resolve_returns_build_and_merges_damage_types(self) -> None:
         build = Build(Upgrade(stats={"impact": 0.5}), Upgrade(stats={"heat": 0.25}))
-        resolved = UpgradeResolver().resolve(self.weapon.stats.base, build)
+        resolver = UpgradeResolver(self.weapon.context)
+        resolved = resolver.resolve(build)
+        self.assertIs(resolver.weapon_context, self.weapon.context)
         self.assertIsInstance(resolved, Build)
         self.assertEqual(resolved.get("damage"), dist(impact=0.5, heat=0.25))
 
@@ -24,26 +33,28 @@ class UpgradeResolverTests(unittest.TestCase):
         self.assertIsInstance(maximum, Upgrade)
         self.assertIsInstance(rank_zero, Upgrade)
         self.weapon.configure(maximum)
-        maximum_value = self.weapon.stats.resolved_build.get("crit_chance")
+        maximum_value = self.resolve().get("crit_chance")
         self.weapon.configure(rank_zero)
-        self.assertAlmostEqual(self.weapon.stats.resolved_build.get("crit_chance"), maximum_value / (maximum.max_rank + 1))
+        self.assertAlmostEqual(self.resolve().get("crit_chance"), maximum_value / (maximum.context["max_rank"] + 1))
 
     def test_conditions_and_stacks_default_to_active_and_max(self) -> None:
-        upgrade = Upgrade(max_stacks=3, conditional_stats={"base_damage": (1, "active")}, stacking_stats={"crit_chance": (0.2, "stacks")})
+        upgrade = Upgrade(context={"max_stacks": 3}, conditional_stats={"base_damage": [1, "active"]}, stacking_stats={"crit_chance": [0.2, "stacks"]})
         self.weapon.configure(upgrade)
-        self.assertEqual(self.weapon.stats.resolved_build.get("base_damage"), 1)
-        self.assertAlmostEqual(self.weapon.stats.resolved_build.get("crit_chance"), 0.6)
+        resolved = self.resolve()
+        self.assertEqual(resolved.get("base_damage"), 1)
+        self.assertAlmostEqual(resolved.get("crit_chance"), 0.6)
 
     def test_explicit_context_disables_omitted_conditions(self) -> None:
-        upgrade = Upgrade(max_stacks=3, context={"active": False, "stacks": 1}, conditional_stats={"base_damage": (1, "active")}, stacking_stats={"crit_chance": (0.2, "stacks")})
+        upgrade = Upgrade(context={"max_stacks": 3, "active": False, "stacks": 1}, conditional_stats={"base_damage": [1, "active"]}, stacking_stats={"crit_chance": [0.2, "stacks"]})
         self.weapon.configure(upgrade)
-        self.assertEqual(self.weapon.stats.resolved_build.get("base_damage"), 0)
-        self.assertEqual(self.weapon.stats.resolved_build.get("crit_chance"), 0.2)
+        resolved = self.resolve()
+        self.assertEqual(resolved.get("base_damage"), 0)
+        self.assertEqual(resolved.get("crit_chance"), 0.2)
 
     def test_stack_count_is_capped(self) -> None:
-        upgrade = Upgrade(max_stacks=3, context={"stacks": 10}, stacking_stats={"base_damage": (0.5, "stacks")})
+        upgrade = Upgrade(context={"max_stacks": 3, "stacks": 10}, stacking_stats={"base_damage": [0.5, "stacks"]})
         self.weapon.configure(upgrade)
-        self.assertEqual(self.weapon.stats.resolved_build.get("base_damage"), 1.5)
+        self.assertEqual(self.resolve().get("base_damage"), 1.5)
 
 
 if __name__ == "__main__":

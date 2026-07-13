@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Mapping, get_type_hints
+from typing import Any, Mapping
 
-from ..fields import MeleeFields, PrimaryFields, SecondaryFields
 from ..models import Melee, Primary, Secondary, Upgrade
 from ..utils import Value
 from .schema import DatabaseEntry, WeaponCategory
@@ -14,17 +13,12 @@ ArsenalItem = Weapon | Upgrade
 
 
 class DatabaseFactory:
+    _weapon_metadata = {"type", "trigger", "is_beam", "is_battery"}
     _weapon_models: dict[WeaponCategory, type[Weapon]] = {
         "primary": Primary,
         "secondary": Secondary,
         "melee": Melee,
     }
-    _weapon_fields: dict[WeaponCategory, frozenset[str]] = {
-        "primary": frozenset(get_type_hints(PrimaryFields)),
-        "secondary": frozenset(get_type_hints(SecondaryFields)),
-        "melee": frozenset(get_type_hints(MeleeFields)),
-    }
-
     def create(self, entry: DatabaseEntry) -> ArsenalItem:
         if entry.is_weapon:
             return self.create_weapon(entry)
@@ -35,13 +29,15 @@ class DatabaseFactory:
         if category not in self._weapon_models:
             raise ValueError(f"Unknown weapon category: {category!r}")
 
-        allowed_fields = self._weapon_fields[category]
-        payload = {key: value for key, value in entry.data.items() if key in allowed_fields}
-        payload["name"] = entry.name
-
         model = self._weapon_models[category]
+        if "context" in entry.data:
+            return model(**deepcopy(entry.data))
+
+        context = {"name": entry.name, "category": category, **{key: deepcopy(value) for key, value in entry.data.items() if key in self._weapon_metadata}}
+        stats = {key: deepcopy(value) for key, value in entry.data.items() if key not in self._weapon_metadata}
+
         try:
-            return model(**payload)
+            return model(stats=stats, context=context)
         except TypeError as exc:
             raise TypeError(
                 f"Could not construct {model.__name__} for {entry.name!r}. "
@@ -53,16 +49,12 @@ class DatabaseFactory:
         if category not in {"mod", "arcane"}:
             raise ValueError(f"Unknown upgrade category: {category!r}")
 
+        if "context" in entry.data:
+            return Upgrade(**deepcopy(entry.data))
+
         max_rank = self._max_rank(entry.data)
         payload = {
-            "name": entry.name,
-            "category": category,
-            "compatibility": set(entry.data.get("compatibility") or ()),
-            "incompatibility": set(entry.data.get("incompatibility") or ()),
-            "requirements": deepcopy(entry.data.get("requirements") or {}),
-            "max_rank": max_rank,
-            "max_stacks": entry.data.get("max_stacks"),
-            "is_exilus": bool(entry.data.get("is_exilus", False)),
+            "context": {"name": entry.name, "category": category, "compatibility": set(entry.data.get("compatibility") or ()), "incompatibility": set(entry.data.get("incompatibility") or ()), "requirements": deepcopy(entry.data.get("requirements") or {}), "max_rank": max_rank, "max_stacks": entry.data.get("max_stacks"), "is_exilus": bool(entry.data.get("is_exilus", False))},
             "stats": self._stats(entry.data.get("stats")),
             "rank_locked_stats": self._rank_locked_stats(entry.data.get("rank_locked_stats"), max_rank),
             "conditional_stats": self._conditioned_stats(entry.data.get("conditional_stats")),
@@ -86,11 +78,11 @@ class DatabaseFactory:
         cls,
         values: Mapping[str, Any] | None,
         max_rank: int | None,
-    ) -> dict[str, tuple[Value, int]]:
+    ) -> dict[str, list[Value | int]]:
         if values and max_rank is None:
             raise ValueError("rank_locked_stats require max_rank in the upgrade database")
 
-        result: dict[str, tuple[Value, int]] = {}
+        result: dict[str, list[Value | int]] = {}
         for stat, raw_pair in (values or {}).items():
             if not isinstance(raw_pair, (list, tuple)) or len(raw_pair) != 2:
                 raise ValueError(
@@ -105,7 +97,7 @@ class DatabaseFactory:
                 raise ValueError(
                     f"Required rank for database stat {stat!r} cannot be negative"
                 )
-            result[stat] = (cls._validate_value(value), required_rank)
+            result[stat] = [cls._validate_value(value), required_rank]
         return result
 
     @classmethod
@@ -113,8 +105,8 @@ class DatabaseFactory:
         return {stat: cls._validate_value(value) for stat, value in (values or {}).items()}
 
     @classmethod
-    def _conditioned_stats(cls, values: Mapping[str, Any] | None) -> dict[str, tuple[Value, str]]:
-        result: dict[str, tuple[Value, str]] = {}
+    def _conditioned_stats(cls, values: Mapping[str, Any] | None) -> dict[str, list[Value | str]]:
+        result: dict[str, list[Value | str]] = {}
         for stat, raw_pair in (values or {}).items():
             if not isinstance(raw_pair, (list, tuple)) or len(raw_pair) != 2:
                 raise ValueError(
@@ -123,7 +115,7 @@ class DatabaseFactory:
             value, condition = raw_pair
             if not isinstance(condition, str) or not condition.strip():
                 raise ValueError(f"Database stat {stat!r} has an invalid condition")
-            result[stat] = (cls._validate_value(value), condition)
+            result[stat] = [cls._validate_value(value), condition]
         return result
 
     @staticmethod

@@ -68,8 +68,9 @@ def weapon_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
         return entry.category == item_type
 
     requested = expand_type_filter(item_type)
-    weapon_type = normalize_identifier(entry.data.get("type"))
-    trigger = normalize_identifier(entry.data.get("trigger"))
+    context = entry.data.get("context", entry.data)
+    weapon_type = normalize_identifier(context.get("type"))
+    trigger = normalize_identifier(context.get("trigger"))
     return weapon_type in requested or trigger in requested
 
 
@@ -83,7 +84,8 @@ def upgrade_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
         return False
 
     requested = expand_type_filter(item_type)
-    compatibility = _normalized_values(entry.data.get("compatibility"))
+    context = entry.data.get("context", entry.data)
+    compatibility = _normalized_values(context.get("compatibility"))
 
     if item_type == "primary" and compatibility & PRIMARY_TYPES:
         return True
@@ -92,7 +94,7 @@ def upgrade_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
     if item_type == "melee" and compatibility & MELEE_TYPES:
         return True
 
-    requirements = entry.data.get("requirements") or {}
+    requirements = context.get("requirements") or {}
     return bool(compatibility & requested) or _requirements_match_type(requirements, requested)
 
 

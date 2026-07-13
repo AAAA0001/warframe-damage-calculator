@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 
 from warframe_damage_calculator import Secondary, Upgrade, arsenal
+from warframe_damage_calculator.calculators import UpgradeResolver
 
 
 class SecondaryTests(unittest.TestCase):
@@ -19,8 +20,9 @@ class SecondaryTests(unittest.TestCase):
         self.assertIsInstance(weapon, Secondary)
         self.assertIsInstance(voltage, Upgrade)
         weapon.configure(voltage)
-        self.assertAlmostEqual(weapon.stats.resolved_build.get("multishot"), 0.15)
-        self.assertAlmostEqual(weapon.stats.resolved_build.get("reload_speed"), 0.075)
+        resolved = UpgradeResolver(weapon.context).resolve(weapon.build)
+        self.assertAlmostEqual(resolved.get("multishot"), 0.15)
+        self.assertAlmostEqual(resolved.get("reload_speed"), 0.075)
 
     def test_secondary_shiver_uses_cold_stacks(self) -> None:
         weapon = arsenal.get("Lato")
@@ -28,7 +30,7 @@ class SecondaryTests(unittest.TestCase):
         self.assertIsInstance(weapon, Secondary)
         self.assertIsInstance(shiver, Upgrade)
         weapon.configure(shiver)
-        self.assertAlmostEqual(weapon.stats.resolved_build.get("base_damage"), 4.5)
+        self.assertAlmostEqual(UpgradeResolver(weapon.context).resolve(weapon.build).get("base_damage"), 4.5)
 
 
 if __name__ == "__main__":

@@ -1,17 +1,18 @@
 from __future__ import annotations
 
-from typing import Unpack
+from collections.abc import Mapping
+from typing import Any
 
 from ..calculators import RangedCalculator
 from ..formatters import RangedFormatter
-from ..fields import RangedFields
-from ..states import RangedState
+from .build import Build
 from .weapon import Weapon
 
 
 class Ranged(Weapon):
-    def __init__(self, **weapon_fields: Unpack[RangedFields]) -> None:
-        base_state = self._create_state(RangedState, weapon_fields)
-        self.stats: RangedCalculator = RangedCalculator(base_state)
-        self.format: RangedFormatter = RangedFormatter(self.stats)
+    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
+        self.context = {**dict(context or {}), "category": "ranged"}
+        self.build = Build()
+        self.stats = RangedCalculator(stats, self.context)
+        self.format = RangedFormatter(self.stats)
 

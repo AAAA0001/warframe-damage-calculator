@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import Unpack
+from collections.abc import Mapping
+from typing import Any
 
 from ..calculators import PrimaryCalculator
 from ..formatters import PrimaryFormatter
-from ..fields import PrimaryFields
-from ..states import PrimaryState
+from .build import Build
 from .ranged import Ranged
 
 
 class Primary(Ranged):
-    def __init__(self, **weapon_fields: Unpack[PrimaryFields]) -> None:
-        base_state = self._create_state(PrimaryState, weapon_fields)
-        self.stats: PrimaryCalculator = PrimaryCalculator(base_state)
-        self.format: PrimaryFormatter = PrimaryFormatter(self.stats)
+    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
+        self.context = {**dict(context or {}), "category": "primary"}
+        self.build = Build()
+        self.stats = PrimaryCalculator(stats, self.context)
+        self.format = PrimaryFormatter(self.stats)

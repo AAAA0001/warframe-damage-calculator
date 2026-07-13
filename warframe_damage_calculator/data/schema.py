@@ -9,37 +9,33 @@ UpgradeCategory: TypeAlias = Literal["mod", "arcane"]
 ItemCategory: TypeAlias = WeaponCategory | UpgradeCategory
 
 
-class WeaponRecord(TypedDict, total=False):
+class WeaponContext(TypedDict, total=False):
+    name: str
+    category: WeaponCategory
     type: str
-    damage: dict[str, float]
-    forced_procs: dict[str, float]
-    crit_chance: float
-    crit_damage: float
-    status_chance: float
     trigger: str
     is_beam: bool
     is_battery: bool
-    explosion_damage: dict[str, float]
-    explosion_forced_procs: dict[str, float]
-    multishot: float
-    fire_rate: float
-    burst_count: int
-    burst_delay: float
-    charge_time: float
-    reload_speed: float
-    recharge_rate: float
-    magazine_capacity: int
-    weakpoint_damage: float
-    attack_speed: float
 
 
-class UpgradeRecord(TypedDict, total=False):
+class UpgradeContext(TypedDict):
+    name: str
+    category: UpgradeCategory
     compatibility: list[str]
     incompatibility: list[str]
     requirements: dict[str, Any]
-    max_rank: int
-    max_stacks: int
+    max_rank: int | None
+    max_stacks: int | None
     is_exilus: bool
+
+
+class WeaponRecord(TypedDict):
+    context: WeaponContext
+    stats: dict[str, Any]
+
+
+class UpgradeRecord(TypedDict):
+    context: UpgradeContext
     stats: dict[str, float | int | bool]
     rank_locked_stats: dict[str, list[Any]]
     conditional_stats: dict[str, list[Any]]
