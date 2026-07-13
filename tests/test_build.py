@@ -30,21 +30,20 @@ class BuildTests(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, "Build only accepts Upgrade objects"):
             Build(object())
 
-    def test_contextualize_returns_an_independent_build(self) -> None:
+    def test_contextualize_updates_the_build_by_default(self) -> None:
+        build = Build(Upgrade())
+        self.assertIs(build.contextualize({"kill": 3}), build)
+        self.assertEqual(build.upgrades[0].context["kill"], 3)
+
+    def test_contextualize_can_return_an_independent_build(self) -> None:
         upgrade = Upgrade(context={"name": "Example", "rank": 2})
         original = Build(upgrade)
-        contextualized = original.contextualize({"primary": True, "weapon": "rifle"})
+        contextualized = original.contextualize({"primary": True, "weapon": "rifle"}, copy=True)
         self.assertIsNot(contextualized, original)
         self.assertIsNot(contextualized.upgrades[0], upgrade)
         self.assertEqual({key: contextualized.upgrades[0].context[key] for key in ("rank", "primary", "weapon", "sacrificial set")}, {"rank": 2, "primary": True, "weapon": "rifle", "sacrificial set": False})
         self.assertEqual(upgrade.context["rank"], 2)
         self.assertEqual(upgrade.context["name"], "Example")
-
-    def test_global_context_updates_every_upgrade(self) -> None:
-        build = Build(Upgrade(), Upgrade())
-        self.assertIs(build.global_context({"kill": 3}), build)
-        self.assertTrue(all(upgrade.context["kill"] == 3 for upgrade in build))
-
 
 if __name__ == "__main__":
     unittest.main()

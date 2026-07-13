@@ -75,7 +75,7 @@ class UpgradeResolver:
                 raise TypeError(f"Cannot merge values for upgrade stat {stat!r}") from None
 
     def resolve(self, build: Build) -> Build:
-        build = build.contextualize(self.context)
+        build = build.contextualize(self.context, copy=True)
         resolved_upgrades = []
 
         for upgrade in build:

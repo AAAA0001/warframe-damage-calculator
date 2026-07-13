@@ -41,16 +41,14 @@ class Build:
     def _normalize(value: str) -> str:
         return " ".join(value.casefold().replace("_", " ").replace("-", " ").split())
 
-    def global_context(self, context: Mapping[str, object]) -> Self:
-        for upgrade in self:
-            upgrade.context.update(context)
-        return self
-
-    def contextualize(self, context: Mapping[str, object]) -> Build:
-        names = {self._normalize(str(upgrade.context.get("name") or "")) for upgrade in self}
+    def contextualize(self, context: Mapping[str, object], copy: bool = False) -> Self:
+        build = Build(*(upgrade.copy(context=dict(upgrade.context)) for upgrade in self)) if copy else self
+        names = {self._normalize(str(upgrade.context.get("name") or "")) for upgrade in build}
         shared_context = dict(context)
         shared_context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
-        return Build(*(upgrade.copy(context={**shared_context, **upgrade.context}) for upgrade in self))
+        for upgrade in build:
+            upgrade.context = {**shared_context, **upgrade.context}
+        return build
 
     def aggregate(self) -> dict[Stat, Value]:
         stats: dict[Stat, Value] = {}

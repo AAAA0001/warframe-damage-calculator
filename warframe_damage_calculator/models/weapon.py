@@ -23,6 +23,6 @@ class Weapon:
             build = Build(*upgrades)
         else:
             raise TypeError("configure() accepts Upgrade objects or one Build")
-        self.build = build.contextualize(self.context)
+        self.build = build.contextualize(self.context, copy=True)
         self.stats.set_build(self.build)
         return self

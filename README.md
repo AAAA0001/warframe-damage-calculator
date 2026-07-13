@@ -257,11 +257,11 @@ stats use `upgrade.context["rank"]`. During resolution it defaults to
 The `Upgrade` and `Build` models only store data. Condition matching, stack
 limits, and bucket merging are handled by `UpgradeResolver`.
 
-`Build.contextualize()` returns a copied build with shared context applied to every copied upgrade. `Build.global_context()` updates every upgrade in the current build:
+`Build.contextualize()` applies shared context to every upgrade. Pass `copy=True` to return an independent contextualized build:
 
 ```python
-contextualized = build.contextualize(weapon.context)
-build.global_context({"kill": 3})
+build.contextualize({"kill": 3})
+contextualized = build.contextualize(weapon.context, copy=True)
 ```
 
 ### Damage
