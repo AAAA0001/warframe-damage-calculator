@@ -336,14 +336,6 @@ limits, and bucket merging are handled by `UpgradeResolver`.
 
 ------------------------------------------------------------------------
 
-## Running Tests
-
-``` bash
-python -m unittest discover -s tests -q
-```
-
-------------------------------------------------------------------------
-
 ## Assumptions
 
 The library computes **expected values** rather than simulating
@@ -372,7 +364,7 @@ average and may not exactly match any single shot fired in-game.
 -   Charge time scales with fire rate. *(Wiki)*
 -   Recharge rate is independent of reload speed. *(Wiki)*
 -   Beam weapons consume **0.5 ammo per tick**. *(Wiki)*
--   The weapon firing cycle is modeled as follows. *(Testing)*
+-   The weapon firing cycle is modeled as follows.
 
 ``` text
 [ammo cost] ← (1 - [ammo efficiency]) ÷ (IF [is beam] THEN 2 ELSE 1)

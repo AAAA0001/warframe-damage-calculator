@@ -4024,18 +4024,6 @@
             "is_beam": true,
             "trigger": "held"
         },
-        "Catchmoon": {
-            "crit_chance": 0.0,
-            "crit_damage": 1.0,
-            "status_chance": 0,
-            "type": "pistol",
-            "damage": {},
-            "multishot": 1.0,
-            "fire_rate": 0.0,
-            "reload_speed": 0.0,
-            "magazine_capacity": 0,
-            "trigger": "unknown"
-        },
         "Cestra": {
             "crit_chance": 0.06,
             "crit_damage": 1.6,
@@ -5150,18 +5138,6 @@
             "charge_time": 1.0,
             "trigger": "charge"
         },
-        "Rattleguts": {
-            "crit_chance": 0.0,
-            "crit_damage": 1.0,
-            "status_chance": 0,
-            "type": "pistol",
-            "damage": {},
-            "multishot": 1.0,
-            "fire_rate": 0.0,
-            "reload_speed": 0.0,
-            "magazine_capacity": 0,
-            "trigger": "unknown"
-        },
         "Regulators": {
             "crit_chance": 0.25,
             "crit_damage": 3.0,
@@ -5433,19 +5409,6 @@
             "magazine_capacity": 12,
             "trigger": "auto"
         },
-        "Sporelacer": {
-            "crit_chance": 0.0,
-            "crit_damage": 1.0,
-            "status_chance": 0,
-            "type": "pistol",
-            "damage": {},
-            "multishot": 1.0,
-            "fire_rate": 0.0,
-            "reload_speed": 0.0,
-            "magazine_capacity": 0,
-            "recharge_rate": 25.0,
-            "trigger": "unknown"
-        },
         "Staticor": {
             "crit_chance": 0.14,
             "crit_damage": 2.2,
@@ -5630,18 +5593,6 @@
             "forced_procs": {
                 "impact": 1
             }
-        },
-        "Tombfinger": {
-            "crit_chance": 0.0,
-            "crit_damage": 1.0,
-            "status_chance": 0,
-            "type": "pistol",
-            "damage": {},
-            "multishot": 1.0,
-            "fire_rate": 0.0,
-            "reload_speed": 0.0,
-            "magazine_capacity": 0,
-            "trigger": "unknown"
         },
         "Twin Grakatas": {
             "crit_chance": 0.25,

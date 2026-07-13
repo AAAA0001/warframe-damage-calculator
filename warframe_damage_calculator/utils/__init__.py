@@ -7,7 +7,7 @@ from .constants import (
     PHYSICAL_TYPES,
 )
 from .functions import clamp, true_round
-from .types import Condition, DamageType, Stat, Value
+from .types import Condition, DamageType, Stat, VALID_STATS, Value
 
 __all__ = [
     "DAMAGE_TYPE_ORDER",
@@ -19,6 +19,7 @@ __all__ = [
     "Condition",
     "DamageType",
     "Stat",
+    "VALID_STATS",
     "Value",
     "clamp",
     "true_round",
