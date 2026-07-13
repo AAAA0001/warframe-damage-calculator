@@ -14,6 +14,7 @@ class ArsenalTests(unittest.TestCase):
         self.assertEqual(weapon.context["category"], "primary")
         self.assertEqual(weapon.context["type"], "rifle")
         self.assertIsInstance(weapon.stats.base, dict)
+        self.assertEqual(arsenal.get("Braton", attribute="total_damage"), weapon.stats.base["damage"].total_damage())
         self.assertFalse(any(field in weapon.stats.base for field in ("name", "type", "trigger", "is_beam", "is_battery")))
         self.assertIsInstance(arsenal.get("Critical Delay"), Upgrade)
         self.assertIsInstance(arsenal.get("Primary Blight"), Upgrade)

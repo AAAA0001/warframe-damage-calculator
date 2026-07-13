@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Iterator, Self
 
-from ..utils import Stat, Value
+from ..utils import Value
 from .upgrade import Upgrade
 
 
@@ -37,21 +37,15 @@ class Build:
     def __iter__(self) -> Iterator[Upgrade]:
         return iter(self.upgrades)
 
-    @staticmethod
-    def _normalize(value: str) -> str:
-        return " ".join(value.casefold().replace("_", " ").replace("-", " ").split())
-
     def contextualize(self, context: Mapping[str, object], copy: bool = False) -> Self:
-        build = Build(*(upgrade.copy(context=dict(upgrade.context)) for upgrade in self)) if copy else self
-        names = {self._normalize(str(upgrade.context.get("name") or "")) for upgrade in build}
-        shared_context = dict(context)
-        shared_context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
+        build = Build(*(upgrade.copy() for upgrade in self)) if copy else self
         for upgrade in build:
-            upgrade.context = {**shared_context, **upgrade.context}
+            upgrade.context = {**context, **upgrade.context}
+            upgrade.validate()
         return build
 
-    def aggregate(self) -> dict[Stat, Value]:
-        stats: dict[Stat, Value] = {}
+    def aggregate(self) -> dict[str, Value]:
+        stats: dict[str, Value] = {}
         for upgrade in self:
             for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
@@ -68,6 +62,6 @@ class Build:
                         raise TypeError(f"Cannot combine values for build stat {stat!r}") from None
         return stats
 
-    def get(self, stat: Stat, default: Value = 0) -> Value:
+    def get(self, stat: str, default: Value = 0) -> Value:
         return self.aggregate().get(stat, default)
 

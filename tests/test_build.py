@@ -21,10 +21,9 @@ class BuildTests(unittest.TestCase):
         build = Build(Upgrade(stats={"fire_rate_lock": False}), Upgrade(stats={"fire_rate_lock": True}))
         self.assertIs(build.get("fire_rate_lock"), True)
 
-    def test_booleans_cannot_mix_with_numbers(self) -> None:
-        build = Build(Upgrade(stats={"fire_rate_lock": False}), Upgrade(stats={"fire_rate_lock": 1}))
-        with self.assertRaisesRegex(TypeError, "Cannot combine values"):
-            build.aggregate()
+    def test_boolean_stats_reject_numbers(self) -> None:
+        with self.assertRaisesRegex(TypeError, "expected bool"):
+            Upgrade(stats={"fire_rate_lock": 1})
 
     def test_only_upgrades_are_accepted(self) -> None:
         with self.assertRaisesRegex(TypeError, "Build only accepts Upgrade objects"):
@@ -36,14 +35,17 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build.upgrades[0].context["kill"], 3)
 
     def test_contextualize_can_return_an_independent_build(self) -> None:
-        upgrade = Upgrade(context={"name": "Example", "rank": 2})
+        upgrade = Upgrade(stats={"base_damage": 1}, context={"name": "Example", "rank": 2, "requirements": {"trigger": ["semi"]}})
         original = Build(upgrade)
         contextualized = original.contextualize({"primary": True, "weapon": "rifle"}, copy=True)
         self.assertIsNot(contextualized, original)
         self.assertIsNot(contextualized.upgrades[0], upgrade)
-        self.assertEqual({key: contextualized.upgrades[0].context[key] for key in ("rank", "primary", "weapon", "sacrificial set")}, {"rank": 2, "primary": True, "weapon": "rifle", "sacrificial set": False})
+        self.assertEqual({key: contextualized.upgrades[0].context[key] for key in ("rank", "primary", "weapon")}, {"rank": 2, "primary": True, "weapon": "rifle"})
         self.assertEqual(upgrade.context["rank"], 2)
         self.assertEqual(upgrade.context["name"], "Example")
+        contextualized.upgrades[0].stats["base_damage"] = 2
+        contextualized.upgrades[0].context["requirements"]["trigger"].append("auto")
+        self.assertEqual((upgrade.stats["base_damage"], upgrade.context["requirements"]), (1, {"trigger": ["semi"]}))
 
 if __name__ == "__main__":
     unittest.main()

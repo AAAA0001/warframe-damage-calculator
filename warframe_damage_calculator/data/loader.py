@@ -42,18 +42,18 @@ class WarframeDatabase:
         return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
 
     @overload
-    def get(self, name: str, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: None = None) -> ArsenalItem | None: ...
+    def get(self, name: str, *, type: str | None = None, context: Mapping[str, object] | None = None, attribute: None = None) -> ArsenalItem | None: ...
 
     @overload
-    def get(self, name: str, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str) -> ArsenalValue | None: ...
+    def get(self, name: str, *, type: str | None = None, context: Mapping[str, object] | None = None, attribute: str) -> ArsenalValue | None: ...
 
     @overload
-    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: Literal["name"]) -> list[str]: ...
+    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, object] | None = None, attribute: Literal["name"]) -> list[str]: ...
 
     @overload
-    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> dict[str, ArsenalItem | ArsenalValue | None]: ...
+    def get(self, name: None = None, *, type: str | None = None, context: Mapping[str, object] | None = None, attribute: str | None = None) -> dict[str, ArsenalItem | ArsenalValue | None]: ...
 
-    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
+    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, object] | None = None, attribute: str | None = None) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
         if name is not None:
             entry = self._name_index.get(normalize_name(name))
             if entry is None or not entry_matches(entry, type):
@@ -71,12 +71,13 @@ class WarframeDatabase:
             result[entry.name] = self._apply_attribute(item, attribute)
         return result
 
-    def _create(self, entry: DatabaseEntry, context: Mapping[str, Any] | None) -> ArsenalItem:
+    def _create(self, entry: DatabaseEntry, context: Mapping[str, object] | None) -> ArsenalItem:
         item = self._factory.create(entry)
         if context is not None:
             if not isinstance(item, Upgrade):
                 raise TypeError("context can only be applied to upgrades")
             item.context.update(context)
+            item.validate()
         return item
 
     @staticmethod

@@ -21,11 +21,14 @@ class MeleeTests(unittest.TestCase):
         self.assertIsInstance(weapon, Melee)
         self.assertIsInstance(pressure, Upgrade)
         self.assertIsInstance(steel, Upgrade)
-        weapon.configure(pressure, steel)
+        weapon.configure(pressure)
+        self.assertNotIn("sacrificial set", pressure.context)
+        weapon.build.upgrades[0].context["sacrificial set"] = False
+        weapon.configure(weapon.build + steel)
         resolved = UpgradeResolver(weapon.context).resolve(weapon.build)
-        self.assertAlmostEqual(resolved.get("base_damage"), 1.375)
-        self.assertAlmostEqual(resolved.get("crit_chance"), 2.75)
-
+        self.assertEqual((resolved.get("base_damage"), resolved.get("crit_chance")), (1.375, 2.75))
+        self.assertFalse(weapon.build.upgrades[0].context["sacrificial set"])
+        self.assertNotIn("sacrificial set", weapon.build.upgrades[1].context)
 
 if __name__ == "__main__":
     unittest.main()

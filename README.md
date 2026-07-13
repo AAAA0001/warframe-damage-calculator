@@ -217,8 +217,8 @@ weapon = Primary(
 
 ## Upgrade Fields
 
-Upgrades store modifiers in three dictionaries. Conditional and stacking
-entries use a `(value, condition)` tuple:
+Upgrades store modifiers in dictionaries. Conditional and stacking entries use
+a two-item `[value, condition]` sequence:
 
 ```python
 upgrade = Upgrade(
@@ -247,12 +247,13 @@ upgrade.context.update({"headshot": True, "kill": 3})
 weapon.configure(build)
 ```
 
-The resolver automatically adds weapon and build context to resolved upgrade
-copies. When an upgrade has no context, its conditional stats default to active
-and its stacking stats use `max_stacks`. Once context is supplied, omitted
-manual conditions are inactive and omitted stack counts are zero. Rank-locked
-stats use `upgrade.context["rank"]`. During resolution it defaults to
-`max_rank`, or zero when the upgrade has no maximum rank.
+The resolver supplies weapon and build context separately while resolving, so
+automatic conditions never become persistent upgrade context. When an upgrade
+has no manual condition context, its conditional stats default to active and
+its stacking stats use `max_stacks`. Once manual condition context is supplied,
+omitted manual conditions are inactive and omitted stack counts are zero.
+Rank-locked stats use `upgrade.context["rank"]`; it defaults to `max_rank`, or
+zero when the upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models only store data. Condition matching, stack
 limits, and bucket merging are handled by `UpgradeResolver`.

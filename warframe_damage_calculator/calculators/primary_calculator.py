@@ -9,7 +9,8 @@ from .ranged_calculator import RangedCalculator
 
 
 class PrimaryCalculator(RangedCalculator):
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = RangedCalculator.DEFAULT_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = RangedCalculator.DEFAULT_STATS
+    CALCULATED_STATS: ClassVar[dict[str, Any]] = RangedCalculator.CALCULATED_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()

@@ -1,27 +1,28 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+from copy import deepcopy
 from typing import Any
 
-from ..utils import Condition, Stat, VALID_STATS, Value
+from ..utils import Value, ConditionEntry, RankEntry
+
+
+
 
 
 class Upgrade:
-    def __init__(self, stats: dict[Stat, Value] | None = None, conditional_stats: dict[Stat, list[Value | Condition]] | None = None, stacking_stats: dict[Stat, list[Value | Condition]] | None = None, rank_locked_stats: dict[Stat, list[Value | int]] | None = None, context: dict[str, Any] | None = None) -> None:
-        self.stats = stats or {}
-        self.conditional_stats = conditional_stats or {}
-        self.stacking_stats = stacking_stats or {}
-        self.rank_locked_stats = rank_locked_stats or {}
-        self.context = context or {}
-        self.validate()
+    BOOLEAN_STATS = frozenset({"fire_rate_lock", "multishot_lock"})
 
-    def copy(self, **changes: Any) -> Upgrade:
-        return Upgrade(**{"stats": self.stats, "conditional_stats": self.conditional_stats, "stacking_stats": self.stacking_stats, "rank_locked_stats": self.rank_locked_stats, "context": self.context, **changes})
+    def __init__(self, stats: Mapping[str, Value] | None = None, conditional_stats: Mapping[str, ConditionEntry] | None = None, stacking_stats: Mapping[str, ConditionEntry] | None = None, rank_locked_stats: Mapping[str, RankEntry] | None = None, context: Mapping[str, Any] | None = None) -> None:
+        self.stats = dict(stats or {})
+        self.conditional_stats = dict(conditional_stats or {})
+        self.stacking_stats = dict(stacking_stats or {})
+        self.rank_locked_stats = dict(rank_locked_stats or {})
+        self.context = dict(context or {})
 
-    def validate(self) -> None:
-        for bucket_name in ("stats", "conditional_stats", "stacking_stats", "rank_locked_stats"):
-            bucket = getattr(self, bucket_name)
-            unknown = sorted((stat for stat in bucket if stat not in VALID_STATS), key=str)
-            if unknown:
-                upgrade_name = self.context.get("name") or "<unnamed>"
-                unknown_names = ", ".join(repr(stat) for stat in unknown)
-                raise ValueError(f"Upgrade {upgrade_name!r} contains unknown stat(s) in {bucket_name}: {unknown_names}")
+    def copy(self) -> Upgrade:
+        return deepcopy(self)
+
+    @property
+    def _label(self) -> str:
+        return f" on upgrade {self.context['name']!r}" if self.context.get("name") else ""

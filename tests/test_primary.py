@@ -7,6 +7,17 @@ from warframe_damage_calculator.calculators import UpgradeResolver
 
 
 class PrimaryTests(unittest.TestCase):
+    def test_base_total_damage_matches_distribution(self) -> None:
+        weapon = Primary(stats={"damage": {"impact": 10, "puncture": 6, "slash": 8}})
+        self.assertEqual((weapon.stats.base["total_damage"], weapon.stats.base["damage"].total_damage()), (24, 24))
+        self.assertIn("24.00", next(line for line in weapon.format.summary().splitlines() if line.startswith("TOTAL DAMAGE")))
+
+    def test_weapon_stat_validation(self) -> None:
+        with self.assertRaisesRegex(ValueError, r"Unknown Primary stat: 'crit_chace'\. Did you mean 'crit_chance'\?"): Primary(stats={"damage": {"impact": 10}, "crit_chace": 0.5})
+        with self.assertRaisesRegex(ValueError, "Unknown Primary stat: 'total_damage'"): Primary(stats={"total_damage": 10})
+        weapon = Primary(stats={"damage": {"impact": 10}, "explosion_damage": {"heat": 20}, "burst_count": 3})
+        self.assertEqual((weapon.stats.base["explosion_total_damage"], weapon.stats.base["burst_count"]), (20, 3))
+
     def test_all_primary_weapons_construct_and_calculate(self) -> None:
         for name in arsenal.weapons["primary"]:
             with self.subTest(name=name):
@@ -32,7 +43,7 @@ class PrimaryTests(unittest.TestCase):
         self.assertTrue(upgrade.context["headshot"])
         self.assertNotIn("sacrificial set", upgrade.context)
         self.assertTrue(weapon.build.upgrades[0].context["headshot"])
-        self.assertFalse(weapon.build.upgrades[0].context["sacrificial set"])
+        self.assertNotIn("sacrificial set", weapon.build.upgrades[0].context)
 
     def test_weapon_context_accepts_custom_shared_conditions(self) -> None:
         weapon = Primary(stats={"damage": {"impact": 10}}, context={"type": "rifle", "buff": True})

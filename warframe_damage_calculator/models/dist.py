@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator, Mapping
+from typing import TypeAlias
 
-from ..utils import DAMAGE_TYPE_ORDER, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, PHYSICAL_TYPES, DamageType
+from ..utils import DAMAGE_TYPE_ORDER, DAMAGE_TYPES, ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, PHYSICAL_TYPES, DamageType, Value
 
 
 class dist:
     __slots__ = ("_values",)
 
-    def __init__(self, values: Mapping[DamageType, float] | None = None, /, **kwargs: float) -> None:
+    def __init__(self, values: Mapping[DamageType, float] | None = None) -> None:
         merged = dict(values or {})
-        merged.update(kwargs)
         unknown = set(merged) - set(DAMAGE_TYPES)
         if unknown:
             raise ValueError(f"Unknown damage types: {', '.join(sorted(unknown))}")

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
 from functools import cached_property
 from typing import Any, ClassVar
 
@@ -10,11 +9,8 @@ from .weapon_calculator import WeaponCalculator
 
 
 class RangedCalculator(WeaponCalculator):
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.DEFAULT_STATS | {"explosion_damage": dist(), "explosion_forced_procs": dist(), "explosion_total_damage": 0.0, "multishot": 1.0, "multiplicative_fire_rate": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "ammo_efficiency": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
-
-    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
-        super().__init__(stats, context)
-        self.base["explosion_total_damage"] = self.base["explosion_damage"].total_damage()
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.DEFAULT_STATS | {"explosion_damage": dist(), "explosion_forced_procs": dist(), "multishot": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0}
+    CALCULATED_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.CALCULATED_STATS | {"explosion_total_damage": 0.0, "multiplicative_fire_rate": 1.0, "ammo_efficiency": 0.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()

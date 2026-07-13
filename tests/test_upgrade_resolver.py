@@ -51,10 +51,26 @@ class UpgradeResolverTests(unittest.TestCase):
         self.assertEqual(resolved.get("base_damage"), 0)
         self.assertEqual(resolved.get("crit_chance"), 0.2)
 
-    def test_stack_count_is_capped(self) -> None:
-        upgrade = Upgrade(context={"max_stacks": 3, "stacks": 10}, stacking_stats={"base_damage": [0.5, "stacks"]})
-        self.weapon.configure(upgrade)
-        self.assertEqual(self.resolve().get("base_damage"), 1.5)
+    def test_upgrade_copy_is_independent(self) -> None:
+        original = Upgrade(stats={"base_damage": 1}, conditional_stats={"crit_chance": [0.5, "headshot"]}, stacking_stats={"multishot": [0.2, "kill"]}, rank_locked_stats={"status_chance": [0.3, 2]}, context={"max_rank": 5, "requirements": {"trigger": ["semi"]}})
+        copied = original.copy()
+        copied.stats["base_damage"] = 2
+        for bucket in (copied.conditional_stats, copied.stacking_stats, copied.rank_locked_stats): next(iter(bucket.values()))[0] = 1
+        copied.context["requirements"]["trigger"].append("auto")
+        self.assertEqual((original.stats["base_damage"], original.conditional_stats["crit_chance"][0], original.stacking_stats["multishot"][0], original.rank_locked_stats["status_chance"][0]), (1, 0.5, 0.2, 0.3))
+        self.assertEqual(original.context["requirements"], {"trigger": ["semi"]})
+        self.assertEqual(original.copy(stats={"base_damage": 3}).stats["base_damage"], 3)
+
+    def test_upgrade_validation(self) -> None:
+        cases = (({"conditional_stats": {"base_damage": 1}}, r"expected \(value, condition\)"), ({"conditional_stats": {"base_damage": [1, ""]}}, "non-empty condition"), ({"stacking_stats": {"base_damage": 1}}, r"expected \(value, condition\)"), ({"rank_locked_stats": {"base_damage": [1, "five"]}}, "required_rank"), ({"context": {"max_rank": 5}, "rank_locked_stats": {"base_damage": [1, 6]}}, "exceeds max_rank"))
+        for kwargs, message in cases:
+            with self.subTest(kwargs=kwargs), self.assertRaisesRegex((TypeError, ValueError), message): Upgrade(**kwargs)
+        for context in ({"max_rank": True}, {"max_rank": 5, "rank": True}, {"max_stacks": True}, {"max_stacks": 5, "stacks": True}, {"max_rank": 5, "rank": 6}, {"max_stacks": 3, "stacks": 10}):
+            with self.subTest(context=context), self.assertRaises((TypeError, ValueError)): Upgrade(context=context)
+        for stats, message in (({"base_damage": True}, "int or float"), ({"multishot_lock": 1}, "bool")):
+            with self.subTest(stats=stats), self.assertRaisesRegex(TypeError, message): Upgrade(stats=stats)
+        self.assertEqual(Upgrade(conditional_stats={"base_damage": (1, "active")}).conditional_stats["base_damage"], [1, "active"])
+        self.assertEqual(Upgrade(stats={"damage": {"impact": 0.5}}).stats["damage"], dist(impact=0.5))
 
 
 if __name__ == "__main__":

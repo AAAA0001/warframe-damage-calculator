@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from difflib import get_close_matches
 from functools import cached_property
 from typing import Any, ClassVar
 
@@ -11,9 +12,10 @@ from .upgrade_resolver import UpgradeResolver
 
 
 class WeaponCalculator:
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = {"damage": dist(), "forced_procs": dist(), "total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "crit_chance": 0.0, "flat_crit_damage": 0.0, "crit_damage": 1.0, "status_chance": 0.0, "status_damage": 1.0}
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = {"damage": dist(), "forced_procs": dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0}
+    CALCULATED_STATS: ClassVar[dict[str, Any]] = {"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0}
 
-    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
+    def __init__(self, stats: Mapping[str, object] | None = None, context: Mapping[str, object] | None = None) -> None:
         self.context = dict(context or {})
         self.build = Build()
         self.base = self._new_stats(stats)
@@ -22,11 +24,14 @@ class WeaponCalculator:
         self.recompute()
 
     @classmethod
-    def _new_stats(cls, stats: Mapping[str, Any] | None = None) -> dict[str, Any]:
-        values = {**deepcopy(cls.DEFAULT_STATS), **dict(stats or {})}
+    def _new_stats(cls, stats: Mapping[str, object] | None = None) -> dict[str, Any]:
+        values = {**deepcopy(cls.DEFAULT_STATS), **deepcopy(cls.CALCULATED_STATS), **dict(stats or {})}
         for stat in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs"):
             if stat in values and not isinstance(values[stat], dist):
                 values[stat] = dist(values[stat])
+        values["total_damage"] = values["damage"].total_damage()
+        if "explosion_damage" in values:
+            values["explosion_total_damage"] = values["explosion_damage"].total_damage()
         return values
 
     def _compute_moded_stats(self) -> None:

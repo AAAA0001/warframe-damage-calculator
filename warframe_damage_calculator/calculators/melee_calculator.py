@@ -8,7 +8,8 @@ from .weapon_calculator import WeaponCalculator
 
 
 class MeleeCalculator(WeaponCalculator):
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.DEFAULT_STATS | {"attack_speed": 1.0, "melee_doughty": 0.0, "melee_duplicate": 0.0}
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.DEFAULT_STATS | {"attack_speed": 1.0}
+    CALCULATED_STATS: ClassVar[dict[str, Any]] = WeaponCalculator.CALCULATED_STATS | {"melee_doughty": 0.0, "melee_duplicate": 0.0}
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()

@@ -1,26 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from ..models import Build, Upgrade
-from ..models.dist import dist
+from typing import Any
+
 from ..utils import DAMAGE_TYPES, Value
+from ..models import Build, Upgrade, dist
 
 
 class UpgradeResolver:
     METADATA = {"name", "category", "type", "trigger", "is beam", "is battery", "compatibility", "incompatibility", "requirements", "max rank", "max stacks", "is exilus"}
-    AUTOMATIC_CONDITIONS = {
-        "primary",
-        "rifle",
-        "bow",
-        "shotgun",
-        "sniper",
-        "secondary",
-        "pistol",
-        "melee",
-        "sacrificial set",
-    }
+    AUTOMATIC_CONDITIONS = {"primary", "rifle", "bow", "shotgun", "sniper", "secondary", "pistol", "melee", "sacrificial set"}
 
-    def __init__(self, weapon_context: Mapping[str, object]) -> None:
+    def __init__(self, weapon_context: Mapping[str, Any]) -> None:
         self.weapon_context = weapon_context
 
     @staticmethod
@@ -28,7 +19,8 @@ class UpgradeResolver:
         return " ".join(value.casefold().replace("_", " ").replace("-", " ").split())
 
     @property
-    def context(self) -> dict[str, object]:
+    def context(self) -> dict[str, Any]:
+        context = {self._normalize(key): value for key, value in self.weapon_context.items()}
         weapon_type = self._normalize(str(self.weapon_context.get("type") or ""))
         weapon_types = {weapon_type} if weapon_type else set()
         category = self._normalize(str(self.weapon_context.get("category") or ""))
@@ -38,16 +30,16 @@ class UpgradeResolver:
         if weapon_type == "bow":
             weapon_types.add("rifle")
 
-        context: dict[str, object] = {name: True for name in weapon_types}
+        context.update({name: name in weapon_types for name in self.AUTOMATIC_CONDITIONS if name != "sacrificial set"})
         context["weapon"] = weapon_type
         return context
 
-    def _resolve_context(self, upgrade: Upgrade) -> dict[str, object]:
-        context = {self._normalize(key): value for key, value in upgrade.context.items()}
+    def _resolve_context(self, upgrade: Upgrade, shared_context: Mapping[str, Any]) -> dict[str, Any]:
+        context = {**{self._normalize(key): value for key, value in upgrade.context.items()}, **shared_context}
         context.setdefault("rank", context.get("max rank") or 0)
         return context
 
-    def _condition_active(self, condition: str, context: dict[str, object], use_defaults: bool) -> bool:
+    def _condition_active(self, condition: str, context: dict[str, Any], use_defaults: bool) -> bool:
         condition = self._normalize(condition)
         default = False if condition in self.AUTOMATIC_CONDITIONS else use_defaults
         return bool(context.get(condition, default))
@@ -59,7 +51,7 @@ class UpgradeResolver:
     @staticmethod
     def _merge(target: dict[str, Value], stat: str, value: Value) -> None:
         if stat in DAMAGE_TYPES:
-            value = dist(**{stat: value})
+            value = dist({stat: value})
             stat = "damage"
         current = target.get(stat)
         if current is None:
@@ -75,14 +67,15 @@ class UpgradeResolver:
                 raise TypeError(f"Cannot merge values for upgrade stat {stat!r}") from None
 
     def resolve(self, build: Build) -> Build:
-        build = build.contextualize(self.context, copy=True)
+        names = {self._normalize(str(upgrade.context.get("name") or "")) for upgrade in build}
+        shared_context = {**self.context, "sacrificial set": {"sacrificial pressure", "sacrificial steel"}.issubset(names)}
         resolved_upgrades = []
 
-        for upgrade in build:
-            upgrade.validate()
+        for source in build:
+            upgrade = source.copy()
             upgrade_name = upgrade.context.get("name") or "<unnamed>"
-            use_defaults = not any(self._normalize(key) not in self.AUTOMATIC_CONDITIONS | self.METADATA | {"rank", "weapon"} for key in upgrade.context)
-            context = self._resolve_context(upgrade)
+            context = self._resolve_context(upgrade, shared_context)
+            use_defaults = not any(key not in self.AUTOMATIC_CONDITIONS | self.METADATA | {"rank", "weapon"} for key in context)
             resolved: dict[str, Value] = {}
             max_rank = context.get("max rank")
             max_stacks = context.get("max stacks")
@@ -113,8 +106,12 @@ class UpgradeResolver:
                 if max_stacks is not None:
                     stack_count = min(stack_count, max_stacks)
                 if stack_count:
-                    self._merge(resolved, stat, self._scale(value, multiplier) * stack_count)
+                    stacked_value = self._scale(value, multiplier)
+                    self._merge(resolved, stat, stacked_value if isinstance(stacked_value, bool) else stacked_value * stack_count)
 
-            resolved_upgrades.append(upgrade.copy(context={**upgrade.context, "rank": rank}, stats=resolved, rank_locked_stats={}, conditional_stats={}, stacking_stats={}))
+            upgrade.context["rank"] = rank
+            upgrade.stats = resolved
+            upgrade.rank_locked_stats = upgrade.conditional_stats = upgrade.stacking_stats = {}
+            resolved_upgrades.append(upgrade)
 
         return Build(*resolved_upgrades)

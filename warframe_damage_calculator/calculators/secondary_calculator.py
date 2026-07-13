@@ -9,7 +9,8 @@ from .ranged_calculator import RangedCalculator
 
 
 class SecondaryCalculator(RangedCalculator):
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = RangedCalculator.DEFAULT_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
+    DEFAULT_STATS: ClassVar[dict[str, Any]] = RangedCalculator.DEFAULT_STATS
+    CALCULATED_STATS: ClassVar[dict[str, Any]] = RangedCalculator.CALCULATED_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
