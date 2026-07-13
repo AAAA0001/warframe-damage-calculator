@@ -54,15 +54,11 @@ pip install -e .
 ## Quick Start
 
 ``` python
-from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
+from warframe_damage_calculator import Build, arsenal
 
 weapon = arsenal.get("Corinth Prime")
 multishot = arsenal.get("Galvanized Hell")
 cold = arsenal.get("Primed Chilling Grasp")
-
-assert isinstance(weapon, Primary)
-assert isinstance(multishot, Upgrade)
-assert isinstance(cold, Upgrade)
 
 multishot.context["kill"] = 4
 cold.context["rank"] = 3
@@ -99,41 +95,6 @@ The JSON schema mirrors the model API:
 - Weapon damage fields: `damage` and `explosion_damage`.
 - Upgrade buckets: `stats`, `conditional_stats`, and `stacking_stats`.
 - Conditional entries are stored as `[value, condition]`.
-
-------------------------------------------------------------------------
-
-## Tests
-
-Run the regression suite with:
-
-```powershell
-python tests/test_all.py
-```
-- Rank-gated passive effects use `rank_locked_stats` with `[value, required_rank]`; the resolver activates them from `upgrade.context["rank"]`.
-
-------------------------------------------------------------------------
-
-## Web App (Streamlit)
-
-This project also includes an interactive Streamlit UI for experimenting
-with weapon base stats, mods, arcanes, and buffs without writing Python
-code.
-
-The app entry point is:
-
-`web/app.py`
-
-Run it from the repository root:
-
-``` bash
-py -m streamlit run web/app.py
-```
-
-If Streamlit is not installed in your environment:
-
-``` bash
-py -m pip install streamlit
-```
 
 ------------------------------------------------------------------------
 

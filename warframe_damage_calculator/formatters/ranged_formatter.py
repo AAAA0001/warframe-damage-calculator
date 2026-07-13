@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 from .weapon_formatter import WeaponFormatter
 
 
 class RangedFormatter(WeaponFormatter):
-    def summary(self) -> str:
+    def summary(self):
         return "\n".join([
             f"{'FIRE RATE:':<25} {f'{self.calculator.base['fire_rate']:.2f}rps':<7} -> {self.calculator.effective['fire_rate']:.2f}rps",
             f"{'RELOAD SPEED:':<25} {f'{self.calculator.base['reload_speed']:.2f}s':<7} -> {self.calculator.effective['reload_speed']:.2f}s",

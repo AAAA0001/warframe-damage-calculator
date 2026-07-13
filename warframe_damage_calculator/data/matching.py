@@ -1,10 +1,4 @@
-from __future__ import annotations
-
-from collections.abc import Mapping
-from typing import Any
-
 from .normalization import as_list, normalize_identifier
-from .schema import DatabaseEntry
 
 
 PRIMARY_TYPES = frozenset({"primary", "rifle", "bow", "shotgun", "sniper"})
@@ -30,25 +24,25 @@ _TYPE_ALIASES = {
 }
 
 
-def normalize_filter(value: str | None) -> str | None:
+def normalize_filter(value):
     if value is None:
         return None
     key = normalize_identifier(value)
     return _FILTER_ALIASES.get(key, key)
 
 
-def expand_type_filter(value: str | None) -> set[str]:
+def expand_type_filter(value):
     if value is None:
         return set()
     key = normalize_identifier(value)
     return set(_TYPE_ALIASES.get(key, {key}))
 
 
-def _normalized_values(value: Any) -> set[str]:
+def _normalized_values(value):
     return {normalize_identifier(item) for item in as_list(value)}
 
 
-def _requirements_match_type(requirements: Mapping[str, Any], requested: set[str]) -> bool:
+def _requirements_match_type(requirements, requested):
     for key, value in requirements.items():
         if normalize_identifier(key) in requested:
             return True
@@ -57,7 +51,7 @@ def _requirements_match_type(requirements: Mapping[str, Any], requested: set[str
     return False
 
 
-def weapon_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+def weapon_matches(entry, item_type):
     item_type = normalize_filter(item_type)
     if item_type is None or item_type == "weapon":
         return True
@@ -74,7 +68,7 @@ def weapon_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
     return weapon_type in requested or trigger in requested
 
 
-def upgrade_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+def upgrade_matches(entry, item_type):
     item_type = normalize_filter(item_type)
     if item_type is None or item_type == "upgrade":
         return True
@@ -98,7 +92,7 @@ def upgrade_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
     return bool(compatibility & requested) or _requirements_match_type(requirements, requested)
 
 
-def entry_matches(entry: DatabaseEntry, item_type: str | None) -> bool:
+def entry_matches(entry, item_type):
     if entry.is_weapon:
         return weapon_matches(entry, item_type)
     return upgrade_matches(entry, item_type)

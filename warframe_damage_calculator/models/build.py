@@ -1,31 +1,23 @@
-from __future__ import annotations
-
-from collections.abc import Mapping
-from typing import Iterator, Self
-
-from ..utils import Value
 from .upgrade import Upgrade
 
 
 class Build:
-    def __init__(self, *upgrades: Upgrade) -> None:
-        if any(not isinstance(upgrade, Upgrade) for upgrade in upgrades):
-            raise TypeError("Build only accepts Upgrade objects")
+    def __init__(self, *upgrades):
         self.upgrades = list(upgrades)
 
-    def __add__(self, other: Upgrade | Build) -> Build:
+    def __add__(self, other):
         if isinstance(other, Upgrade):
             return Build(*self.upgrades, other)
         if isinstance(other, Build):
             return Build(*self.upgrades, *other.upgrades)
         return NotImplemented
 
-    def __radd__(self, other: Upgrade) -> Build:
+    def __radd__(self, other):
         if isinstance(other, Upgrade):
             return Build(other, *self.upgrades)
         return NotImplemented
 
-    def __sub__(self, other: Upgrade | Build) -> Build:
+    def __sub__(self, other):
         if isinstance(other, Upgrade):
             excluded = {other}
         elif isinstance(other, Build):
@@ -34,34 +26,23 @@ class Build:
             return NotImplemented
         return Build(*(upgrade for upgrade in self.upgrades if upgrade not in excluded))
 
-    def __iter__(self) -> Iterator[Upgrade]:
+    def __iter__(self):
         return iter(self.upgrades)
 
-    def contextualize(self, context: Mapping[str, object], copy: bool = False) -> Self:
+    def contextualize(self, context, copy=False):
         build = Build(*(upgrade.copy() for upgrade in self)) if copy else self
         for upgrade in build:
             upgrade.context = {**context, **upgrade.context}
-            upgrade.validate()
         return build
 
-    def aggregate(self) -> dict[str, Value]:
-        stats: dict[str, Value] = {}
+    def aggregate(self):
+        stats = {}
         for upgrade in self:
             for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
-                if current is None:
-                    stats[stat] = value
-                elif isinstance(current, bool) and isinstance(value, bool):
-                    stats[stat] = current or value
-                elif isinstance(current, bool) or isinstance(value, bool):
-                    raise TypeError(f"Cannot combine values for build stat {stat!r}")
-                else:
-                    try:
-                        stats[stat] = current + value
-                    except TypeError:
-                        raise TypeError(f"Cannot combine values for build stat {stat!r}") from None
+                stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
         return stats
 
-    def get(self, stat: str, default: Value = 0) -> Value:
+    def get(self, stat, default=0):
         return self.aggregate().get(stat, default)
 

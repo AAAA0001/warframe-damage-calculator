@@ -1,21 +1,16 @@
-from __future__ import annotations
-
-from collections.abc import Mapping
 from copy import deepcopy
-from difflib import get_close_matches
 from functools import cached_property
-from typing import Any, ClassVar
 
-from ..models import Build, Upgrade
+from ..models import Build
 from ..models.dist import dist
 from .upgrade_resolver import UpgradeResolver
 
 
 class WeaponCalculator:
-    DEFAULT_STATS: ClassVar[dict[str, Any]] = {"damage": dist(), "forced_procs": dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0}
-    CALCULATED_STATS: ClassVar[dict[str, Any]] = {"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0}
+    DEFAULT_STATS = {"damage": dist(), "forced_procs": dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0}
+    CALCULATED_STATS = {"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0}
 
-    def __init__(self, stats: Mapping[str, object] | None = None, context: Mapping[str, object] | None = None) -> None:
+    def __init__(self, stats=None, context=None):
         self.context = dict(context or {})
         self.build = Build()
         self.base = self._new_stats(stats)
@@ -24,7 +19,7 @@ class WeaponCalculator:
         self.recompute()
 
     @classmethod
-    def _new_stats(cls, stats: Mapping[str, object] | None = None) -> dict[str, Any]:
+    def _new_stats(cls, stats=None):
         values = {**deepcopy(cls.DEFAULT_STATS), **deepcopy(cls.CALCULATED_STATS), **dict(stats or {})}
         for stat in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs"):
             if stat in values and not isinstance(values[stat], dist):
@@ -34,7 +29,7 @@ class WeaponCalculator:
             values["explosion_total_damage"] = values["explosion_damage"].total_damage()
         return values
 
-    def _compute_moded_stats(self) -> None:
+    def _compute_moded_stats(self):
         self.moded["multiplicative_base_damage"] = max(1 + self.build.get("multiplicative_base_damage"), 1)
         self.moded["base_damage"] = max(1 + self.build.get("base_damage"), 0)
         self.moded["damage"] = self.moded["base_damage"] * self.base["damage"].apply(self.build.get("damage", dist())).combine().sorted()
@@ -48,7 +43,7 @@ class WeaponCalculator:
         self.moded["status_chance"] = max(self.base["status_chance"] * (1 + self.build.get("status_chance")), 0)
         self.moded["status_damage"] = max(1 + self.build.get("status_damage"), 1)
 
-    def _compute_effective_stats(self) -> None:
+    def _compute_effective_stats(self):
         self.effective["base_damage"] = self.moded["base_damage"] * self.moded["multiplicative_base_damage"]
         self.effective["damage"] = self.moded["multiplicative_base_damage"] * self.moded["damage"]
         self.effective["total_damage"] = self.effective["damage"].total_damage()
@@ -58,54 +53,51 @@ class WeaponCalculator:
         self.effective["status_chance"] = self.moded["status_chance"]
         self.effective["status_damage"] = self.moded["status_damage"]
 
-    def _clear_cached_properties(self) -> None:
+    def _clear_cached_properties(self):
         for cls in type(self).mro():
             for name, attr in cls.__dict__.items():
                 if isinstance(attr, cached_property):
                     self.__dict__.pop(name, None)
 
-    def recompute(self) -> None:
+    def recompute(self):
         self._compute_moded_stats()
         self._compute_effective_stats()
         self._clear_cached_properties()
 
-    def set_build(self, build: Build) -> None:
+    def set_build(self, build):
         self.build = UpgradeResolver(self.context).resolve(build)
         self.recompute()
 
-    def contribution(self, upgrade: Upgrade) -> float:
+    def contribution(self, upgrade):
         full = self.build
         full_dps = self.total_dps
-        try:
-            self.build = self.build - upgrade
-            self.recompute()
-            return full_dps - self.total_dps
-        finally:
-            self.build = full
-            self.recompute()
+        self.build = self.build - upgrade
+        self.recompute()
+        contribution = full_dps - self.total_dps
+        self.build = full
+        self.recompute()
+        return contribution
 
     @cached_property
-    def average_crit_chance(self) -> float:
+    def average_crit_chance(self):
         return self.effective["crit_chance"]
 
     @cached_property
-    def average_crit_multiplier(self) -> float:
+    def average_crit_multiplier(self):
         return 1 + self.average_crit_chance * (self.effective["crit_damage"] - 1)
 
     @cached_property
-    def total_dph(self) -> float:
+    def total_dph(self):
         return self.flat_dph + self.flat_dotph
 
     @cached_property
-    def total_dps(self) -> float:
+    def total_dps(self):
         return self.flat_dps + self.flat_dotps
 
-    def contribution_values(self) -> dict[str, float]:
-        if not all(upgrade.context.get("name") for upgrade in self.build):
-            raise ValueError("All upgrades need to be named")
+    def contribution_values(self):
         return {str(upgrade.context["name"]): self.contribution(upgrade) for upgrade in self.build}
 
-    def contribution_proportions(self) -> dict[str, float]:
+    def contribution_proportions(self):
         contributions = self.contribution_values()
         total = sum(contributions.values()) or 1
         return {name: contribution / total for name, contribution in contributions.items()}
