@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from collections.abc import Iterable, Mapping
 from pathlib import Path
 from typing import Any, Literal, overload
@@ -46,10 +45,13 @@ class WarframeDatabase:
         self._factory = DatabaseFactory()
         self._entries = tuple(self._iter_database_entries())
 
-        index: dict[str, list[DatabaseEntry]] = defaultdict(list)
+        index: dict[str, DatabaseEntry] = {}
         for entry in self._entries:
-            index[normalize_name(entry.name)].append(entry)
-        self._name_index = dict(index)
+            key = normalize_name(entry.name)
+            if key in index:
+                raise ValueError(f"Duplicate arsenal item name: {entry.name!r}")
+            index[key] = entry
+        self._name_index = index
 
     @classmethod
     def from_files(
@@ -74,6 +76,7 @@ class WarframeDatabase:
         name: str,
         *,
         type: str | None = None,
+        context: Mapping[str, Any] | None = None,
         attribute: None = None,
     ) -> ArsenalItem | None: ...
 
@@ -83,6 +86,7 @@ class WarframeDatabase:
         name: str,
         *,
         type: str | None = None,
+        context: Mapping[str, Any] | None = None,
         attribute: str,
     ) -> ArsenalValue | None: ...
 
@@ -92,6 +96,7 @@ class WarframeDatabase:
         name: None = None,
         *,
         type: str | None = None,
+        context: Mapping[str, Any] | None = None,
         attribute: Literal["name"],
     ) -> list[str]: ...
 
@@ -101,6 +106,7 @@ class WarframeDatabase:
         name: None = None,
         *,
         type: str | None = None,
+        context: Mapping[str, Any] | None = None,
         attribute: str | None = None,
     ) -> dict[str, ArsenalItem | ArsenalValue | None]: ...
 
@@ -109,25 +115,14 @@ class WarframeDatabase:
         name: str | None = None,
         *,
         type: str | None = None,
+        context: Mapping[str, Any] | None = None,
         attribute: str | None = None,
     ) -> ArsenalItem | ArsenalValue | dict[str, ArsenalItem | ArsenalValue | None] | list[str] | None:
         if name is not None:
-            matches = [
-                entry
-                for entry in self._name_index.get(normalize_name(name), ())
-                if entry_matches(entry, type)
-            ]
-            if not matches:
+            entry = self._name_index.get(normalize_name(name))
+            if entry is None or not entry_matches(entry, type):
                 return None
-            if len(matches) > 1:
-                categories = ", ".join(sorted(entry.category for entry in matches))
-                raise ValueError(
-                    f"Ambiguous arsenal item name {name!r}; matching categories: {categories}. "
-                    "Pass a more specific type."
-                )
-
-            item = self._factory.create(matches[0])
-            return self._apply_attribute(item, attribute)
+            return self._apply_attribute(self._create(entry, context), attribute)
 
         entries = sorted(
             (entry for entry in self._entries if entry_matches(entry, type)),
@@ -139,9 +134,17 @@ class WarframeDatabase:
 
         result: dict[str, ArsenalItem | ArsenalValue | None] = {}
         for entry in entries:
-            item = self._factory.create(entry)
+            item = self._create(entry, context)
             result[entry.name] = self._apply_attribute(item, attribute)
         return result
+
+    def _create(self, entry: DatabaseEntry, context: Mapping[str, Any] | None) -> ArsenalItem:
+        item = self._factory.create(entry)
+        if context is not None:
+            if not isinstance(item, Upgrade):
+                raise TypeError("context can only be applied to upgrades")
+            item.context = dict(context)
+        return item
 
     @staticmethod
     def _normalize_sections(
