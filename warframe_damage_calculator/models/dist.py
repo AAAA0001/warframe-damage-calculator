@@ -15,7 +15,7 @@ class dist:
         if unknown:
             raise ValueError(f"Unknown damage types: {', '.join(sorted(unknown))}")
         if any(isinstance(value, bool) or not isinstance(value, (int, float)) for value in merged.values()):
-            raise TypeError("Damage values must be numbers")
+            raise TypeError("Damage values must be numeric")
         self._values = {damage_type: float(value) for damage_type, value in merged.items() if value != 0}
 
     def __iter__(self) -> Iterator[tuple[DamageType, float]]:
