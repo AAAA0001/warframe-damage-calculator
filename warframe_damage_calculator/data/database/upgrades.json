@@ -3101,11 +3101,11 @@
             "stacking_stats": {
                 "multishot": [
                     0.03,
-                    "status proc"
+                    "electricity proc"
                 ],
                 "reload_speed": [
                     0.015,
-                    "status proc"
+                    "electricity proc"
                 ]
             }
         },
@@ -3187,11 +3187,11 @@
             "stacking_stats": {
                 "crit_damage": [
                     0.036,
-                    "status proc"
+                    "toxin proc"
                 ],
                 "multishot": [
                     0.018,
-                    "status proc"
+                    "toxin proc"
                 ]
             }
         },
@@ -3363,10 +3363,11 @@
                 "pistol"
             ],
             "max_rank": 5,
+            "max_stacks": 10,
             "stacking_stats": {
                 "base_damage": [
                     0.45,
-                    "status proc"
+                    "cold proc"
                 ]
             }
         },

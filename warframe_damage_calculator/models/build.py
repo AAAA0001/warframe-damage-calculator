@@ -49,10 +49,13 @@ class Build:
                     stats[stat] = value
                 elif isinstance(current, bool) and isinstance(value, bool):
                     stats[stat] = current or value
-                elif not isinstance(current, bool) and not isinstance(value, bool):
-                    stats[stat] = current + value
-                else:
+                elif isinstance(current, bool) or isinstance(value, bool):
                     raise TypeError(f"Cannot combine values for build stat {stat!r}")
+                else:
+                    try:
+                        stats[stat] = current + value
+                    except TypeError:
+                        raise TypeError(f"Cannot combine values for build stat {stat!r}") from None
         return stats
 
     def get(self, stat: Stat, default: Value = 0) -> Value:

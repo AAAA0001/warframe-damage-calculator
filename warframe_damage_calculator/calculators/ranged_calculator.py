@@ -17,7 +17,7 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
         super()._compute_moded_stats()
         self.moded.is_beam = self.base.is_beam
         self.moded.is_battery = self.base.is_battery
-        self.moded.explosion_damage = self.moded.base_damage * self.base.explosion_damage.apply(self._upgrade("damage_dist", dist())).combine().sorted()
+        self.moded.explosion_damage = self.moded.base_damage * self.base.explosion_damage.apply(self._upgrade("damage", dist())).combine().sorted()
         self.moded.explosion_total_damage = self.moded.explosion_damage.total_damage()
         self.moded.weakpoint_damage = max(self.base.weakpoint_damage + self._upgrade("weakpoint_damage"), 1)
         self.moded.multiplicative_fire_rate = 1 if self._upgrade("fire_rate_lock", False) else max(1 + self._upgrade("multiplicative_fire_rate"), 1)
@@ -53,7 +53,7 @@ class RangedCalculator[TRangedState: RangedState](WeaponCalculator[TRangedState]
         self.effective.weakpoint_crit_chance = self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance
         self.effective.internal_bleeding = self.moded.internal_bleeding
 
-    def _flat_dotph_for(self, damage_dist: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def _flat_dotph_for(self, damage: dist, forced_procs: dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         raise NotImplementedError
 
     @cached_property

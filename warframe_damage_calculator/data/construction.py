@@ -63,10 +63,10 @@ class DatabaseFactory:
             "max_rank": max_rank,
             "max_stacks": entry.data.get("max_stacks"),
             "is_exilus": bool(entry.data.get("is_exilus", False)),
-            "stats": self._scaled_stats(entry.data.get("stats"), 1.0),
+            "stats": self._stats(entry.data.get("stats")),
             "rank_locked_stats": self._rank_locked_stats(entry.data.get("rank_locked_stats"), max_rank),
-            "conditional_stats": self._scaled_conditioned_stats(entry.data.get("conditional_stats"), 1.0),
-            "stacking_stats": self._scaled_conditioned_stats(entry.data.get("stacking_stats"), 1.0),
+            "conditional_stats": self._conditioned_stats(entry.data.get("conditional_stats")),
+            "stacking_stats": self._conditioned_stats(entry.data.get("stacking_stats")),
         }
         return Upgrade(**payload)
 
@@ -105,26 +105,15 @@ class DatabaseFactory:
                 raise ValueError(
                     f"Required rank for database stat {stat!r} cannot be negative"
                 )
-            result[stat] = (cls._scale_value(value, 1.0), required_rank)
+            result[stat] = (cls._validate_value(value), required_rank)
         return result
 
     @classmethod
-    def _scaled_stats(
-        cls,
-        values: Mapping[str, Value] | None,
-        multiplier: float,
-    ) -> dict[str, Value]:
-        return {
-            stat: cls._scale_value(value, multiplier)
-            for stat, value in (values or {}).items()
-        }
+    def _stats(cls, values: Mapping[str, Value] | None) -> dict[str, Value]:
+        return {stat: cls._validate_value(value) for stat, value in (values or {}).items()}
 
     @classmethod
-    def _scaled_conditioned_stats(
-        cls,
-        values: Mapping[str, Any] | None,
-        multiplier: float,
-    ) -> dict[str, tuple[Value, str]]:
+    def _conditioned_stats(cls, values: Mapping[str, Any] | None) -> dict[str, tuple[Value, str]]:
         result: dict[str, tuple[Value, str]] = {}
         for stat, raw_pair in (values or {}).items():
             if not isinstance(raw_pair, (list, tuple)) or len(raw_pair) != 2:
@@ -134,13 +123,11 @@ class DatabaseFactory:
             value, condition = raw_pair
             if not isinstance(condition, str) or not condition.strip():
                 raise ValueError(f"Database stat {stat!r} has an invalid condition")
-            result[stat] = (cls._scale_value(value, multiplier), condition)
+            result[stat] = (cls._validate_value(value), condition)
         return result
 
     @staticmethod
-    def _scale_value(value: Value, multiplier: float) -> Value:
-        if isinstance(value, bool) or multiplier == 1.0:
-            return value
-        if not isinstance(value, (int, float)):
+    def _validate_value(value: Value) -> Value:
+        if not isinstance(value, (bool, int, float)):
             raise TypeError(f"Upgrade stat values must be numeric or bool, got {value!r}")
-        return value * multiplier
+        return value

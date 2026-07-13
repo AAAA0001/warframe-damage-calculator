@@ -39,12 +39,6 @@ _SECTION_ALIASES: dict[str, ItemCategory] = {
     "arcanes": "arcane",
 }
 
-_ATTRIBUTE_ALIASES = {
-    "damage": "damage_dist",
-    "explosion_damage": "explosion_damage_dist",
-}
-
-
 class WarframeDatabase:
     def __init__(self, weapons: Mapping[str, Any], upgrades: Mapping[str, Any]) -> None:
         self.weapons = self._normalize_sections(weapons, {"primary", "secondary", "melee"})
@@ -192,7 +186,6 @@ class WarframeDatabase:
             return item.stats.base.name
 
         if isinstance(item, Upgrade):
-            key = _ATTRIBUTE_ALIASES.get(key, key)
             if hasattr(item, key):
                 return getattr(item, key)
             if key in item.stats:

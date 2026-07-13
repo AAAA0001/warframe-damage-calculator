@@ -29,11 +29,11 @@ class Weapon:
         return state_class(**state_fields)
 
     def configure(self, *upgrades: Build | Upgrade) -> Self:
-        if all(type(upgrade) is Upgrade for upgrade in upgrades):
-            build = Build(*upgrades)
-        elif len(upgrades) == 1 and isinstance(upgrades[0], Build):
+        if len(upgrades) == 1 and isinstance(upgrades[0], Build):
             build = upgrades[0]
+        elif all(isinstance(upgrade, Upgrade) for upgrade in upgrades):
+            build = Build(*upgrades)
         else:
-            raise TypeError
+            raise TypeError("configure() accepts Upgrade objects or one Build")
         self.stats._set_build(build)
         return self

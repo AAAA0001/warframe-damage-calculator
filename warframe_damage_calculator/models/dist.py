@@ -46,8 +46,6 @@ class dist:
     __rmul__ = __mul__
 
     def get(self, damage_type: DamageType) -> float:
-        if damage_type not in DAMAGE_TYPES:
-            raise ValueError(f"Unknown damage type: {damage_type!r}")
         return self._values.get(damage_type, 0.0)
 
     def total_damage(self) -> float:
