@@ -56,9 +56,9 @@ pip install -e .
 ``` python
 from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
 
-weapon = arsenal.get("Corinth Prime", type="primary")
-multishot = arsenal.get("Galvanized Hell", type="mod")
-cold = arsenal.get("Primed Chilling Grasp", type="mod")
+weapon = arsenal.get("Corinth Prime")
+multishot = arsenal.get("Galvanized Hell")
+cold = arsenal.get("Primed Chilling Grasp")
 
 assert isinstance(weapon, Primary)
 assert isinstance(multishot, Upgrade)
@@ -80,14 +80,13 @@ The bundled database uses the same names as the public model constructors. The
 main entry point is `arsenal.get()`:
 
 ```python
-weapon = arsenal.get("Acceltra Prime", type="primary")
-mod = arsenal.get("Critical Delay", type="mod")
-mod.context["rank"] = 5
+weapon = arsenal.get("Acceltra Prime")
+mod = arsenal.get("Critical Delay", context={"rank": 5})
 shotgun_names = arsenal.get(type="shotgun", attribute="name")
 crit_values = arsenal.get(type="mod", attribute="crit_chance")
 ```
 
-When `name` is omitted, `get()` returns all matching items. Passing
+Named lookups return the single matching weapon or upgrade without requiring `type`. When `name` is omitted, `get()` returns all matching items. Passing
 `attribute="name"` returns only their names without constructing every model.
 Filters accept broad categories such as `weapon`, `upgrade`, `primary`, `mod`,
 and `arcane`, as well as weapon types and triggers such as `shotgun`, `bow`, or
