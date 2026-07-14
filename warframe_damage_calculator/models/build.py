@@ -1,3 +1,4 @@
+from .record import Record
 from .upgrade import Upgrade
 
 
@@ -31,18 +32,18 @@ class Build:
 
     def contextualize(self, context, copy=False):
         build = Build(*(upgrade.copy() for upgrade in self)) if copy else self
+        shared = context if isinstance(context, Record) else Record(**(context or {}))
         for upgrade in build:
-            upgrade.context = {**context, **upgrade.context}
+            upgrade.context = shared | upgrade.context
         return build
 
     def aggregate(self):
-        stats = {}
+        stats = Record()
         for upgrade in self:
             for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
-                stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
+                setattr(stats, stat, value if current is None else current or value if isinstance(value, bool) else current + value)
         return stats
 
     def get(self, stat, default=0):
         return self.aggregate().get(stat, default)
-

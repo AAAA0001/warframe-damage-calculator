@@ -1,5 +1,5 @@
 from ..utils import DAMAGE_TYPES
-from ..models import Build, dist
+from ..models import Dist, Build, Record
 
 
 class UpgradeResolver:
@@ -11,13 +11,13 @@ class UpgradeResolver:
 
     @property
     def context(self):
-        context = {self._normalize(key): value for key, value in self.weapon_context.items()}
+        context = Record(**{self._normalize(key): value for key, value in self.weapon_context.items()})
         weapon_type = self._normalize(self.weapon_context.get("type") or "")
         weapon_types = {weapon_type, self._normalize(self.weapon_context.get("category") or "")} - {""}
         if weapon_type == "bow":
             weapon_types.add("rifle")
         context.update({name: name in weapon_types for name in self.AUTOMATIC_CONDITIONS - {"sacrificial set"}})
-        context["weapon"] = weapon_type
+        context.weapon = weapon_type
         return context
 
     @staticmethod
@@ -38,10 +38,10 @@ class UpgradeResolver:
     @staticmethod
     def _merge(target, stat, value):
         if stat in DAMAGE_TYPES:
-            value = dist({stat: value})
+            value = Dist({stat: value})
             stat = "damage"
         current = target.get(stat)
-        target[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
+        setattr(target, stat, value if current is None else current or value if isinstance(value, bool) else current + value)
 
     def _limit(self, context, field, upgrade):
         value = context.get(field)
@@ -49,12 +49,12 @@ class UpgradeResolver:
 
     def resolve(self, build):
         names = {self._normalize(upgrade.context.get("name") or "") for upgrade in build}
-        shared_context = {**self.context, "sacrificial set": {"sacrificial pressure", "sacrificial steel"}.issubset(names)}
+        shared_context = self.context | Record(**{"sacrificial set": {"sacrificial pressure", "sacrificial steel"}.issubset(names)})
         resolved = []
 
         for source in build:
             upgrade = source.copy()
-            context = {**{self._normalize(key): value for key, value in upgrade.context.items()}, **shared_context}
+            context = Record(**{self._normalize(key): value for key, value in upgrade.context.items()}) | shared_context
             use_defaults = not any(key not in self.AUTOMATIC_CONDITIONS | self.METADATA | {"rank", "weapon"} for key in context)
             max_rank = self._limit(context, "max rank", upgrade)
             max_stacks = self._limit(context, "max stacks", upgrade)
@@ -62,7 +62,7 @@ class UpgradeResolver:
             if max_rank is not None:
                 rank = min(rank, max_rank)
             multiplier = 1.0 if max_rank in {None, 0} else (rank + 1) / (max_rank + 1)
-            stats = {}
+            stats = Record()
 
             for stat, value in upgrade.stats.items():
                 self._merge(stats, stat, self._scale(value, multiplier))
@@ -87,9 +87,11 @@ class UpgradeResolver:
                     value = stacked_value if isinstance(stacked_value, bool) else stacked_value * stacks
                     self._merge(stats, stat, value)
 
-            upgrade.context["rank"] = rank
+            upgrade.context.rank = rank
             upgrade.stats = stats
-            upgrade.rank_locked_stats = upgrade.conditional_stats = upgrade.stacking_stats = {}
+            upgrade.rank_locked_stats = Record()
+            upgrade.conditional_stats = Record()
+            upgrade.stacking_stats = Record()
             resolved.append(upgrade)
 
         return Build(*resolved)

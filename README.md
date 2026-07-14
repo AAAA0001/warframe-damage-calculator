@@ -60,8 +60,8 @@ weapon = arsenal.get("Corinth Prime")
 multishot = arsenal.get("Galvanized Hell")
 cold = arsenal.get("Primed Chilling Grasp")
 
-multishot.context["kill"] = 4
-cold.context["rank"] = 3
+multishot.context.kill = 4
+cold.context.rank = 3
 weapon.configure(Build(multishot, cold))
 print(weapon.format.summary())
 ```
@@ -128,6 +128,7 @@ builds.
 
 ``` python
 from warframe_damage_calculator import (
+    Record,
     Upgrade,
     Build,
     Primary,
@@ -138,6 +139,7 @@ from warframe_damage_calculator import (
 
  | Object      | Description                               |
  |-------------|-------------------------------------------|
+ |`Record`     | Keyword-initialized named values.          |
  |`Upgrade`    | A single modifier (mod, arcane, or buff). |
  |`Build`      | A collection of upgrades.                 |
  |`Primary`    | Primary weapon model.                     |
@@ -150,7 +152,7 @@ Typical workflow:
 2.  Create one or more `Upgrade` objects.
 3.  Combine them into a `Build` (optional).
 4.  Apply the build with `weapon.configure(build)` or `weapon.configure(upgrade_1, upgrade_2, ...)`.
-5.  Read values from `weapon.calculate`.
+5.  Read values from `weapon.stats`.
 6.  Print results with `weapon.format.summary()`.
 
 Since `configure()` returns the weapon, the following is also valid:
@@ -159,18 +161,19 @@ Since `configure()` returns the weapon, the following is also valid:
 weapon = Primary(...).configure(build)
 ```
 
-Weapon damage uses ordinary mappings; the optimized distribution object is
-an internal calculator detail:
+Weapon stats and context use `Record`, which is initialized with keyword
+arguments and exposes values through attributes. The optimized distribution
+object is an internal calculator detail:
 
 ```python
 weapon = Primary(
-    stats={
-        "damage": {"impact": 20, "puncture": 30, "slash": 50},
-        "forced_procs": {"slash": 1},
-        "explosion_damage": {"heat": 100},
-        "explosion_forced_procs": {"heat": 1},
-    },
-    context={"type": "rifle"},
+    stats=Record(
+        damage={"impact": 20, "puncture": 30, "slash": 50},
+        forced_procs={"slash": 1},
+        explosion_damage={"heat": 100},
+        explosion_forced_procs={"heat": 1},
+    ),
+    context=Record(type="rifle"),
 )
 ```
 
@@ -178,15 +181,15 @@ weapon = Primary(
 
 ## Upgrade Fields
 
-Upgrades store modifiers in dictionaries. Conditional and stacking entries use
+Upgrades store modifiers in `Record` objects. Conditional and stacking entries use
 a two-item `[value, condition]` sequence:
 
 ```python
 upgrade = Upgrade(
-    context={"name": "Example Arcane", "max_stacks": 3},
-    stats={"reload_speed": 0.3},
-    conditional_stats={"crit_chance": [0.5, "headshot"]},
-    stacking_stats={"base_damage": [0.3, "kill"]},
+    context=Record(name="Example Arcane", max_stacks=3),
+    stats=Record(reload_speed=0.3),
+    conditional_stats=Record(crit_chance=[0.5, "headshot"]),
+    stacking_stats=Record(base_damage=[0.3, "kill"]),
 )
 ```
 
@@ -194,17 +197,18 @@ Descriptive metadata is stored only in `context`. Upgrade contexts include
 `name`, `category`, `compatibility`, `incompatibility`, `requirements`,
 `max_rank`, `max_stacks`, and `is_exilus`; weapon contexts include `name`,
 `category`, `type`, and ranged trigger/beam/battery metadata when applicable.
-Runtime conditions remain in the same dictionary.
+Runtime conditions remain in the same record.
 
-Weapon calculations use plain `base`, `moded`, and `effective` stat buckets.
-Read calculated values from, for example,
-`weapon.stats.effective["crit_chance"]`.
+Weapon calculations use `Record` objects for the `base`, `moded`, and `effective` stat buckets.
+Read calculated values through attributes, for example,
+`weapon.stats.effective.crit_chance`.
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
 automatically. Combat conditions and stack counts are stored on each upgrade:
 
 ```python
-upgrade.context.update({"headshot": True, "kill": 3})
+upgrade.context.headshot = True
+upgrade.context.kill = 3
 weapon.configure(build)
 ```
 
@@ -213,7 +217,7 @@ automatic conditions never become persistent upgrade context. When an upgrade
 has no manual condition context, its conditional stats default to active and
 its stacking stats use `max_stacks`. Once manual condition context is supplied,
 omitted manual conditions are inactive and omitted stack counts are zero.
-Rank-locked stats use `upgrade.context["rank"]`; it defaults to `max_rank`, or
+Rank-locked stats use `upgrade.context.rank`; it defaults to `max_rank`, or
 zero when the upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models only store data. Condition matching, stack

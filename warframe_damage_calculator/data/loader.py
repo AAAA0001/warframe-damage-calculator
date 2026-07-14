@@ -7,6 +7,7 @@ from .normalization import normalize_identifier, normalize_name
 from .paths import DEFAULT_UPGRADES_PATH, DEFAULT_WEAPONS_PATH, load_json
 from .schema import DatabaseEntry
 
+
 class WarframeDatabase:
     def __init__(self, weapons, upgrades):
         self.weapons = weapons
@@ -67,24 +68,24 @@ class WarframeDatabase:
 
         if isinstance(item, Upgrade):
             if key in item.context:
-                return item.context[key]
+                return item.context.get(key)
             if hasattr(item, key):
                 return getattr(item, key)
             if key in item.stats:
-                return item.stats[key]
+                return item.stats.get(key)
             if key in item.conditional_stats:
-                return item.conditional_stats[key]
+                return item.conditional_stats.get(key)
             if key in item.stacking_stats:
-                return item.stacking_stats[key]
+                return item.stacking_stats.get(key)
             return None
 
         if key in item.context:
-            return item.context[key]
+            return item.context.get(key)
 
         for state_name in ("base", "effective"):
             state = getattr(item.stats, state_name, None)
             if state is not None and key in state:
-                return state[key]
+                return state.get(key)
 
         if hasattr(item.stats, key):
             return getattr(item.stats, key)

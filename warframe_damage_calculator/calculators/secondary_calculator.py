@@ -10,16 +10,16 @@ class SecondaryCalculator(RangedCalculator):
 
     def _compute_moded_stats(self):
         super()._compute_moded_stats()
-        self.moded["secondary_enervate"] = clamp(self.build.get("secondary_enervate"), 0, 6)
-        self.moded["secondary_encumber"] = clamp(self.build.get("secondary_encumber"), 0, 0.24)
+        self.moded.secondary_enervate = clamp(self.build.get("secondary_enervate"), 0, 6)
+        self.moded.secondary_encumber = clamp(self.build.get("secondary_encumber"), 0, 0.24)
 
     def _compute_effective_stats(self):
         super()._compute_effective_stats()
-        self.effective["secondary_enervate"] = self.moded["secondary_enervate"]
-        self.effective["secondary_encumber"] = self.moded["secondary_encumber"]
+        self.effective.secondary_enervate = self.moded.secondary_enervate
+        self.effective.secondary_encumber = self.moded.secondary_encumber
 
     def _average_secondary_enervate_bonus_for(self, crit_chance, max_stacks=500):
-        R = self.effective["secondary_enervate"]
+        R = self.effective.secondary_enervate
         if R == 0:
             return 0.0
         M = max_stacks
@@ -55,30 +55,30 @@ class SecondaryCalculator(RangedCalculator):
     def _flat_dotph_for(self, damage, forced_procs, crit_chance, crit_multiplier, include_multishot=True):  # Secondary Encumber calculations need testing in-game
         if damage.total_damage() <= 0:
             return 0.0
-        secondary_encumber_chance = 1 - (1 - self.effective["secondary_encumber"] * min(self.effective["status_chance"], 1))**self.effective["multishot"]
-        secondary_encumber_dot = secondary_encumber_chance * damage.total_damage() * 14.1/13 * crit_multiplier * self.effective["status_damage"] * self.effective["faction_damage"]**2
+        secondary_encumber_chance = 1 - (1 - self.effective.secondary_encumber * min(self.effective.status_chance, 1))**self.effective.multishot
+        secondary_encumber_dot = secondary_encumber_chance * damage.total_damage() * 14.1/13 * crit_multiplier * self.effective.status_damage * self.effective.faction_damage**2
         # Internal bleeding from impact damage
-        internal_bleeding_expected_procs = ((damage.weight("impact") + forced_procs.get("impact")) * self.effective["status_chance"] + secondary_encumber_chance/13) * self.effective["internal_bleeding"]
-        internal_bleeding_damage_per_proc = 2.1 * damage.total_damage() * crit_multiplier * self.effective["status_damage"] * self.effective["faction_damage"] ** 2
+        internal_bleeding_expected_procs = ((damage.weight("impact") + forced_procs.get("impact")) * self.effective.status_chance + secondary_encumber_chance/13) * self.effective.internal_bleeding
+        internal_bleeding_damage_per_proc = 2.1 * damage.total_damage() * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2
         internal_bleeding_expected_damage = internal_bleeding_expected_procs * internal_bleeding_damage_per_proc
         # Regular status procs
-        dot_damage_per_bullet = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * self.effective["status_chance"] * crit_multiplier * self.effective["status_damage"] * self.effective["faction_damage"] ** 2
-        forced_dot_damage_per_bullet = sum(multiplier * forced_procs.get(damage_type) * damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * crit_multiplier * self.effective["status_damage"] * self.effective["faction_damage"] ** 2
+        dot_damage_per_bullet = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * self.effective.status_chance * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2
+        forced_dot_damage_per_bullet = sum(multiplier * forced_procs.get(damage_type) * damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2
         # Total DoT damage
-        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.effective["multishot"] * self.beam_dot_multiplier if include_multishot else 1) + secondary_encumber_dot
+        return (dot_damage_per_bullet + internal_bleeding_expected_damage + forced_dot_damage_per_bullet) * (self.effective.multishot * self.beam_dot_multiplier if include_multishot else 1) + secondary_encumber_dot
     
     @cached_property
     def average_secondary_enervate_bonus(self):
-        return self._average_secondary_enervate_bonus_for(self.moded["crit_chance"] * self.moded["multiplicative_crit_chance"] + self.moded["flat_crit_chance"])
+        return self._average_secondary_enervate_bonus_for(self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance)
 
     @cached_property
     def average_weakpoint_secondary_enervate_bonus(self):
-        return self._average_secondary_enervate_bonus_for(self.moded["weakpoint_crit_chance"] * (self.moded["multiplicative_crit_chance"] + self.moded["multiplicative_weakpoint_crit_chance"] - 1) + self.moded["flat_crit_chance"])
+        return self._average_secondary_enervate_bonus_for(self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance)
 
     @cached_property
     def average_crit_chance(self):
-        return self.effective["crit_chance"] + self.average_secondary_enervate_bonus
+        return self.effective.crit_chance + self.average_secondary_enervate_bonus
 
     @cached_property
     def average_weakpoint_crit_chance(self):
-        return self.effective["weakpoint_crit_chance"] + self.average_weakpoint_secondary_enervate_bonus
+        return self.effective.weakpoint_crit_chance + self.average_weakpoint_secondary_enervate_bonus
