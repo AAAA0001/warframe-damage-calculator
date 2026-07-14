@@ -63,12 +63,7 @@ class Record:
     def items(self):
         return self.dict.items()
 
-    def update(
-        self,
-        values: Record | Mapping[str, Any] | None = None,
-        /,
-        **fields: Any,
-    ) -> None:
+    def update(self, values: Record | Mapping[str, Any] | None = None, /, **fields: Any) -> None:
         self.dict.update(self._fields(values))
         self.dict.update(fields)
 

@@ -128,7 +128,6 @@ builds.
 
 ``` python
 from warframe_damage_calculator import (
-    Record,
     Upgrade,
     Build,
     Primary,
@@ -139,7 +138,6 @@ from warframe_damage_calculator import (
 
  | Object      | Description                               |
  |-------------|-------------------------------------------|
- |`Record`     | Keyword-initialized named values.          |
  |`Upgrade`    | A single modifier (mod, arcane, or buff). |
  |`Build`      | A collection of upgrades.                 |
  |`Primary`    | Primary weapon model.                     |
@@ -161,19 +159,17 @@ Since `configure()` returns the weapon, the following is also valid:
 weapon = Primary(...).configure(build)
 ```
 
-Weapon stats and context use `Record`, which is initialized with keyword
-arguments and exposes values through attributes. The optimized distribution
-object is an internal calculator detail:
+Weapon and upgrade builders accept ordinary dictionaries. Internally, the calculator converts them to attribute-accessible records, so calculated values remain available through expressions such as `weapon.stats.effective.crit_chance`:
 
 ```python
 weapon = Primary(
-    stats=Record(
-        damage={"impact": 20, "puncture": 30, "slash": 50},
-        forced_procs={"slash": 1},
-        explosion_damage={"heat": 100},
-        explosion_forced_procs={"heat": 1},
-    ),
-    context=Record(type="rifle"),
+    stats={
+        "damage": {"impact": 20, "puncture": 30, "slash": 50},
+        "forced_procs": {"slash": 1},
+        "explosion_damage": {"heat": 100},
+        "explosion_forced_procs": {"heat": 1},
+    },
+    context={"type": "rifle"},
 )
 ```
 
@@ -181,15 +177,15 @@ weapon = Primary(
 
 ## Upgrade Fields
 
-Upgrades store modifiers in `Record` objects. Conditional and stacking entries use
+Upgrade builders use dictionaries. Conditional and stacking entries use
 a two-item `[value, condition]` sequence:
 
 ```python
 upgrade = Upgrade(
-    context=Record(name="Example Arcane", max_stacks=3),
-    stats=Record(reload_speed=0.3),
-    conditional_stats=Record(crit_chance=[0.5, "headshot"]),
-    stacking_stats=Record(base_damage=[0.3, "kill"]),
+    context={"name": "Example Arcane", "max_stacks": 3},
+    stats={"reload_speed": 0.3},
+    conditional_stats={"crit_chance": [0.5, "headshot"]},
+    stacking_stats={"base_damage": [0.3, "kill"]},
 )
 ```
 
@@ -197,9 +193,9 @@ Descriptive metadata is stored only in `context`. Upgrade contexts include
 `name`, `category`, `compatibility`, `incompatibility`, `requirements`,
 `max_rank`, `max_stacks`, and `is_exilus`; weapon contexts include `name`,
 `category`, `type`, and ranged trigger/beam/battery metadata when applicable.
-Runtime conditions remain in the same record.
+Runtime conditions remain in the same internal context object.
 
-Weapon calculations use `Record` objects for the `base`, `moded`, and `effective` stat buckets.
+Weapon calculations keep internal attribute-accessible `base`, `moded`, and `effective` stat buckets.
 Read calculated values through attributes, for example,
 `weapon.stats.effective.crit_chance`.
 

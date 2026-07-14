@@ -1,7 +1,8 @@
 from copy import deepcopy
 from functools import cached_property
 
-from ..models import Dist, Build, Record
+from ..models import Dist, Build
+from ..models.record import Record
 from .upgrade_resolver import UpgradeResolver
 
 

@@ -2,27 +2,27 @@ from ..utils import DAMAGE_TYPE_ORDER, ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, 
 
 
 class Dist:
-    __slots__ = ("_values",)
+    __slots__ = ("dict",)
 
     def __init__(self, values=None):
-        self._values = {damage_type: float(value) for damage_type, value in (values or {}).items() if value}
+        self.dict = {damage_type: float(value) for damage_type, value in (values or {}).items() if value}
 
     def __iter__(self):
-        return iter(self._values.items())
+        return iter(self.dict.items())
 
     def __repr__(self):
-        return f"dist({self._values!r})"
+        return f"dist({self.dict!r})"
 
     def __str__(self):
         return ", ".join(f"{damage_type}: {value}" for damage_type, value in self)
 
     def __eq__(self, other):
-        return isinstance(other, Dist) and self._values == other._values
+        return isinstance(other, Dist) and self.dict == other.dict
 
     def __add__(self, other):
         if not isinstance(other, Dist):
             return NotImplemented
-        return Dist({damage_type: self.get(damage_type) + other.get(damage_type) for damage_type in self._values | other._values})
+        return Dist({damage_type: self.get(damage_type) + other.get(damage_type) for damage_type in self.dict | other.dict})
 
     def __radd__(self, other):
         return self if other == 0 else NotImplemented
@@ -33,10 +33,10 @@ class Dist:
     __rmul__ = __mul__
 
     def get(self, damage_type):
-        return self._values.get(damage_type, 0.0)
+        return self.dict.get(damage_type, 0.0)
 
     def total_damage(self):
-        return sum(self._values.values())
+        return sum(self.dict.values())
 
     def weight(self, damage_type):
         total = self.total_damage()
@@ -55,7 +55,7 @@ class Dist:
 
     def apply(self, upgrades):
         total = self.total_damage()
-        return Dist({damage_type: self.get(damage_type) * (1 + upgrades.get(damage_type)) if damage_type in PHYSICAL_TYPES else self.get(damage_type) + total * upgrades.get(damage_type) for damage_type in self._values | upgrades._values})
+        return Dist({damage_type: self.get(damage_type) * (1 + upgrades.get(damage_type)) if damage_type in PHYSICAL_TYPES else self.get(damage_type) + total * upgrades.get(damage_type) for damage_type in self.dict | upgrades.dict})
 
     def combine(self):
         elements = list(self.include(ELEMENTAL_TYPES))
@@ -67,5 +67,5 @@ class Dist:
         return (self.exclude(ELEMENTAL_TYPES) + Dist(combined)).positive()
 
     def sorted(self):
-        ordered = sorted(self._values.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])
+        ordered = sorted(self.dict.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])
         return Dist(dict(ordered))

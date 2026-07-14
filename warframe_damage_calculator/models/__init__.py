@@ -1,4 +1,3 @@
-from .record import Record
 from .dist import Dist
 from .upgrade import Upgrade
 from .build import Build
@@ -8,4 +7,4 @@ from .ranged import Ranged
 from .primary import Primary
 from .secondary import Secondary
 
-__all__ = ["Record", "Dist", "Upgrade", "Build", "Weapon", "Melee", "Ranged", "Primary", "Secondary"]
+__all__ = ["Dist", "Upgrade", "Build", "Weapon", "Melee", "Ranged", "Primary", "Secondary"]

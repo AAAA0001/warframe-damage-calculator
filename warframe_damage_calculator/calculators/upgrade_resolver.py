@@ -1,5 +1,6 @@
 from ..utils import DAMAGE_TYPES
-from ..models import Dist, Build, Record
+from ..models import Dist, Build
+from ..models.record import Record
 
 
 class UpgradeResolver:
