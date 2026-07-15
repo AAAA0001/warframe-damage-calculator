@@ -14,14 +14,8 @@ class Weapon:
     def __init__(self, data: Mapping[str, Any] | None = None):
         self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
         self.build = Build()
-        self.calculator = WeaponCalculator(self.stats, self.context)
+        self.calculator = WeaponCalculator(self.data.stats, self.data.context)
         self.format = WeaponFormatter(self.calculator)
-
-    @property
-    def stats(self): return self.data.stats
-
-    @property
-    def context(self): return self.data.context
 
     def configure(self, *args: Build | Upgrade) -> Self:
         build = args[0] if len(args) == 1 and isinstance(args[0], Build) else Build(*args)

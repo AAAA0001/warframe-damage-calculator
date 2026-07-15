@@ -5,10 +5,17 @@ from .upgrade import Upgrade
 
 
 class Build:
-    def __init__(self, *upgrades): self.upgrades = list(upgrades)
-    def __iter__(self): return iter(self.upgrades)
-    def __add__(self, other): return Build(*self, other) if isinstance(other, Upgrade) else Build(*self, *other)
-    def __radd__(self, other): return Build(other, *self)
+    def __init__(self, *upgrades): 
+        self.upgrades = list(upgrades)
+
+    def __iter__(self): 
+        return iter(self.upgrades)
+    
+    def __add__(self, other): 
+        return Build(*self, other) if isinstance(other, Upgrade) else Build(*self, *other)
+    
+    def __radd__(self, other): 
+        return Build(other, *self)
 
     def __sub__(self, other):
         excluded = {other} if isinstance(other, Upgrade) else set(other)
