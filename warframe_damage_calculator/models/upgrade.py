@@ -9,7 +9,9 @@ class Upgrade:
         self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
 
     def __getattr__(self, key): return getattr(self.data, key)
-    def copy(self): return Upgrade(self.data)
+
+    def copy(self):
+        return Upgrade(self.data)
 
     def resolve(self):
         from ..calculators.upgrade_calculator import UpgradeCalculator
