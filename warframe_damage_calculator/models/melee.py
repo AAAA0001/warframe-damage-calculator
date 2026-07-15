@@ -1,9 +1,16 @@
+from collections.abc import Mapping
+from typing import Any
+
 from ..calculators import MeleeCalculator
 from ..formatters import MeleeFormatter
+from .build import Build
+from .data import Data
 from .weapon import Weapon
 
 
 class Melee(Weapon):
-    calculator_class = MeleeCalculator
-    formatter_class = MeleeFormatter
-    category = "melee"
+    def __init__(self, data: Mapping[str, Any] | None = None):
+        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
+        self.build = Build()
+        self.calculator = MeleeCalculator(self.stats, self.context)
+        self.format = MeleeFormatter(self.calculator)

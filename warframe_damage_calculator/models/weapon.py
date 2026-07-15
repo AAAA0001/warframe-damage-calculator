@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Self
+from typing import Any, Self, get_args
 
 from ..calculators import WeaponCalculator
 from ..formatters import WeaponFormatter
@@ -11,16 +11,11 @@ from .upgrade import Upgrade
 
 
 class Weapon:
-    calculator_class = WeaponCalculator
-    formatter_class = WeaponFormatter
-    category = "weapon"
-
     def __init__(self, data: Mapping[str, Any] | None = None):
         self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
-        self.context.category = self.category
         self.build = Build()
-        self.calculator = self.calculator_class(self.stats, self.context)
-        self.format = self.formatter_class(self.calculator)
+        self.calculator = WeaponCalculator(self.stats, self.context)
+        self.format = WeaponFormatter(self.calculator)
 
     @property
     def stats(self): return self.data.stats
