@@ -8,6 +8,36 @@ from .paths import DEFAULT_UPGRADES_PATH, DEFAULT_WEAPONS_PATH, load_json
 from .schema import DatabaseEntry
 
 
+def _upgrade_data(data):
+    """Normalize legacy four-bucket records to the unified stats schema."""
+    if not any(bucket in data for bucket in ("conditional_stats", "stacking_stats", "rank_locked_stats")):
+        return data
+
+    normalized = {key: value for key, value in data.items() if key not in {"stats", "conditional_stats", "stacking_stats", "rank_locked_stats"}}
+    stats = {}
+
+    def add(stat, effect):
+        current = stats.get(stat)
+        if current is None:
+            stats[stat] = effect
+        elif isinstance(current, list):
+            current.append(effect)
+        else:
+            stats[stat] = [current, effect]
+
+    for stat, value in data.get("stats", {}).items():
+        add(stat, value)
+    for stat, (value, rank) in data.get("rank_locked_stats", {}).items():
+        add(stat, {"value": value, "when": {"rank": rank}})
+    for stat, (value, condition) in data.get("conditional_stats", {}).items():
+        add(stat, {"value": value, "when": condition})
+    for stat, (value, condition) in data.get("stacking_stats", {}).items():
+        add(stat, {"value": value, "when": condition, "stacking": True})
+
+    normalized["stats"] = stats
+    return normalized
+
+
 class WarframeDatabase:
     def __init__(self, weapons, upgrades):
         self.weapons = weapons
@@ -51,7 +81,7 @@ class WarframeDatabase:
                 yield DatabaseEntry(category=category, name=name, data=data)
         for category, entries in self.upgrades.items():
             for name, data in entries.items():
-                yield DatabaseEntry(category=category, name=name, data=data)
+                yield DatabaseEntry(category=category, name=name, data=_upgrade_data(data))
 
     @classmethod
     def _apply_attribute(cls, item, attribute):
@@ -69,8 +99,6 @@ class WarframeDatabase:
         if isinstance(item, Upgrade):
             if key in item.context:
                 return item.context.get(key)
-            if hasattr(item, key):
-                return getattr(item, key)
             if key in item.stats:
                 return item.stats.get(key)
             if key in item.conditional_stats:
@@ -82,13 +110,16 @@ class WarframeDatabase:
         if key in item.context:
             return item.context.get(key)
 
+        calculator = item.calculator
         for state_name in ("base", "effective"):
-            state = getattr(item.stats, state_name, None)
+            state = getattr(calculator, state_name, None)
             if state is not None and key in state:
                 return state.get(key)
 
-        if hasattr(item.stats, key):
-            return getattr(item.stats, key)
+        if key in item.stats:
+            return item.stats.get(key)
+        if hasattr(calculator, key):
+            return getattr(calculator, key)
         if hasattr(item, key):
             return getattr(item, key)
         return None

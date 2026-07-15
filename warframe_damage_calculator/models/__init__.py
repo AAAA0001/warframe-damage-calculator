@@ -1,4 +1,5 @@
 from .dist import Dist
+from .data import Data
 from .upgrade import Upgrade
 from .build import Build
 from .weapon import Weapon
@@ -7,4 +8,4 @@ from .ranged import Ranged
 from .primary import Primary
 from .secondary import Secondary
 
-__all__ = ["Dist", "Upgrade", "Build", "Weapon", "Melee", "Ranged", "Primary", "Secondary"]
+__all__ = ["Data", "Dist", "Upgrade", "Build", "Weapon", "Melee", "Ranged", "Primary", "Secondary"]

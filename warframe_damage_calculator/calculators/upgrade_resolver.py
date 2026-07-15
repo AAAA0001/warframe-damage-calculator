@@ -1,10 +1,12 @@
+from collections.abc import Mapping
+
 from ..utils import DAMAGE_TYPES
 from ..models import Dist, Build
 from ..models.record import Record
 
 
 class UpgradeResolver:
-    METADATA = {"name", "category", "type", "trigger", "is beam", "is battery", "compatibility", "incompatibility", "requirements", "max rank", "max stacks", "is exilus"}
+    METADATA = {"name", "category", "type", "trigger", "is beam", "is battery", "compatibility", "incompatibility", "requirements", "max rank", "max stacks", "stacks", "is exilus"}
     AUTOMATIC_CONDITIONS = {"primary", "rifle", "bow", "shotgun", "sniper", "secondary", "pistol", "melee", "sacrificial set"}
 
     def __init__(self, weapon_context):
@@ -34,6 +36,8 @@ class UpgradeResolver:
 
     @staticmethod
     def _scale(value, multiplier):
+        if isinstance(value, Mapping):
+            return {key: UpgradeResolver._scale(item, multiplier) for key, item in value.items()}
         return value if isinstance(value, bool) else value * multiplier
 
     @staticmethod
@@ -41,6 +45,8 @@ class UpgradeResolver:
         if stat in DAMAGE_TYPES:
             value = Dist({stat: value})
             stat = "damage"
+        elif stat == "damage" and not isinstance(value, Dist):
+            value = Dist(value)
         current = target.get(stat)
         setattr(target, stat, value if current is None else current or value if isinstance(value, bool) else current + value)
 
@@ -80,7 +86,8 @@ class UpgradeResolver:
 
             for stat, (value, condition) in upgrade.stacking_stats.items():
                 condition = self._normalize(condition)
-                stacks = self._count(context.get(condition, (max_stacks or 0) if use_defaults else 0), condition, upgrade)
+                default_stacks = context.get("stacks", (max_stacks or 0) if use_defaults else 0)
+                stacks = self._count(context.get(condition, default_stacks), condition, upgrade)
                 if max_stacks is not None:
                     stacks = min(stacks, max_stacks)
                 if stacks:

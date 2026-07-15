@@ -150,7 +150,7 @@ Typical workflow:
 2.  Create one or more `Upgrade` objects.
 3.  Combine them into a `Build` (optional).
 4.  Apply the build with `weapon.configure(build)` or `weapon.configure(upgrade_1, upgrade_2, ...)`.
-5.  Read values from `weapon.stats`.
+5.  Read input values from `weapon.stats` and calculated values from `weapon.calculator`.
 6.  Print results with `weapon.format.summary()`.
 
 Since `configure()` returns the weapon, the following is also valid:
@@ -159,17 +159,20 @@ Since `configure()` returns the weapon, the following is also valid:
 weapon = Primary(...).configure(build)
 ```
 
-Weapon and upgrade builders accept ordinary dictionaries. Internally, the calculator converts them to attribute-accessible records, so calculated values remain available through expressions such as `weapon.stats.effective.crit_chance`:
+Weapon and upgrade builders accept one dictionary containing `stats` and `context`. `Data` exposes nested fields as attributes:
 
 ```python
 weapon = Primary(
-    stats={
+  {
+    "stats": {
         "damage": {"impact": 20, "puncture": 30, "slash": 50},
         "forced_procs": {"slash": 1},
         "explosion_damage": {"heat": 100},
         "explosion_forced_procs": {"heat": 1},
     },
-    context={"type": "rifle"},
+    },
+    "context": {"type": "rifle"},
+  }
 )
 ```
 
@@ -177,15 +180,24 @@ weapon = Primary(
 
 ## Upgrade Fields
 
-Upgrade builders use dictionaries. Conditional and stacking entries use
-a two-item `[value, condition]` sequence:
+An upgrade stat may be a number, a damage distribution, a single conditional
+effect, or a list mixing those forms. Effects may be conditional, stacking,
+or rank-locked:
 
 ```python
 upgrade = Upgrade(
-    context={"name": "Example Arcane", "max_stacks": 3},
-    stats={"reload_speed": 0.3},
-    conditional_stats={"crit_chance": [0.5, "headshot"]},
-    stacking_stats={"base_damage": [0.3, "kill"]},
+  {
+    "stats": {
+        "reload_speed": 0.3,
+        "damage": [
+            {"impact": 1.2, "slash": 0.6},
+            {"value": {"heat": 0.6}, "when": "roll"},
+        ],
+        "crit_chance": [0.5, {"value": 0.1, "when": "kill", "stacking": True}],
+        "base_damage": {"value": 0.3, "when": "headshot"},
+    },
+    "context": {"name": "Example Arcane", "max_stacks": 3},
+  }
 )
 ```
 
@@ -197,7 +209,7 @@ Runtime conditions remain in the same internal context object.
 
 Weapon calculations keep internal attribute-accessible `base`, `moded`, and `effective` stat buckets.
 Read calculated values through attributes, for example,
-`weapon.stats.effective.crit_chance`.
+`weapon.calculator.effective.crit_chance`.
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
 automatically. Combat conditions and stack counts are stored on each upgrade:

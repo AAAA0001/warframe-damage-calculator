@@ -1,19 +1,38 @@
+from collections.abc import Mapping
+from typing import Any
+
 from ..calculators import WeaponCalculator
 from ..formatters import WeaponFormatter
 from .build import Build
-from .record import Record
+from .data import Data
 
 
 class Weapon:
-    def __init__(self, stats=None, context=None):
-        self.context = context.copy() if isinstance(context, Record) else Record(**(context or {}))
-        self.context.category = "weapon"
+    calculator_class = WeaponCalculator
+    formatter_class = WeaponFormatter
+    category = "weapon"
+
+    def __init__(self, data: Mapping[str, Any] | None = None, **legacy: Any) -> None:
+        source = dict(data or {})
+        source.update({key: value for key, value in legacy.items() if value is not None})
+        source.setdefault("stats", {})
+        source.setdefault("context", {})
+        self.data = Data(source)
+        self.data.context.category = self.category
         self.build = Build()
-        self.stats = WeaponCalculator(stats, self.context)
-        self.format = WeaponFormatter(self.stats)
+        self.calculator = self.calculator_class(self.stats, self.context)
+        self.format = self.formatter_class(self.calculator)
+
+    @property
+    def stats(self):
+        return self.data.stats
+
+    @property
+    def context(self):
+        return self.data.context
 
     def configure(self, *upgrades):
         build = upgrades[0] if len(upgrades) == 1 and isinstance(upgrades[0], Build) else Build(*upgrades)
         self.build = Build(*(upgrade.copy() for upgrade in build))
-        self.stats.set_build(self.build)
+        self.calculator.set_build(self.build)
         return self
