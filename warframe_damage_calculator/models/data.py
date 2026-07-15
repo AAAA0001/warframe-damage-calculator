@@ -1,106 +1,62 @@
-from __future__ import annotations
-
-from collections.abc import Iterator, Mapping
-from copy import deepcopy
+from collections.abc import Mapping
 from typing import Any, Self
 
+from .dist import Dist
 
-class Data(Mapping[str, Any]):
-    """A mutable, attribute-accessible view of nested input data."""
 
-    __slots__ = ("_values",)
+DISTRIBUTIONS = {"damage", "forced_procs", "explosion_damage", "explosion_forced_procs"}
 
-    def __init__(self, data: Mapping[str, Any] | None = None, /, **values: Any) -> None:
-        source = dict(data or {})
-        source.update(values)
-        object.__setattr__(self, "_values", {key: self._convert(value) for key, value in source.items()})
+
+class Data(dict[str, Any]):
+    def __init__(self, data: Mapping[str, Any] | None = None):
+        super().__init__()
+        self.update(data or {})
 
     @classmethod
-    def _convert(cls, value: Any) -> Any:
-        if isinstance(value, Data):
-            return value.copy()
-        if isinstance(value, Mapping):
+    def _convert(cls, key, value):
+        if key in DISTRIBUTIONS:
+            if isinstance(value, list):
+                return [cls._distribution(item) for item in value]
+            return cls._distribution(value)
+        if isinstance(value, Mapping) and not isinstance(value, (Data, Dist)):
             return cls(value)
-        if isinstance(value, list):
-            return [cls._convert(item) for item in value]
-        if isinstance(value, tuple):
-            return tuple(cls._convert(item) for item in value)
-        return value
+        if isinstance(value, (list, tuple)):
+            return type(value)(cls._convert("", item) for item in value)
+        return value.copy() if isinstance(value, Data) else value
 
-    def __getattr__(self, name: str) -> Any:
-        return self._values.get(name)
+    @classmethod
+    def _distribution(cls, value):
+        if isinstance(value, Dist) or not isinstance(value, Mapping):
+            return value
+        if "value" not in value:
+            return Dist(value)
+        effect = cls(value)
+        if isinstance(effect.value, Mapping):
+            effect.value = Dist(effect.value)
+        return effect
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        self._values[name] = self._convert(value)
+    def __getattr__(self, key):
+        return self.get(key)
 
-    def __delattr__(self, name: str) -> None:
-        try:
-            del self._values[name]
-        except KeyError:
-            raise AttributeError(name) from None
+    def __setattr__(self, key, value):
+        self[key] = value
 
-    def __getitem__(self, name: str) -> Any:
-        return self._values[name]
+    def __delattr__(self, key):
+        try: del self[key]
+        except KeyError: raise AttributeError(key) from None
 
-    def __setitem__(self, name: str, value: Any) -> None:
-        self._values[name] = self._convert(value)
+    def __setitem__(self, key, value):
+        super().__setitem__(key, self._convert(key, value))
 
-    def __iter__(self) -> Iterator[str]:
-        return iter(self._values)
-
-    def __len__(self) -> int:
-        return len(self._values)
-
-    def __repr__(self) -> str:
-        return f"Data({self.to_dict()!r})"
-
-    @property
-    def dict(self) -> dict[str, Any]:
-        """Compatibility view for the old Record API."""
-        return self._values
-
-    def get(self, name: str, default: Any = None) -> Any:
-        return self._values.get(name, default)
-
-    def update(self, values: Mapping[str, Any] | None = None, /, **fields: Any) -> None:
-        combined = dict(values or {})
-        combined.update(fields)
-        for name, value in combined.items():
-            self._values[name] = self._convert(value)
-
-    def __or__(self, other: Mapping[str, Any]) -> Self:
-        if not isinstance(other, Mapping):
-            return NotImplemented
-        return type(self)(self.to_dict() | Data(other).to_dict())
-
-    def __ror__(self, other: Mapping[str, Any]) -> Self:
-        if not isinstance(other, Mapping):
-            return NotImplemented
-        return type(self)(Data(other).to_dict() | self.to_dict())
-
-    def __ior__(self, other: Mapping[str, Any]) -> Self:
-        self.update(other)
-        return self
-
-    def __copy__(self) -> Self:
-        return type(self)(self.to_dict())
-
-    def __deepcopy__(self, memo: dict[int, Any]) -> Self:
-        copied = type(self)(deepcopy(self.to_dict(), memo))
-        memo[id(self)] = copied
-        return copied
+    def update(self, data=(), /, **values):
+        values = dict(data, **values)
+        for key, value in values.items(): self[key] = value
 
     def copy(self) -> Self:
-        return type(self)(self.to_dict())
+        return type(self)(self)
 
-    def to_dict(self) -> dict[str, Any]:
-        def plain(value: Any) -> Any:
-            if isinstance(value, Data):
-                return value.to_dict()
-            if isinstance(value, list):
-                return [plain(item) for item in value]
-            if isinstance(value, tuple):
-                return tuple(plain(item) for item in value)
-            return value
+    def __or__(self, other) -> Self:
+        return type(self)(dict(self) | dict(other))
 
-        return {name: plain(value) for name, value in self._values.items()}
+    def __ror__(self, other) -> Self:
+        return type(self)(dict(other) | dict(self))

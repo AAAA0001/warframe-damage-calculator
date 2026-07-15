@@ -1,49 +1,31 @@
-from .record import Record
+from __future__ import annotations
+
+from .data import Data
 from .upgrade import Upgrade
 
 
 class Build:
-    def __init__(self, *upgrades):
-        self.upgrades = list(upgrades)
-
-    def __add__(self, other):
-        if isinstance(other, Upgrade):
-            return Build(*self.upgrades, other)
-        if isinstance(other, Build):
-            return Build(*self.upgrades, *other.upgrades)
-        return NotImplemented
-
-    def __radd__(self, other):
-        if isinstance(other, Upgrade):
-            return Build(other, *self.upgrades)
-        return NotImplemented
+    def __init__(self, *upgrades): self.upgrades = list(upgrades)
+    def __iter__(self): return iter(self.upgrades)
+    def __add__(self, other): return Build(*self, other) if isinstance(other, Upgrade) else Build(*self, *other)
+    def __radd__(self, other): return Build(other, *self)
 
     def __sub__(self, other):
-        if isinstance(other, Upgrade):
-            excluded = {other}
-        elif isinstance(other, Build):
-            excluded = set(other.upgrades)
-        else:
-            return NotImplemented
-        return Build(*(upgrade for upgrade in self.upgrades if upgrade not in excluded))
+        excluded = {other} if isinstance(other, Upgrade) else set(other)
+        return Build(*(upgrade for upgrade in self if upgrade not in excluded))
 
-    def __iter__(self):
-        return iter(self.upgrades)
-
-    def contextualize(self, context, copy=False):
-        build = Build(*(upgrade.copy() for upgrade in self)) if copy else self
-        shared = context if isinstance(context, Record) else Record(**(context or {}))
-        for upgrade in build:
-            upgrade.context = shared | upgrade.context
-        return build
+    def resolve(self, context=None):
+        names = {Upgrade._normalize(upgrade.context.name or "") for upgrade in self}
+        context = Data(context)
+        context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
+        return Build(*(upgrade.resolve(context) for upgrade in self))
 
     def aggregate(self):
-        stats = Record()
+        stats = Data()
         for upgrade in self:
             for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
-                setattr(stats, stat, value if current is None else current or value if isinstance(value, bool) else current + value)
+                stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
         return stats
 
-    def get(self, stat, default=0):
-        return self.aggregate().get(stat, default)
+    def get(self, stat, default=0): return self.aggregate().get(stat, default)

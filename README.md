@@ -93,8 +93,7 @@ The JSON schema mirrors the model API:
 - Weapon sections: `primary`, `secondary`, and `melee`.
 - Upgrade sections: `mod` and `arcane`.
 - Weapon damage fields: `damage` and `explosion_damage`.
-- Upgrade buckets: `stats`, `conditional_stats`, and `stacking_stats`.
-- Conditional entries are stored as `[value, condition]`.
+- Upgrade effects all live in `stats`; effect objects use `value`, `when`, and optional `stacking` fields.
 
 ------------------------------------------------------------------------
 
@@ -229,7 +228,7 @@ Rank-locked stats use `upgrade.context.rank`; it defaults to `max_rank`, or
 zero when the upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models only store data. Condition matching, stack
-limits, and bucket merging are handled by `UpgradeResolver`.
+limits, and effect merging are handled by `Upgrade.resolve()`.
 
 `Build.contextualize()` applies shared context to every upgrade. Pass `copy=True` to return an independent contextualized build:
 

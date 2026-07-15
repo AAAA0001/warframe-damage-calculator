@@ -1,17 +1,14 @@
-from copy import deepcopy
 from functools import cached_property
 
-from ..models import Dist, Build
-from ..models.record import Record
-from .upgrade_resolver import UpgradeResolver
+from ..models import Data, Dist, Build
 
 
 class WeaponCalculator:
-    DEFAULT_STATS = Record(damage=Dist(), forced_procs=Dist(), crit_chance=0.0, crit_damage=1.0, status_chance=0.0)
-    CALCULATED_STATS = Record(total_damage=0.0, multiplicative_base_damage=1.0, base_damage=0.0, faction_damage=1.0, flat_crit_chance=0.0, multiplicative_crit_chance=1.0, flat_crit_damage=0.0, status_damage=1.0)
+    DEFAULT_STATS = Data({"damage": Dist(), "forced_procs": Dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0})
+    CALCULATED_STATS = Data({"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0})
 
     def __init__(self, stats=None, context=None):
-        self.context = context.copy() if isinstance(context, Record) else Record(**(context or {}))
+        self.context = Data(context)
         self.build = Build()
         self.base = self._new_stats(stats)
         self.moded = self._new_stats()
@@ -20,12 +17,7 @@ class WeaponCalculator:
 
     @classmethod
     def _new_stats(cls, stats=None):
-        supplied = stats.copy() if isinstance(stats, Record) else Record(**(stats or {}))
-        values = deepcopy(cls.DEFAULT_STATS) | deepcopy(cls.CALCULATED_STATS) | supplied
-        for stat in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs"):
-            value = values.get(stat)
-            if value is not None and not isinstance(value, Dist):
-                setattr(values, stat, Dist(value))
+        values = cls.DEFAULT_STATS | cls.CALCULATED_STATS | Data(stats)
         values.total_damage = values.damage.total_damage()
         if "explosion_damage" in values:
             values.explosion_total_damage = values.explosion_damage.total_damage()
@@ -67,7 +59,7 @@ class WeaponCalculator:
         self._clear_cached_properties()
 
     def set_build(self, build):
-        self.build = UpgradeResolver(self.context).resolve(build)
+        self.build = build.resolve(self.context)
         self.recompute()
 
     def contribution(self, upgrade):
