@@ -82,18 +82,11 @@ class WeaponCalculator:
         self._clear_cached_properties()
 
     def set_build(self, build: Build) -> None:
-        names = {UpgradeCalculator._key(upgrade.context.get("name", "")) for upgrade in build.upgrades}
-        context = Data(self.context)
-        weapon = UpgradeCalculator._key(context.get("type") or context.get("weapon") or "")
-        types = {weapon, UpgradeCalculator._key(context.get("category") or "")} - {""}
-        if weapon == "bow":
-            types.add("rifle")
-        context.update({key: key in types for key in UpgradeCalculator.AUTOMATIC - {"sacrificial set"}})
-        context.weapon = weapon
-        context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
-        for upgrade in build.upgrades:
-            upgrade.data.context = context | upgrade.context
-        self.build = Build(*(upgrade.resolve() for upgrade in build.upgrades))
+        upgrades = list(build)
+        data = [upgrade.data for upgrade in upgrades]
+        for upgrade in upgrades:
+            upgrade.data.context = UpgradeCalculator(upgrade.data, self.context, data).context
+        self.build = Build(*(upgrade.resolve() for upgrade in upgrades))
         self.recompute()
 
     def contribution(self, upgrade: Upgrade) -> float:
@@ -107,7 +100,7 @@ class WeaponCalculator:
         return contribution
 
     def contribution_values(self) -> dict[str, float]:
-        return {str(upgrade.context.name): self.contribution(upgrade) for upgrade in self.build}
+        return {str(upgrade.data.context.name): self.contribution(upgrade) for upgrade in self.build}
 
     def contribution_proportions(self) -> dict[str, float]:
         contributions = self.contribution_values()

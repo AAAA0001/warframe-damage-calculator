@@ -26,7 +26,7 @@ class Build:
     def aggregate(self) -> Data:
         stats = Data()
         for upgrade in self:
-            for stat, value in upgrade.stats.items():
+            for stat, value in upgrade.data.stats.items():
                 current = stats.get(stat)
                 stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
         return stats
