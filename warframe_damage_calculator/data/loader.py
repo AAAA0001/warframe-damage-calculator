@@ -78,7 +78,7 @@ class WarframeDatabase:
         if key in item.context:
             return item.context.get(key)
 
-        calculator = item.calculator
+        calculator = item.stats
         for state_name in ("base", "effective"):
             state = getattr(calculator, state_name, None)
             if state is not None and key in state:

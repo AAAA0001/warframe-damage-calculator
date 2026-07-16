@@ -12,5 +12,5 @@ class Primary(Ranged):
     def __init__(self, data: Mapping[str, Any] | None = None) -> None:
         self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
         self.build = Build()
-        self.calculator = PrimaryCalculator(self.data.stats, self.data.context)
-        self.format = PrimaryFormatter(self.calculator)
+        self.stats = PrimaryCalculator(self.data)
+        self.format = PrimaryFormatter(self.stats)

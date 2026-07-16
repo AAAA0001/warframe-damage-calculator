@@ -2,17 +2,17 @@ from functools import cached_property
 from collections.abc import Mapping
 from typing import Any
 
-from ..models import Data, Dist, Build, Upgrade
+from ..models import Data, Dist, Upgrade, Build
 
 
 class WeaponCalculator:
     DEFAULT_STATS = Data({"damage": Dist(), "forced_procs": Dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0})
     CALCULATED_STATS = Data({"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0})
 
-    def __init__(self, stats: Mapping[str, Any] | None = None, context: Mapping[str, Any] | None = None) -> None:
-        self.context = Data(context)
+    def __init__(self, data: Data) -> None:
+        self.data = data
         self.build = Build()
-        self.base = self._new_stats(stats)
+        self.base = self._new_stats(data.stats)
         self.moded = self._new_stats()
         self.effective = self._new_stats()
         self.recompute()

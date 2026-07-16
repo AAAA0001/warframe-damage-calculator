@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 from collections.abc import Iterator
-from typing import Any
 
-from .data import Data
+from ..utils import JsonScalar
+from .data import Data, DataValue
 from .upgrade import Upgrade
-
 
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
@@ -23,7 +20,7 @@ class Build:
     def __sub__(self, other: Build | Upgrade) -> Build:
         excluded = {other} if isinstance(other, Upgrade) else set(other)
         return Build(*(upgrade for upgrade in self if upgrade not in excluded))
-
+    
     def aggregate(self) -> Data:
         stats = Data()
         for upgrade in self:
@@ -31,5 +28,6 @@ class Build:
                 current = stats.get(stat)
                 stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
         return stats
-
-    def get(self, stat: str, default: Any = 0) -> Any: return self.aggregate().get(stat, default)
+    
+    def get(self, stat: str, default: JsonScalar = 0) -> DataValue:
+        return self.aggregate().get(stat, default)
