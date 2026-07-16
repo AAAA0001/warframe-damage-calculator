@@ -127,21 +127,25 @@ builds.
 
 ``` python
 from warframe_damage_calculator import (
+    Data,
     Upgrade,
     Build,
+    Melee,
     Primary,
     Secondary,
-    Melee,
+    arsenal,
 )
 ```
 
- | Object      | Description                               |
- |-------------|-------------------------------------------|
- |`Upgrade`    | A single modifier (mod, arcane, or buff). |
- |`Build`      | A collection of upgrades.                 |
- |`Primary`    | Primary weapon model.                     |
- |`Secondary`  | Secondary weapon model.                   |
- |`Melee`      | Melee weapon model.                       |
+| Object      | Description                               |
+|-------------|-------------------------------------------|
+| `Data`      | Nested dictionary with attribute access.  |
+| `Upgrade`   | A single modifier (mod, arcane, or buff). |
+| `Build`     | A collection of upgrades.                 |
+| `Primary`   | Primary weapon model.                     |
+| `Secondary` | Secondary weapon model.                   |
+| `Melee`     | Melee weapon model.                       |
+| `arsenal`   | Bundled weapon and upgrade database.      |
 
 Typical workflow:
 
@@ -149,7 +153,7 @@ Typical workflow:
 2.  Create one or more `Upgrade` objects.
 3.  Combine them into a `Build` (optional).
 4.  Apply the build with `weapon.configure(build)` or `weapon.configure(upgrade_1, upgrade_2, ...)`.
-5.  Read input values from `weapon.stats` and calculated values from `weapon.calculator`.
+5.  Read source values from `weapon.data` and calculated values from `weapon.stats`.
 6.  Print results with `weapon.format.summary()`.
 
 Since `configure()` returns the weapon, the following is also valid:
@@ -169,11 +173,21 @@ weapon = Primary(
         "explosion_damage": {"heat": 100},
         "explosion_forced_procs": {"heat": 1},
     },
-    },
     "context": {"type": "rifle"},
   }
 )
 ```
+
+Each weapon exposes three main components:
+
+| Attribute | Description |
+|-----------|-------------|
+| `weapon.data` | Original weapon data, containing `stats` and `context`. |
+| `weapon.stats` | Calculator with `base`, `moded`, and `effective` stat buckets. |
+| `weapon.format` | Formatter for summaries and upgrade contribution output. |
+
+Use `weapon.format.upgrades()` to format the calculated contribution of each
+upgrade in the active build.
 
 ------------------------------------------------------------------------
 
@@ -195,7 +209,7 @@ upgrade = Upgrade(
         "crit_chance": [0.5, {"value": 0.1, "when": "kill", "stacking": True}],
         "base_damage": {"value": 0.3, "when": "headshot"},
     },
-    "context": {"name": "Example Arcane", "max_stacks": 3},
+    "context": {"name": "Example Arcane", "max_stacks": 3, "kill": 3},
   }
 )
 ```
@@ -206,9 +220,9 @@ Descriptive metadata is stored only in `context`. Upgrade contexts include
 `category`, `type`, and ranged trigger/beam/battery metadata when applicable.
 Runtime conditions remain in the same internal context object.
 
-Weapon calculations keep internal attribute-accessible `base`, `moded`, and `effective` stat buckets.
-Read calculated values through attributes, for example,
-`weapon.calculator.effective.crit_chance`.
+Weapon calculations expose attribute-accessible `base`, `moded`, and
+`effective` stat buckets. Read calculated values through attributes, for
+example, `weapon.stats.effective.crit_chance`.
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
 automatically. Combat conditions and stack counts are stored on each upgrade:
@@ -219,23 +233,126 @@ upgrade.context.kill = 3
 weapon.configure(build)
 ```
 
-The resolver supplies weapon and build context separately while resolving, so
-automatic conditions never become persistent upgrade context. When an upgrade
-has no manual condition context, its conditional stats default to active and
-its stacking stats use `max_stacks`. Once manual condition context is supplied,
-omitted manual conditions are inactive and omitted stack counts are zero.
-Rank-locked stats use `upgrade.context.rank`; it defaults to `max_rank`, or
-zero when the upgrade has no maximum rank.
+### Context Examples
 
-The `Upgrade` and `Build` models only store data. Condition matching, stack
-limits, and effect merging are handled by `Upgrade.resolve()`.
+#### Rank scaling
 
-`Build.contextualize()` applies shared context to every upgrade. Pass `copy=True` to return an independent contextualized build:
+`max_rank` describes the upgrade's maximum zero-based rank. If `rank` is
+omitted, the upgrade resolves at `max_rank`. Otherwise scalar effects are
+scaled by `(rank + 1) / (max_rank + 1)`:
 
 ```python
-build.contextualize({"kill": 3})
-contextualized = build.contextualize(weapon.context, copy=True)
+ranked = Upgrade(
+  {
+    "stats": {"crit_chance": 1.2},
+    "context": {"name": "Ranked Mod", "max_rank": 5, "rank": 2},
+  }
+)
+
+resolved = ranked.resolve()
+print(resolved.stats.crit_chance)  # 0.6: 1.2 * (2 + 1) / (5 + 1)
 ```
+
+A rank requirement uses a mapping in `when`. Unlike a normally scaled effect,
+the value is either included in full or omitted:
+
+```python
+rank_locked = Upgrade(
+  {
+    "stats": {"multishot": {"value": 0.5, "when": {"rank": 3}}},
+    "context": {"max_rank": 5, "rank": 3},
+  }
+)
+
+print(rank_locked.resolve().stats.multishot)  # 0.5
+```
+
+#### Conditions and stacks
+
+The `when` string names a context field. A non-stacking effect uses its truth
+value; a stacking effect uses it as a non-negative stack count:
+
+```python
+arcane = Upgrade(
+  {
+    "stats": {
+        "base_damage": {"value": 0.3, "when": "headshot"},
+        "crit_chance": {"value": 0.1, "when": "kill", "stacking": True},
+    },
+    "context": {
+        "name": "Example Arcane",
+        "max_stacks": 3,
+        "headshot": True,
+        "kill": 2,
+    },
+  }
+)
+
+resolved = arcane.resolve()
+print(resolved.stats.base_damage)  # 0.3
+print(resolved.stats.crit_chance)  # 0.2: 0.1 * 2 stacks
+```
+
+Stack counts are capped by `max_stacks`. The generic `stacks` field is used
+when the specifically named condition is absent:
+
+```python
+arcane.context.kill = 10
+print(arcane.resolve().stats.crit_chance)  # 0.3: capped at 3 stacks
+
+del arcane.context.kill
+arcane.context.stacks = 1
+print(arcane.resolve().stats.crit_chance)  # 0.1
+```
+
+If a context contains only descriptive metadata and automatic weapon fields,
+manual conditions default to active and stacking effects default to
+`max_stacks`. Adding any manual condition switches omitted manual conditions
+and stack counts to inactive/zero, so set every runtime condition you want to
+model explicitly.
+
+#### Weapon and build context
+
+`weapon.configure()` adds automatic context fields directly to the supplied
+upgrades. A bow is also treated as a rifle for compatibility conditions:
+
+```python
+bow = arsenal.get("Paris Prime")
+rifle_bonus = Upgrade(
+  {
+    "stats": {"base_damage": {"value": 0.2, "when": "rifle"}},
+    "context": {"name": "Rifle Bonus"},
+  }
+)
+
+bow.configure(rifle_bonus)
+print(rifle_bonus.context.weapon)  # "bow"
+print(rifle_bonus.context.bow)     # True
+print(rifle_bonus.context.rifle)   # True
+```
+
+Build-wide conditions can depend on upgrade names. Equipping both Sacrificial
+mods enables `sacrificial set` on every upgrade in that build:
+
+```python
+melee = arsenal.get("Ack & Brunt")
+pressure = arsenal.get("Sacrificial Pressure")
+steel = arsenal.get("Sacrificial Steel")
+
+melee.configure(pressure, steel)
+print(pressure.context["sacrificial set"])  # True
+print(steel.context["sacrificial set"])     # True
+```
+
+When a weapon is configured, its calculator adds shared weapon and build values
+directly to each existing upgrade context. These include normalized weapon-type
+flags, the weapon type, and the `sacrificial set` condition. Rank-locked stats
+use `upgrade.context.rank`; it defaults to `max_rank`, or zero when the upgrade
+has no maximum rank.
+
+The `Upgrade` and `Build` models store data. Condition matching, rank scaling,
+stack limits, and effect merging are handled by `UpgradeCalculator` when
+`Upgrade.resolve()` is called.
 
 ### Damage
 
@@ -252,7 +369,7 @@ contextualized = build.contextualize(weapon.context, copy=True)
 -   `fire_rate`
 -   `multiplicative_fire_rate`
 -   `burst_count`
--   `bust_delay`
+-   `burst_delay`
 -   `charge_time`
 -   `reload_speed`
 -   `recharge_rate`
@@ -333,8 +450,8 @@ contextualized = build.contextualize(weapon.context, copy=True)
 - [x] Total DPH / DPS
 - [x] Effective fire rate
 - [x] Expected status procs per shot
+- [x] Damage contribution breakdowns
 - [ ] Time-to-kill
-- [ ] Damage contribution breakdowns
 
 ------------------------------------------------------------------------
 
