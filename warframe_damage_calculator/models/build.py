@@ -8,25 +8,28 @@ from .upgrade import Upgrade
 
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
-        self.upgrades = list(upgrades)
+        if not all(isinstance(upgrade, Upgrade) for upgrade in upgrades):
+            raise TypeError("Build only accepts Upgrade instances")
+        self.data = Data({"upgrades": [upgrade.data for upgrade in upgrades]})
 
-    def __iter__(self) -> Iterator[Upgrade]:
-        return iter(self.upgrades)
+    def __iter__(self) -> Iterator[Data]:
+        return iter(self.data.upgrades)
     
     def __add__(self, other: Build | Upgrade) -> Build:
-        return Build(*self, other) if isinstance(other, Upgrade) else Build(*self, *other)
+        upgrades = [Upgrade(data) for data in self]
+        return Build(*upgrades, other) if isinstance(other, Upgrade) else Build(*upgrades, *(Upgrade(data) for data in other))
     
     def __radd__(self, other: Upgrade) -> Build:
-        return Build(other, *self)
+        return Build(other, *(Upgrade(data) for data in self))
 
-    def __sub__(self, other: Build | Upgrade) -> Build:
-        excluded = {other} if isinstance(other, Upgrade) else set(other)
-        return Build(*(upgrade for upgrade in self if upgrade not in excluded))
+    def __sub__(self, other: Build | Upgrade | Data) -> Build:
+        excluded = [other.data if isinstance(other, Upgrade) else other] if isinstance(other, (Upgrade, Data)) else list(other)
+        return Build(*(Upgrade(data) for data in self if all(data is not item for item in excluded)))
     
     def aggregate(self) -> Data:
         stats = Data()
         for upgrade in self:
-            for stat, value in upgrade.data.stats.items():
+            for stat, value in upgrade.stats.items():
                 current = stats.get(stat)
                 stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
         return stats
