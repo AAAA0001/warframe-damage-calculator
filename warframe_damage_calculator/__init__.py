@@ -1,10 +1,10 @@
-from .data.loader import arsenal
-from .models.build import Build
 from .models.data import Data
+from .models.upgrade import Upgrade
+from .models.build import Build
 from .models.melee import Melee
 from .models.primary import Primary
 from .models.secondary import Secondary
-from .models.upgrade import Upgrade
+from .data.loader import arsenal
 
 __version__ = "0.6.0"
 

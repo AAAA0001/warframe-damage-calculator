@@ -1,9 +1,9 @@
 from collections.abc import Iterable, Mapping
 from typing import Any
 
+from ..utils.constants import DAMAGE_TYPES
 from ..models.data import Data
 from ..models.dist import Dist
-from ..utils.constants import DAMAGE_TYPES
 
 
 class UpgradeCalculator:

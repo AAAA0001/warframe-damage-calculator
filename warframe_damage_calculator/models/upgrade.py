@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from ..calculators.upgrade_calculator import UpgradeCalculator
 from ..utils.types import JsonValue
 from .data import Data
+from ..calculators.upgrade_calculator import UpgradeCalculator
 
 
 class Upgrade:

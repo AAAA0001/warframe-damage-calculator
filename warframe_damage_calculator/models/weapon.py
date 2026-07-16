@@ -3,11 +3,11 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, Self
 
-from ..calculators.weapon_calculator import WeaponCalculator
-from ..formatters.weapon_formatter import WeaponFormatter
-from .build import Build
 from .data import Data
 from .upgrade import Upgrade
+from .build import Build
+from ..calculators.weapon_calculator import WeaponCalculator
+from ..formatters.weapon_formatter import WeaponFormatter
 
 
 class Weapon:

@@ -2,10 +2,10 @@ from functools import cached_property
 from collections.abc import Mapping
 from typing import Any
 
-from ..models.build import Build
 from ..models.data import Data
 from ..models.dist import Dist
 from ..models.upgrade import Upgrade
+from ..models.build import Build
 from .upgrade_calculator import UpgradeCalculator
 
 

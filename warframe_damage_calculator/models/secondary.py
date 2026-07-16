@@ -1,11 +1,11 @@
 from collections.abc import Mapping
 from typing import Any
 
+from .data import Data
+from .build import Build
+from .ranged import Ranged
 from ..calculators.secondary_calculator import SecondaryCalculator
 from ..formatters.secondary_formatter import SecondaryFormatter
-from .build import Build
-from .data import Data
-from .ranged import Ranged
 
 
 class Secondary(Ranged):

@@ -1,11 +1,11 @@
 from collections.abc import Mapping
 from typing import Any
 
+from .data import Data
+from .build import Build
+from .weapon import Weapon
 from ..calculators.melee_calculator import MeleeCalculator
 from ..formatters.melee_formatter import MeleeFormatter
-from .build import Build
-from .data import Data
-from .weapon import Weapon
 
 
 class Melee(Weapon):

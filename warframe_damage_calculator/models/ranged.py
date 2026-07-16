@@ -1,11 +1,11 @@
 from collections.abc import Mapping
 from typing import Any
 
+from .data import Data
+from .build import Build
+from .weapon import Weapon
 from ..calculators.ranged_calculator import RangedCalculator
 from ..formatters.ranged_formatter import RangedFormatter
-from .build import Build
-from .data import Data
-from .weapon import Weapon
 
 
 class Ranged(Weapon):
