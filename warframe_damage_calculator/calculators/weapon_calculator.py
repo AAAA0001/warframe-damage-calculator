@@ -60,6 +60,22 @@ class WeaponCalculator:
                 if isinstance(attr, cached_property):
                     self.__dict__.pop(name, None)
 
+    @cached_property
+    def average_crit_chance(self) -> float:
+        return self.effective.crit_chance
+
+    @cached_property
+    def average_crit_multiplier(self) -> float:
+        return 1 + self.average_crit_chance * (self.effective.crit_damage - 1)
+
+    @cached_property
+    def total_dph(self) -> float:
+        return self.flat_dph + self.flat_dotph
+
+    @cached_property
+    def total_dps(self) -> float:
+        return self.flat_dps + self.flat_dotps
+
     def recompute(self) -> None:
         self._compute_moded_stats()
         self._compute_effective_stats()
@@ -89,22 +105,6 @@ class WeaponCalculator:
         self.build = full
         self.recompute()
         return contribution
-
-    @cached_property
-    def average_crit_chance(self) -> float:
-        return self.effective.crit_chance
-
-    @cached_property
-    def average_crit_multiplier(self) -> float:
-        return 1 + self.average_crit_chance * (self.effective.crit_damage - 1)
-
-    @cached_property
-    def total_dph(self) -> float:
-        return self.flat_dph + self.flat_dotph
-
-    @cached_property
-    def total_dps(self) -> float:
-        return self.flat_dps + self.flat_dotps
 
     def contribution_values(self) -> dict[str, float]:
         return {str(upgrade.context.name): self.contribution(upgrade) for upgrade in self.build}
