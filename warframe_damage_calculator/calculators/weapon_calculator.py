@@ -61,7 +61,7 @@ class WeaponCalculator:
         self._clear_cached_properties()
 
     def set_build(self, build: Build) -> None:
-        self.build = build.resolve(self.context)
+        self.build = Build(*(upgrade.resolve(self.context, build) for upgrade in build))
         self.recompute()
 
     def contribution(self, upgrade: Upgrade) -> float:

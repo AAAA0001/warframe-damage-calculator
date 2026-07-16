@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import Any
 
 from .data import Data
@@ -14,6 +14,7 @@ class Upgrade:
     def copy(self) -> "Upgrade":
         return Upgrade(self.data)
 
-    def resolve(self) -> "Upgrade":
+    def resolve(self, context: Mapping[str, Any] | None = None, upgrades: Iterable["Upgrade"] | None = None) -> "Upgrade":
         from ..calculators.upgrade_calculator import UpgradeCalculator
-        return Upgrade(UpgradeCalculator(self).resolve())
+        data = (upgrade.data for upgrade in upgrades) if upgrades is not None else None
+        return Upgrade(UpgradeCalculator(self.data, context, data).resolve())

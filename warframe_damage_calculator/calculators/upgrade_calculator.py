@@ -1,9 +1,8 @@
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import Any
 
 from ..models.data import Data
 from ..models.dist import Dist
-from ..models.upgrade import Upgrade
 from ..utils import DAMAGE_TYPES
 
 
@@ -11,18 +10,29 @@ class UpgradeCalculator:
     AUTOMATIC = {"primary", "rifle", "bow", "shotgun", "sniper", "secondary", "pistol", "melee", "sacrificial set"}
     METADATA = {"name", "category", "type", "trigger", "is beam", "is battery", "compatibility", "incompatibility", "requirements", "max rank", "max stacks", "stacks", "is exilus", "rank", "weapon"}
 
-    def __init__(self, upgrade: Upgrade) -> None:
-        self.upgrade = upgrade
-        self.context = self._data(upgrade.context)
+    def __init__(self, data: Data, context: Mapping[str, Any] | None = None, upgrades: Iterable[Data] | None = None) -> None:
+        self.data = data
+        self.context = self._context(context, upgrades)
 
     @staticmethod
     def _key(value: Any) -> str: return " ".join(str(value).casefold().replace("_", " ").replace("-", " ").split())
     @classmethod
     def _data(cls, data: Mapping[str, Any] | None) -> Data: return Data({cls._key(key): value for key, value in (data or {}).items()})
 
+    def _context(self, context: Mapping[str, Any] | None, upgrades: Iterable[Data] | None) -> Data:
+        context = self._data(context)
+        weapon = self._key(context.get("type") or context.get("weapon") or "")
+        types = {weapon, self._key(context.get("category") or "")} - {""}
+        if weapon == "bow": types.add("rifle")
+        context.update({key: key in types for key in self.AUTOMATIC - {"sacrificial set"}})
+        context.weapon = weapon
+        names = {self._key(upgrade.context.get("name", "")) for upgrade in upgrades or ()}
+        context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
+        return context | self._data(self.data.context)
+
     def _count(self, value: Any, field: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-            raise ValueError(f"{field} on {self.upgrade.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
+            raise ValueError(f"{field} on {self.data.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
         return value
 
     @classmethod
@@ -45,13 +55,13 @@ class UpgradeCalculator:
         defaults = set(self.context) <= self.AUTOMATIC | self.METADATA
         stats = Data()
 
-        for stat, effects in self.upgrade.stats.items():
+        for stat, effects in self.data.stats.items():
             for raw in effects if isinstance(effects, list) else [effects]:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
-                value, condition = effect.value, effect.when
+                value, condition = effect.value, effect.get("when")
                 if isinstance(condition, Mapping) and condition.get("rank") is not None:
                     if rank >= self._count(condition["rank"], "required rank"): self._add(stats, stat, value)
-                elif effect.stacking:
+                elif effect.get("stacking", False):
                     condition = self._key(condition)
                     stacks = self._count(self.context.get(condition, self.context.get("stacks", (max_stacks or 0) if defaults else 0)), condition)
                     stacks = min(stacks, max_stacks) if max_stacks is not None else stacks
