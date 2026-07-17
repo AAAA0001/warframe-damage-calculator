@@ -21,15 +21,15 @@ class WeaponCalculator:
         self.effective = self._new_stats()
         self.recompute()
 
+    def _get(self, stat: str, default: DataValue = 0) -> DataValue:
+        return self._build_stats.get(stat, default)
+
     @classmethod
     def _new_stats(cls, stats: Mapping[str, Any] | None = None) -> Data:
         values = cls.DEFAULT_STATS | cls.CALCULATED_STATS | Data(stats)
         values.total_damage = values.damage.total_damage()
         return values
     
-    def _get(self, stat: str, default: DataValue = 0) -> DataValue:
-        return self._build_stats.get(stat, default)
-
     def _compute_moded_stats(self) -> None:
         self.moded.multiplicative_base_damage = max(1 + self._get("multiplicative_base_damage"), 1)
         self.moded.base_damage = max(1 + self._get("base_damage"), 0)
