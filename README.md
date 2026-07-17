@@ -38,13 +38,13 @@ weapon definitions, upgrades, and builds.
 ## Installation
 
 ``` bash
-pip install git+https://github.com/AAAA0001/warframe-damage-calculator.git
+pip install git+https://github.com/MX055/warframe-damage-calculator.git
 ```
 
 Development install:
 
 ``` bash
-git clone https://github.com/AAAA0001/warframe-damage-calculator.git
+git clone https://github.com/MX055/warframe-damage-calculator.git
 cd warframe-damage-calculator
 pip install -e .
 ```

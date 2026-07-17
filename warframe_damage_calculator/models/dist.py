@@ -43,10 +43,12 @@ class Dist:
         return self.get(damage_type) / (self.total_damage() or 1)
 
     def include(self, damage_types: Iterable[DamageType]) -> Dist:
-        return Dist({damage_type: value for damage_type, value in self if damage_type in set(damage_types)})
+        included = set(damage_types)
+        return Dist({damage_type: value for damage_type, value in self if damage_type in included})
 
     def exclude(self, damage_types: Iterable[DamageType]) -> Dist:
-        return Dist({damage_type: value for damage_type, value in self if damage_type not in set(damage_types)})
+        excluded = set(damage_types)
+        return Dist({damage_type: value for damage_type, value in self if damage_type not in excluded})
 
     def positive(self) -> Dist:
         return Dist({damage_type: value for damage_type, value in self if value > 0})

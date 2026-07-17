@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Self
+from typing import Any, overload, Self
 
 from .data import Data
 from .upgrade import Upgrade
@@ -17,8 +17,19 @@ class Weapon:
         self.stats = WeaponCalculator(self.data)
         self.format = WeaponFormatter(self.stats)
 
+    @overload
+    def configure(self, build: Build, /) -> Self: ...
+
+    @overload
+    def configure(self, *upgrades: Upgrade) -> Self: ...
+
     def configure(self, *args: Build | Upgrade) -> Self:
-        build = args[0] if len(args) == 1 and isinstance(args[0], Build) else Build(*args)
+        if len(args) == 1 and isinstance(args[0], Build):
+            build = args[0]
+        elif all(isinstance(arg, Upgrade) for arg in args):
+            build = Build(*args)
+        else:
+            raise TypeError("configure accepts one Build or multiple Upgrade instances")
         self.build = build
         self.stats.set_build(self.build)
         return self

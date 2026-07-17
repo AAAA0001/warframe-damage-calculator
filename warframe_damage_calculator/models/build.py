@@ -26,7 +26,10 @@ class Build:
     def aggregate(self) -> Data:
         stats = Data()
         for stat, value in (item for upgrade in self for item in upgrade.data.stats.items()):
-            stats[stat] = value if (current := stats.get(stat)) is None else current or value if isinstance(value, bool) else current + value
+            current = stats.get(stat)
+            if current is None: stats[stat] = value
+            elif isinstance(value, bool): stats[stat] = current or value
+            else: stats[stat] = current + value
         return stats
     
     def get(self, stat: str, default: JsonScalar = 0) -> DataValue:

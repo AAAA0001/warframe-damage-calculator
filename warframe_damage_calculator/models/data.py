@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 from ..utils.types import JsonScalar, JsonValue
 from .dist import Dist
 
@@ -50,4 +52,4 @@ class Data(dict[str, DataValue]):
             self[key] = value
 
     def copy(self) -> Data:
-        return Data(self)
+        return deepcopy(self)
