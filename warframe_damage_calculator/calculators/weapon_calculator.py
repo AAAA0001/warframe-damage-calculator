@@ -75,6 +75,10 @@ class WeaponCalculator:
     @cached_property
     def total_dps(self) -> float:
         return self.flat_dps + self.flat_dotps
+    
+    def set_build(self, build: Build) -> None:
+        self.build = build
+        self.recompute()
 
     def recompute(self) -> None:
         resolved = Build(*(upgrade.resolve(weapon=self.data, build=self.build.data) for upgrade in self.build))
@@ -82,10 +86,6 @@ class WeaponCalculator:
         self._compute_moded_stats()
         self._compute_effective_stats()
         self._clear_cached_properties()
-
-    def set_build(self, build: Build) -> None:
-        self.build = build
-        self.recompute()
 
     def contribution(self, upgrade: Upgrade) -> float:
         full = self.build
