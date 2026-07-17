@@ -29,7 +29,7 @@ class Build:
             for stat, value in upgrade.data.stats.items():
                 current = stats.get(stat)
                 stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
-        return statsfix
+        return stats
     
     def get(self, stat: str, default: JsonScalar = 0) -> DataValue:
         return self.aggregate().get(stat, default)
