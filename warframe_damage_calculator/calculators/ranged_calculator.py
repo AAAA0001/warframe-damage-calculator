@@ -9,8 +9,7 @@ from .weapon_calculator import WeaponCalculator
 
 
 class RangedCalculator(WeaponCalculator):
-    DEFAULT_STATS = WeaponCalculator.DEFAULT_STATS | {"explosion_damage": Dist(), "explosion_forced_procs": Dist(), "multishot": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0}
-    CALCULATED_STATS = WeaponCalculator.CALCULATED_STATS | {"explosion_total_damage": 0.0, "multiplicative_fire_rate": 1.0, "ammo_efficiency": 0.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
+    DEFAULT_STATS = WeaponCalculator.DEFAULT_STATS | {"explosion_damage": Dist(), "explosion_forced_procs": Dist(), "multishot": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0, "explosion_total_damage": 0.0, "multiplicative_fire_rate": 1.0, "ammo_efficiency": 0.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
     DEFAULT_BUILD = WeaponCalculator.DEFAULT_BUILD | {"weakpoint_damage": 0.0, "fire_rate_lock": False, "multiplicative_fire_rate": 0.0, "fire_rate": 0.0, "reload_speed": 0.0, "ammo_efficiency": 0.0, "magazine_capacity": 0.0, "multishot_lock": False, "multishot": 0.0, "multiplicative_weakpoint_crit_chance": 0.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
 
     @classmethod
@@ -19,9 +18,8 @@ class RangedCalculator(WeaponCalculator):
         values.explosion_total_damage = values.explosion_damage.total_damage()
         return values
 
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        resolved_build = self.DEFAULT_BUILD | self.build.resolve(self.data).aggregate()
+    def _compute_moded_stats(self) -> Data:
+        resolved_build = super()._compute_moded_stats()
         self.moded.explosion_damage = self.moded.base_damage * self.base.explosion_damage.apply(resolved_build.damage).combine().sorted()
         self.moded.explosion_total_damage = self.moded.explosion_damage.total_damage()
         self.moded.weakpoint_damage = max(self.base.weakpoint_damage + resolved_build.weakpoint_damage, 1)
@@ -38,6 +36,7 @@ class RangedCalculator(WeaponCalculator):
         self.moded.multiplicative_weakpoint_crit_chance = max(1 + resolved_build.multiplicative_weakpoint_crit_chance, 1)
         self.moded.weakpoint_crit_chance = max(self.base.crit_chance * (1 + resolved_build.crit_chance + resolved_build.weakpoint_crit_chance), 0)
         self.moded.internal_bleeding = max(resolved_build.internal_bleeding * (2 if self.moded.fire_rate * self.moded.multiplicative_fire_rate < 2.5 else 1), 0)
+        return resolved_build
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()

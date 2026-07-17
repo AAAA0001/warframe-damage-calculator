@@ -2,20 +2,20 @@ from functools import cached_property
 
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp, true_round
+from ..models.data import Data
 from .weapon_calculator import WeaponCalculator
 
 
 class MeleeCalculator(WeaponCalculator):
-    DEFAULT_STATS = WeaponCalculator.DEFAULT_STATS | {"attack_speed": 1.0}
-    CALCULATED_STATS = WeaponCalculator.CALCULATED_STATS | {"melee_doughty": 0.0, "melee_duplicate": 0.0}
+    DEFAULT_STATS = WeaponCalculator.DEFAULT_STATS | {"attack_speed": 1.0, "melee_doughty": 0.0, "melee_duplicate": 0.0}
     DEFAULT_BUILD = WeaponCalculator.DEFAULT_BUILD | {"attack_speed": 0.0, "melee_duplicate": 0.0, "melee_doughty": 0.0}
 
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        resolved_build = self.DEFAULT_BUILD | self.build.resolve(self.data).aggregate()
+    def _compute_moded_stats(self) -> Data:
+        resolved_build = super()._compute_moded_stats()
         self.moded.attack_speed = max(self.base.attack_speed * (1 + resolved_build.attack_speed), 0)
         self.moded.melee_duplicate = clamp(resolved_build.melee_duplicate, 0, 1)
         self.moded.melee_doughty = clamp(resolved_build.melee_doughty, 0, 1)
+        return resolved_build
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()

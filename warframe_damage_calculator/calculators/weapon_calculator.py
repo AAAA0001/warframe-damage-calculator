@@ -9,8 +9,7 @@ from ..models.build import Build
 
 
 class WeaponCalculator:
-    DEFAULT_STATS = Data({"damage": Dist(), "forced_procs": Dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0})
-    CALCULATED_STATS = Data({"total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0})
+    DEFAULT_STATS = Data({"damage": Dist(), "forced_procs": Dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0, "total_damage": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0})
     DEFAULT_BUILD = Data({"damage": Dist(), "multiplicative_base_damage": 0.0, "base_damage": 0.0, "faction_damage": 0.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 0.0, "crit_chance": 0.0, "flat_crit_damage": 0.0, "crit_damage": 0.0, "status_chance": 0.0, "status_damage": 0.0})
 
     def __init__(self, data: Data) -> None:
@@ -24,11 +23,11 @@ class WeaponCalculator:
 
     @classmethod
     def _new_stats(cls, stats: Mapping[str, Any] | None = None) -> Data:
-        values = cls.DEFAULT_STATS | cls.CALCULATED_STATS | Data(stats)
+        values = cls.DEFAULT_STATS | Data(stats)
         values.total_damage = values.damage.total_damage()
         return values
     
-    def _compute_moded_stats(self) -> None:
+    def _compute_moded_stats(self) -> Data:
         resolved_build = self.DEFAULT_BUILD | self.build.resolve(self.data).aggregate()
         self.moded.multiplicative_base_damage = max(1 + resolved_build.multiplicative_base_damage, 1)
         self.moded.base_damage = max(1 + resolved_build.base_damage, 0)
@@ -42,6 +41,7 @@ class WeaponCalculator:
         self.moded.crit_damage = max(self.base.crit_damage * (1 + resolved_build.crit_damage), 1)
         self.moded.status_chance = max(self.base.status_chance * (1 + resolved_build.status_chance), 0)
         self.moded.status_damage = max(1 + resolved_build.status_damage, 1)
+        return resolved_build
 
     def _compute_effective_stats(self) -> None:
         self.effective.base_damage = self.moded.base_damage * self.moded.multiplicative_base_damage

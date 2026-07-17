@@ -2,22 +2,22 @@ from functools import cached_property
 
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
+from ..models.data import Data
 from ..models.dist import Dist
 from .ranged_calculator import RangedCalculator
 
 
 class PrimaryCalculator(RangedCalculator):
-    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS
-    CALCULATED_STATS = RangedCalculator.CALCULATED_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
+    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
     DEFAULT_BUILD = RangedCalculator.DEFAULT_BUILD | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
 
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        resolved_build = self.DEFAULT_BUILD | self.build.resolve(self.data).aggregate()
+    def _compute_moded_stats(self) -> Data:
+        resolved_build = super()._compute_moded_stats()
         self.moded.fire_rate = max(self.base.fire_rate * (1 if resolved_build.fire_rate_lock else (1 + resolved_build.fire_rate)), 0.05)
         self.moded.hunter_munitions = clamp(resolved_build.hunter_munitions, 0, 0.3)
         self.moded.primed_chamber = clamp(resolved_build.primed_chamber, 0, 1.4)
         self.moded.vigilante_bonus = clamp(resolved_build.vigilante_bonus, 0, 0.3)
+        return resolved_build
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()

@@ -2,20 +2,20 @@ from functools import cached_property
 
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
+from ..models.data import Data
 from ..models.dist import Dist
 from .ranged_calculator import RangedCalculator
 
 
 class SecondaryCalculator(RangedCalculator):
-    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS
-    CALCULATED_STATS = RangedCalculator.CALCULATED_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
+    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
     DEFAULT_BUILD = RangedCalculator.DEFAULT_BUILD | {"secondary_enervate": 0, "secondary_encumber": 0.0}
 
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        resolved_build = self.DEFAULT_BUILD | self.build.resolve(self.data).aggregate()
+    def _compute_moded_stats(self) -> Data:
+        resolved_build = super()._compute_moded_stats()
         self.moded.secondary_enervate = clamp(resolved_build.secondary_enervate, 0, 6)
         self.moded.secondary_encumber = clamp(resolved_build.secondary_encumber, 0, 0.24)
+        return resolved_build
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
