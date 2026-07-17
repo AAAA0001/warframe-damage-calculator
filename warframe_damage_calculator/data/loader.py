@@ -38,30 +38,6 @@ class WarframeDatabase:
     def from_folder(cls, folder: str | Path) -> Self:
         folder = Path(folder)
         return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
-    
-    @overload
-    def get(self, name: str) -> WeaponItem | None: ...
-
-    @overload
-    def get(self, name: str) -> Upgrade | None: ...
-
-    @overload
-    def get(self, name: str, *, type: WeaponFilter, context: dict[str, Any] | None = None, attribute: None = None) -> WeaponItem | None: ...
-
-    @overload
-    def get(self, name: str, *, type: UpgradeFilter, context: dict[str, Any] | None = None, attribute: None = None) -> Upgrade | None: ...
-
-    @overload
-    def get(self, name: None = None, *, type: str | None = None, context: dict[str, Any] | None = None, attribute: Literal["name"]) -> list[str]: ...
-
-    @overload
-    def get(self, name: None = None, *, type: WeaponFilter, context: dict[str, Any] | None = None, attribute: None = None) -> dict[str, WeaponItem]: ...
-
-    @overload
-    def get(self, name: None = None, *, type: UpgradeFilter, context: dict[str, Any] | None = None, attribute: None = None) -> dict[str, Upgrade]: ...
-
-    @overload
-    def get(self, name: None = None, *, type: str | None = None, context: dict[str, Any] | None = None, attribute: str) -> list[str] | dict[str, object | None]: ...
 
     def get(self, name: str | None = None, *, type: str | None = None, context: dict[str, Any] | None = None, attribute: str | None = None) -> DatabaseItem | None | list[str] | dict[str, DatabaseItem] | dict[str, object | None]:
         if name is not None:
