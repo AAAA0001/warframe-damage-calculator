@@ -1,4 +1,3 @@
-from collections.abc import Mapping
 from typing import Any
 
 from .data import Data
@@ -9,8 +8,8 @@ from ..formatters.primary_formatter import PrimaryFormatter
 
 
 class Primary(Ranged):
-    def __init__(self, data: Mapping[str, Any] | None = None) -> None:
-        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
+    def __init__(self, data: dict[str, Any] | None = None) -> None:
+        self.data = Data({"stats": {}, "context": {}} | (data or {}))
         self.build = Build()
         self.stats = PrimaryCalculator(self.data)
         self.format = PrimaryFormatter(self.stats)

@@ -1,4 +1,3 @@
-from collections.abc import Mapping
 from typing import Any, overload, Self
 
 from .data import Data
@@ -9,8 +8,8 @@ from ..formatters.weapon_formatter import WeaponFormatter
 
 
 class Weapon:
-    def __init__(self, data: Mapping[str, Any] | None = None) -> None:
-        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
+    def __init__(self, data: dict[str, Any] | None = None) -> None:
+        self.data = Data({"stats": {}, "context": {}} | (data or {}))
         self.build = Build()
         self.stats = WeaponCalculator(self.data)
         self.format = WeaponFormatter(self.stats)
