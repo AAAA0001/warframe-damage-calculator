@@ -8,8 +8,6 @@ from .upgrade import Upgrade
 
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
-        if not all(isinstance(upgrade, Upgrade) for upgrade in upgrades):
-            raise TypeError("Build only accepts Upgrade instances")
         self.data = Data({"upgrades": [upgrade.data for upgrade in upgrades]})
 
     def __iter__(self) -> Iterator[Upgrade]:
