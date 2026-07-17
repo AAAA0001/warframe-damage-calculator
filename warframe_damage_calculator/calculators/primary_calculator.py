@@ -13,7 +13,6 @@ class PrimaryCalculator(RangedCalculator):
 
     def _compute_moded_stats(self) -> Data:
         resolved_build = super()._compute_moded_stats()
-        self.moded.fire_rate = max(self.base.fire_rate * (1 if resolved_build.fire_rate_lock else (1 + resolved_build.fire_rate)), 0.05)
         self.moded.hunter_munitions = clamp(resolved_build.hunter_munitions, 0, 0.3)
         self.moded.primed_chamber = clamp(resolved_build.primed_chamber, 0, 1.4)
         self.moded.vigilante_bonus = clamp(resolved_build.vigilante_bonus, 0, 0.3)
