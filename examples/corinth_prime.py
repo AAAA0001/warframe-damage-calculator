@@ -1,4 +1,4 @@
-from warframe_damage_calculator import Build, Upgrade, arsenal, Primary
+from warframe_damage_calculator import Build, Upgrade, arsenal
 
 
 def main() -> None:
