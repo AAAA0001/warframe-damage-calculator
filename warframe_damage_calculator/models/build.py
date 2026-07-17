@@ -20,11 +20,8 @@ class Build:
         return Build(other, *self)
 
     def __sub__(self, other: Build | Upgrade) -> Build:
-        upgrades = list(self.data.upgrades)
-        for excluded in (other,) if isinstance(other, Upgrade) else other:
-            if (index := next((i for i, data in enumerate(upgrades) if data is excluded.data), None)) is not None:
-                upgrades.pop(index)
-        return Build(*(Upgrade(data) for data in upgrades))
+        excluded = [other.data] if isinstance(other, Upgrade) else other.data.upgrades
+        return Build(*(Upgrade(data) for data in self.data.upgrades if data not in excluded))
         
     def aggregate(self) -> Data:
         stats = Data()
@@ -32,7 +29,7 @@ class Build:
             for stat, value in upgrade.data.stats.items():
                 current = stats.get(stat)
                 stats[stat] = value if current is None else current or value if isinstance(value, bool) else current + value
-        return stats
+        return statsfix
     
     def get(self, stat: str, default: JsonScalar = 0) -> DataValue:
         return self.aggregate().get(stat, default)

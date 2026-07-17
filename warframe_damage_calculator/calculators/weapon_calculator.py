@@ -89,9 +89,9 @@ class WeaponCalculator:
 
     def contribution(self, upgrade: Upgrade) -> float:
         full = self.build
-        reduced = full - upgrade
-        if len(reduced.data.upgrades) == len(full.data.upgrades):
+        if all(equipped.data is not upgrade.data for equipped in full):
             return 0.0
+        reduced = full - upgrade
         full_dps = self.total_dps
         try:
             self.set_build(reduced)
