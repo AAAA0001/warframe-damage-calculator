@@ -22,12 +22,8 @@ class Weapon:
     def configure(self, *upgrades: Upgrade) -> Self: ...
 
     def configure(self, *args: Build | Upgrade) -> Self:
-        if len(args) == 1 and isinstance(args[0], Build):
-            build = args[0]
-        elif all(isinstance(arg, Upgrade) for arg in args):
-            build = Build(*args)
-        else:
-            raise TypeError("configure accepts one Build or multiple Upgrade instances")
+        if len(args) == 1 and isinstance(args[0], Build): build = args[0]
+        elif all(isinstance(arg, Upgrade) for arg in args): build = Build(*args)
         self.build = build
         self.stats.set_build(self.build)
         return self
