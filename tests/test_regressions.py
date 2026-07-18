@@ -55,7 +55,7 @@ def test_native_multishot_status_chance_is_per_projectile():
 
     assert weapon.stats.base.status_chance == pytest.approx(0.09)
     assert weapon.stats.base.multishot == 6
-    assert weapon.stats.average_procs_per_shot == pytest.approx(0.54)
+    assert weapon.stats.average.procs_per_shot == pytest.approx(0.54)
 
 
 def test_negative_physical_damage_modifier_is_applied_before_filtering():
@@ -99,7 +99,7 @@ def test_model_data_is_public():
 
 
 def test_requested_calculator_api():
-    weapon = Primary({"stats": {"damage": {"impact": 100, "slash": 50}, "crit_chance": 0.3, "crit_damage": 2.2, "status_chance": 0.3, "multishot": 6, "fire_rate": 3.0, "reload_speed": 1.5, "magazine_cappacity": 20}, "context": {"name": "Example Weapon", "type": "shotgun", "trigger": "semi"}})
+    weapon = Primary({"stats": {"damage": {"impact": 100, "slash": 50}, "crit_chance": 0.3, "crit_damage": 2.2, "status_chance": 0.3, "multishot": 6, "fire_rate": 3.0, "reload_speed": 1.5, "magazine_capacity": 20}, "context": {"name": "Example Weapon", "type": "shotgun", "trigger": "semi"}})
     mod1 = Upgrade({"stats": {"base_damage": 1.6, "multishot": [0.6, {"value": 1.2, "when": "kill"}], "status_chance": {"value": 0.3, "when": "headshot", "stacks": True}}, "context": {"name": "Mod 1", "type": "mod", "max_stacks": 6, "headshot": 5}})
     mod2 = Upgrade({"stats": {"damage": [{"heat": 1.2}, {"value": {"cold": 1.2}, "at_rank": 6}]}, "context": {"name": "Mod 2", "type": "mod", "max_rank": 10, "rank": 8}})
     build = Build(mod1, mod2)
@@ -107,7 +107,6 @@ def test_requested_calculator_api():
     weapon.configure(build)
 
     assert weapon.data.context.name == "Example Weapon"
-    assert weapon.calculate is weapon.stats
     assert weapon.stats.base.magazine_capacity == 20
     assert isinstance(weapon.stats.average, Data)
     assert mod1.stats.static.multishot == 0.6

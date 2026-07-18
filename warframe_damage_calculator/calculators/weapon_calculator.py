@@ -1,4 +1,3 @@
-from functools import cached_property
 from collections.abc import Mapping
 from typing import Any
 
@@ -46,66 +45,38 @@ class WeaponCalculator:
 
     def _compute_effective_stats(self) -> None:
         self.effective.base_damage = self.moded.base_damage * self.moded.multiplicative_base_damage
-        damage = self.moded.multiplicative_base_damage * self.moded.damage
-        self.effective.damage = damage
-        self.effective.total_damage = damage.total_damage()
+        self.effective.damage = self.moded.multiplicative_base_damage * self.moded.damage
+        self.effective.total_damage = self.effective.damage.total_damage()
         self.effective.faction_damage = self.moded.faction_damage
         self.effective.crit_chance = self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance
         self.effective.crit_damage = self.moded.crit_damage + self.moded.flat_crit_damage
         self.effective.status_chance = self.moded.status_chance
         self.effective.status_damage = self.moded.status_damage
 
-    def _clear_cached_properties(self) -> None:
-        for cls in type(self).mro():
-            for name, attr in cls.__dict__.items():
-                if isinstance(attr, cached_property):
-                    self.__dict__.pop(name, None)
-
     def _compute_average_stats(self) -> None:
-        self.average = Data()
-        for cls in reversed(type(self).mro()):
-            for name, attr in cls.__dict__.items():
-                if isinstance(attr, cached_property):
-                    key = name.removeprefix("average_")
-                    self.average[key] = getattr(self, name)
-
-    @cached_property
-    def average_crit_chance(self) -> float:
-        return self.effective.crit_chance
-
-    @cached_property
-    def average_crit_multiplier(self) -> float:
-        return 1 + self.average_crit_chance * (self.effective.crit_damage - 1)
-
-    @cached_property
-    def total_dph(self) -> float:
-        return self.flat_dph + self.flat_dotph
-
-    @cached_property
-    def total_dps(self) -> float:
-        return self.flat_dps + self.flat_dotps
-    
-    def set_build(self, build: Build) -> None:
-        self.build = build
-        self.recompute()
+        self.average.crit_chance = self.effective.crit_chance
+        self.average.crit_multiplier = 1 + self.average.crit_chance * (self.effective.crit_damage - 1)
 
     def recompute(self) -> None:
         self.build.stats.resolve(self.data)
         resolved_build = self.DEFAULT_BUILD | self.build.stats.total
         self._compute_moded_stats(resolved_build)
         self._compute_effective_stats()
-        self._clear_cached_properties()
         self._compute_average_stats()
+
+    def set_build(self, build: Build) -> None:
+        self.build = build
+        self.recompute()
 
     def contribution(self, upgrade: Upgrade) -> float:
         full = self.build
         if all(equipped.data != upgrade.data for equipped in full):
             return 0.0
         reduced = full - upgrade
-        full_dps = self.total_dps
+        full_dps = self.average.total_dps
         try:
             self.set_build(reduced)
-            return full_dps - self.total_dps
+            return full_dps - self.average.total_dps
         finally:
             self.set_build(full)
 

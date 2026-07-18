@@ -1,5 +1,3 @@
-from functools import cached_property
-
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
 from ..models.data import Data
@@ -25,10 +23,22 @@ class PrimaryCalculator(RangedCalculator):
         self.effective.crit_chance += self.effective.vigilante_bonus
         self.effective.weakpoint_crit_chance += self.effective.vigilante_bonus
 
+    def _compute_average_stats(self) -> None:
+        super()._compute_average_stats()
+        self.average.primed_chamber_multiplier = 1 + self.effective.primed_chamber / self.effective.magazine_capacity
+        self.average.flat_dph *= self.average.primed_chamber_multiplier
+        self.average.flat_weakpoint_dph *= self.average.primed_chamber_multiplier
+        self.average.flat_dps = self.average.fire_rate * self.average.flat_dph
+        self.average.flat_weakpoint_dps = self.average.fire_rate * self.average.flat_weakpoint_dph
+        self.average.total_dph = self.average.flat_dph + self.average.flat_dotph
+        self.average.total_weakpoint_dph = self.average.flat_weakpoint_dph + self.average.flat_weakpoint_dotph
+        self.average.total_dps = self.average.flat_dps + self.average.flat_dotps
+        self.average.total_weakpoint_dps = self.average.flat_weakpoint_dps + self.average.flat_weakpoint_dotps
+
     def _flat_dotph_for(self, damage: Dist, forced_procs: Dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
         if damage.total_damage() <= 0:
             return 0.0
-        average_primed_chamber_multiplier = self.average_primed_chamber_multiplier
+        average_primed_chamber_multiplier = 1 + self.effective.primed_chamber / self.effective.magazine_capacity
         # Hunter munitions: bleed on crit
         hunter_munitions_expected_procs = self.effective.hunter_munitions * min(crit_chance, 1)
         hunter_munitions_damage_per_proc = 2.1 * damage.total_damage() * max(self.effective.crit_damage, crit_multiplier) * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
@@ -48,16 +58,4 @@ class PrimaryCalculator(RangedCalculator):
         dot_damage_per_bullet = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * self.effective.status_chance * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
         forced_dot_damage_per_bullet = sum(multiplier * forced_procs.get(damage_type) * damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
         # Total DoT damage, multiplied by multishot if applicable
-        return (dot_damage_per_bullet + extra_slash_damage_per_bullet + forced_dot_damage_per_bullet) * (self.effective.multishot * self.beam_dot_multiplier if include_multishot else 1)
-
-    @cached_property
-    def average_primed_chamber_multiplier(self) -> float:
-        return 1 + self.effective.primed_chamber / self.effective.magazine_capacity
-
-    @cached_property
-    def flat_dph(self) -> float:
-        return super().flat_dph * self.average_primed_chamber_multiplier
-
-    @cached_property
-    def flat_weakpoint_dph(self) -> float:
-        return super().flat_weakpoint_dph * self.average_primed_chamber_multiplier
+        return (dot_damage_per_bullet + extra_slash_damage_per_bullet + forced_dot_damage_per_bullet) * (self.effective.multishot * self.average.beam_dot_multiplier if include_multishot else 1)
