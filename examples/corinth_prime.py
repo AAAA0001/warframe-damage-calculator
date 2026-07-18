@@ -17,7 +17,7 @@ def main() -> None:
     build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, exilus, arcane, buff)
     weapon.configure(build)
 
-    print(weapon.format.summary())
+    print(weapon.results.average)
     
 
 if __name__ == "__main__":

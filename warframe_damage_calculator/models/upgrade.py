@@ -7,7 +7,5 @@ from .data import Data
 
 class Upgrade:
     def __init__(self, data: Mapping[str, JsonValue] | None = None) -> None:
-        values = Data({"stats": {}, "context": {}} | dict(data or {}))
-        self.stats = values.stats
-        self.context = values.context
+        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
         self.results = UpgradeCalculator(self)

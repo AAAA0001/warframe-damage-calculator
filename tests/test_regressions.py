@@ -10,7 +10,7 @@ from warframe_damage_calculator.utils.types import DamageType
 
 def test_loader_context_and_attributes():
     upgrade = arsenal.get("Serration", context={"rank": 2})
-    assert upgrade.context.rank == 2
+    assert upgrade.data.context.rank == 2
     assert arsenal.get("Serration", attribute="name") == "Serration"
     assert arsenal.get("Serration", attribute="base_damage") is not None
 
@@ -86,9 +86,9 @@ def test_multi_element_damage_order_is_deterministic_across_resolvers():
         Upgrade({"stats": {"heat": 3, "elements": {"heat": 3}}}),
     )
 
-    assert list(dict(combined.results.total.damage)) == ["cold", "toxin", "heat"]
+    assert list(combined.results.total.damage.data) == ["cold", "toxin", "heat"]
     assert list(combined.results.total.elements) == ["cold", "toxin", "heat"]
-    assert list(dict(separate.results.total.damage)) == ["cold", "toxin", "heat"]
+    assert list(separate.results.total.damage.data) == ["cold", "toxin", "heat"]
     assert list(separate.results.total.elements) == ["cold", "toxin", "heat"]
 
 
@@ -96,7 +96,7 @@ def test_weapon_default_builds_are_independent():
     first = Primary()
     second = Primary()
 
-    first.build.results.total.damage["heat"] = 1
+    first.build.results.total.damage.data["heat"] = 1
 
     assert first.build.results.total.damage is not second.build.results.total.damage
     assert second.build.results.total.damage == Dist()
@@ -124,17 +124,16 @@ def test_upgrade_resolver_exposes_resolved_effect_buckets():
     assert not hasattr(upgrade.results, "stacked")
 
 
-def test_model_fields_are_public():
+def test_model_data_is_public():
     weapon = Primary()
     upgrade = Upgrade()
     build = Build(upgrade)
     damage = Dist({"impact": 1})
 
-    assert not any(hasattr(item, "data") for item in (weapon, upgrade, build, damage))
-    assert weapon.context == {}
-    assert upgrade.context == {}
-    assert weapon.stats == {}
-    assert upgrade.stats == {}
+    assert all(hasattr(item, "data") for item in (weapon, upgrade, build, damage))
+    assert weapon.data.context == {}
+    assert upgrade.data.context == {}
+    assert not any(hasattr(item, "stats") for item in (weapon, upgrade, build))
     assert weapon.results.weapon is weapon
     assert upgrade.results.upgrade is upgrade
     assert build.results.build is build
@@ -151,7 +150,7 @@ def test_requested_calculator_api():
 
     weapon.configure(build)
 
-    assert weapon.context.name == "Example Weapon"
+    assert weapon.data.context.name == "Example Weapon"
     assert weapon.build is build
     assert weapon.results.weapon is weapon
     assert weapon.build.results.total.damage == Dist({"heat": 1.2, "cold": 1.2})

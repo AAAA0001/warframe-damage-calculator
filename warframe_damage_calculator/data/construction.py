@@ -10,4 +10,4 @@ class DatabaseFactory:
     models = {"primary": Primary, "secondary": Secondary, "melee": Melee, "mod": Upgrade, "arcane": Upgrade}
 
     def create(self, entry: DatabaseEntry) -> Weapon | Upgrade:
-        return self.models[entry.category]({"stats": entry.stats, "context": entry.context})
+        return self.models[entry.category](entry.data)

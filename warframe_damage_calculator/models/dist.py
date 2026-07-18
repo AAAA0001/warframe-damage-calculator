@@ -7,28 +7,22 @@ from ..utils.types import DamageType, Number
 
 class Dist:
     def __init__(self, data: Mapping[DamageType, Number] | Self | None = None) -> None:
-        self._values = dict(data._values if isinstance(data, Dist) else data or {})
+        self.data = dict(data.data if isinstance(data, Dist) else data or {})
 
     def __iter__(self) -> Iterator[tuple[DamageType, Number]]:
-        return iter(self._values.items())
-
-    def __getitem__(self, damage_type: DamageType) -> Number:
-        return self._values[damage_type]
-
-    def __setitem__(self, damage_type: DamageType, value: Number) -> None:
-        self._values[damage_type] = value
+        return iter(self.data.items())
 
     def __repr__(self) -> str:
-        return f"dist({self._values!r})"
+        return f"dist({self.data!r})"
 
     def __str__(self) -> str:
         return ", ".join(f"{damage_type}: {value}" for damage_type, value in self)
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, Dist) and self._values == other._values
+        return isinstance(other, Dist) and self.data == other.data
 
     def __add__(self, other: Self) -> Self:
-        return Dist({damage_type: self.get(damage_type) + other.get(damage_type) for damage_type in self._values | other._values})
+        return Dist({damage_type: self.get(damage_type) + other.get(damage_type) for damage_type in self.data | other.data})
 
     def __radd__(self, other: int) -> Self:
         return self if other == 0 else NotImplemented
@@ -39,10 +33,10 @@ class Dist:
     __rmul__ = __mul__
 
     def get(self, damage_type: DamageType, default: Number = 0.0) -> Number:
-        return self._values.get(damage_type, default)
+        return self.data.get(damage_type, default)
 
     def total_damage(self) -> Number:
-        return sum(self._values.values())
+        return sum(self.data.values())
 
     def weight(self, damage_type: DamageType) -> Number:
         return self.get(damage_type) / (self.total_damage() or 1)
@@ -64,7 +58,7 @@ class Dist:
             damage_type: self.get(damage_type) * (1 + other.get(damage_type))
             if damage_type in PHYSICAL_TYPES
             else self.get(damage_type) + total * other.get(damage_type)
-            for damage_type in self._values | other._values
+            for damage_type in self.data | other.data
         })
 
     def combine(self) -> Self:
@@ -79,4 +73,4 @@ class Dist:
         return (self.exclude(ELEMENTAL_TYPES) + Dist(combined)).positive()
 
     def sorted(self) -> Self:
-        return Dist(dict(sorted(self._values.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])))
+        return Dist(dict(sorted(self.data.items(), key=lambda item: DAMAGE_TYPE_ORDER[item[0]])))

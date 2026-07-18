@@ -13,9 +13,7 @@ class Weapon:
     formatter_type = WeaponFormatter
 
     def __init__(self, data: Mapping[str, Any] | None = None) -> None:
-        values = Data({"stats": {}, "context": {}} | dict(data or {}))
-        self.stats = values.stats
-        self.context = values.context
+        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
         self.build = Build()
         self.results = self.calculator_type(self)
         self.format = self.formatter_type(self)
