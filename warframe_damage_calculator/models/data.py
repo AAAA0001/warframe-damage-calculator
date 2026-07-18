@@ -7,8 +7,24 @@ from .dist import Dist
 
 
 class Data(dict[str, DataValue]):
+    _fields: ClassVar[dict[str, object]] = {}
+    _defaults: ClassVar[dict[str, DataValue]] = {}
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._fields = dict(getattr(cls.__base__, "_fields", {}))
+        cls._defaults = dict(getattr(cls.__base__, "_defaults", {}))
+        for field, annotation in cls.__annotations__.items():
+            if field.startswith("_") or get_origin(annotation) is ClassVar:
+                continue
+            cls._fields[field] = annotation
+            if field in cls.__dict__:
+                cls._defaults[field] = cls.__dict__[field]
+                delattr(cls, field)
+
     def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
         super().__init__()
+        self.update(deepcopy(self._defaults))
         self.update(data or {})
 
     @staticmethod
@@ -18,17 +34,26 @@ class Data(dict[str, DataValue]):
         if isinstance(value, list): return [Data._convert(item) for item in value]
         return value
 
+    @staticmethod
+    def _convert_items(values: list[DataValue], item_type: object) -> list[DataValue]:
+        if not isinstance(item_type, type) or not issubclass(item_type, Data):
+            return [Data._convert(value) for value in values]
+        items: list[DataValue] = []
+        for value in values:
+            if isinstance(value, item_type): items.append(value)
+            elif isinstance(value, Mapping): items.append(item_type(value))
+            else: items.append(value)
+        return items
+
     @classmethod
     def _convert_field(cls, key: str, value: DataValue) -> DataValue:
-        annotation = next((base.__annotations__[key] for base in cls.__mro__ if key in getattr(base, "__annotations__", {})), None)
+        annotation = cls._fields.get(key)
         if annotation is Dist:
             return Dist(value)
         if isinstance(annotation, type) and issubclass(annotation, Data) and isinstance(value, Mapping):
             return value if isinstance(value, annotation) else annotation(value)
         if get_origin(annotation) is list and isinstance(value, list):
-            item_type = get_args(annotation)[0]
-            if isinstance(item_type, type) and issubclass(item_type, Data):
-                return [item if isinstance(item, item_type) else item_type(item) if isinstance(item, Mapping) else item for item in value]
+            return cls._convert_items(value, get_args(annotation)[0])
         return cls._convert(value)
 
     def __getattr__(self, key: str) -> DataValue:
@@ -57,29 +82,19 @@ class Data(dict[str, DataValue]):
         return deepcopy(self)
 
 
-class DefaultData(Data):
-    _defaults: ClassVar[dict[str, DataValue]] = {}
-
+class ZeroData(Data):
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        defaults = dict(getattr(cls.__base__, "_defaults", {}))
-        for field, annotation in cls.__annotations__.items():
-            if field.startswith("_") or get_origin(annotation) is ClassVar or field not in cls.__dict__:
-                continue
-            defaults[field] = cls.__dict__[field]
-            delattr(cls, field)
-        cls._defaults = defaults
-
-    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
-        super().__init__(deepcopy(self._defaults) | dict(data or {}))
+        for field in cls._fields:
+            cls._defaults.setdefault(field, 0.0)
 
 
 class ModelData(Data):
-    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
-        super().__init__({"stats": {}, "context": {}} | dict(data or {}))
+    stats: Data = {}
+    context: Data = {}
 
 
-class WeaponContext(DefaultData):
+class WeaponContext(Data):
     name: str = ""
     category: str = "Weapon"
     type: str = ""
@@ -103,7 +118,7 @@ class MeleeContext(WeaponContext):
     category: str = "Melee"
 
 
-class WeaponInputStats(DefaultData):
+class WeaponInputStats(Data):
     damage: Dist = Dist()
     forced_procs: Dist = Dist()
     crit_chance: Number = 0.0
@@ -220,7 +235,7 @@ class WeaponAverageStats(Data):
     weakpoint_secondary_enervate_bonus: Number
 
 
-class UpgradeContext(DefaultData):
+class UpgradeContext(Data):
     name: str = ""
     category: str = "Upgrade"
     type: str = ""
@@ -296,18 +311,18 @@ class UpgradeData(ModelData):
     context: UpgradeContext
 
 
-class ResolvedStatValues(Data):
-    damage: Dist
-    elements: Data
+class ResolvedStatValues(ZeroData):
+    damage: Dist = Dist()
+    elements: Data = Data()
     ammo_efficiency: Number
     attack_speed: Number
     base_damage: Number
     crit_chance: Number
     crit_damage: Number
-    enabled: bool
+    enabled: bool = False
     faction_damage: Number
     fire_rate: Number
-    fire_rate_lock: bool
+    fire_rate_lock: bool = False
     flat_crit_chance: Number
     flat_crit_damage: Number
     hunter_munitions: Number
@@ -320,7 +335,7 @@ class ResolvedStatValues(Data):
     multiplicative_fire_rate: Number
     multiplicative_weakpoint_crit_chance: Number
     multishot: Number
-    multishot_lock: bool
+    multishot_lock: bool = False
     primed_chamber: Number
     reload_speed: Number
     secondary_encumber: Number
@@ -331,13 +346,11 @@ class ResolvedStatValues(Data):
     weakpoint_crit_chance: Number
     weakpoint_damage: Number
 
-    def __init__(self, data: Mapping[str, DataValue] | None = None, *, defaults: bool = True) -> None:
-        if not defaults:
-            super().__init__(data)
-            return
-        defaults = {field: Dist() if kind is Dist else Data() if kind is Data else False if kind is bool else 0.0 for field, kind in type(self).__annotations__.items()}
-        super().__init__(defaults | dict(data or {}))
-
+    @classmethod
+    def sparse(cls) -> Self:
+        values = cls()
+        values.clear()
+        return values
 
 class BuildData(Data):
     upgrades: list[UpgradeData]

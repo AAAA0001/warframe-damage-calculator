@@ -11,10 +11,10 @@ class BuildCalculator:
 
     def __init__(self, build: Any) -> None:
         self.build = build
-        self.static = ResolvedStatValues(defaults=False)
-        self.conditional = ResolvedStatValues(defaults=False)
-        self.stacking = ResolvedStatValues(defaults=False)
-        self.rank_locked = ResolvedStatValues(defaults=False)
+        self.static = ResolvedStatValues.sparse()
+        self.conditional = ResolvedStatValues.sparse()
+        self.stacking = ResolvedStatValues.sparse()
+        self.rank_locked = ResolvedStatValues.sparse()
         self.total = ResolvedStatValues()
         self.resolve()
 
@@ -37,7 +37,7 @@ class BuildCalculator:
     def resolve(self, weapon: Data | object | None = None) -> dict[str, Data]:
         weapon_data = getattr(weapon, "data", weapon) or Data()
         for bucket in self.BUCKETS:
-            setattr(self, bucket, ResolvedStatValues(defaults=bucket == "total"))
+            setattr(self, bucket, ResolvedStatValues() if bucket == "total" else ResolvedStatValues.sparse())
 
         for upgrade_data in self.build.data.get("upgrades", []):
             calculator = Upgrade(upgrade_data).stats

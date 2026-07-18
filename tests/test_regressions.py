@@ -4,7 +4,7 @@ import pytest
 import warframe_damage_calculator as package
 
 from warframe_damage_calculator import Build, Data, Melee, Primary, Secondary, Upgrade, arsenal
-from warframe_damage_calculator.models.data import BuildData, DefaultData, MeleeContext, MeleeInputStats, PrimaryContext, RangedInputStats, ResolvedStatValues, SecondaryContext, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
+from warframe_damage_calculator.models.data import BuildData, MeleeContext, MeleeInputStats, PrimaryContext, RangedInputStats, ResolvedStatValues, SecondaryContext, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
 from warframe_damage_calculator.models.dist import Dist
 from warframe_damage_calculator.models.weapon import Weapon
 from warframe_damage_calculator.utils.types import DamageType
@@ -51,7 +51,7 @@ def test_data_copy_is_independent():
 
 
 def test_inline_default_data_behavior():
-    class Parent(DefaultData):
+    class Parent(Data):
         inherited: str = "parent"
         mutable: list[int] = []
         absent: int
@@ -61,6 +61,9 @@ def test_inline_default_data_behavior():
     class Child(Parent):
         inherited: str = "child"
         damage: Dist = Dist({"impact": 1})
+
+    class Container(Data):
+        entries: list[Child] = []
 
     first = Child({"inherited": "supplied"})
     second = Child()
@@ -80,6 +83,12 @@ def test_inline_default_data_behavior():
     assert second.mutable == []
     assert second.damage == Dist({"impact": 1})
 
+    existing = Child()
+    container = Container({"entries": [{"inherited": "mapped"}, existing]})
+    assert isinstance(container.entries[0], Child)
+    assert container.entries[0].inherited == "mapped"
+    assert container.entries[1] is existing
+
     context = UpgradeContext({"name": "Serration"})
     assert context.name == "Serration"
     assert context.category == "Upgrade"
@@ -88,6 +97,18 @@ def test_inline_default_data_behavior():
     assert "rank" not in context
     with pytest.raises(AttributeError):
         _ = context.rank
+
+    resolved = ResolvedStatValues({"base_damage": 1})
+    other = ResolvedStatValues()
+    assert resolved.base_damage == 1
+    assert resolved.crit_chance == 0.0
+    assert resolved.enabled is False
+    assert resolved.fire_rate_lock is False
+    assert resolved.multishot_lock is False
+    assert isinstance(resolved.damage, Dist)
+    assert isinstance(resolved.elements, Data)
+    assert resolved.damage is not other.damage
+    assert resolved.elements is not other.elements
 
 
 def test_typed_data_subclasses_preserve_nested_and_copy_types():
@@ -108,10 +129,12 @@ def test_typed_data_subclasses_preserve_nested_and_copy_types():
     assert isinstance(upgrade.data.stats, UpgradeStatValues)
     assert isinstance(upgrade.data.context, UpgradeContext)
     assert isinstance(upgrade.stats.total, ResolvedStatValues)
+    assert isinstance(upgrade.stats.static, ResolvedStatValues)
     assert upgrade.stats.total.crit_chance == 0
     assert isinstance(build.data, BuildData)
     assert isinstance(build.data.upgrades[0], UpgradeData)
     assert isinstance(build.stats.total, ResolvedStatValues)
+    assert isinstance(build.stats.static, ResolvedStatValues)
     assert build.stats.total.crit_chance == 0
 
     weapon.data.stats.damage = {"impact": 2}
