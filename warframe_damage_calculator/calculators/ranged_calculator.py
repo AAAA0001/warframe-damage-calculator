@@ -20,7 +20,7 @@ class RangedCalculator(WeaponCalculator):
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
-        build = self.weapon.build.stats.total
+        build = self.weapon.build.results.total
         self.moded.explosion_damage = self.moded.base_damage * self.base.explosion_damage.apply(build.damage).combine().sorted()
         self.moded.explosion_total_damage = self.moded.explosion_damage.total_damage()
         self.moded.weakpoint_damage = max(self.base.weakpoint_damage + build.weakpoint_damage, 1)
@@ -47,9 +47,9 @@ class RangedCalculator(WeaponCalculator):
         self.effective.burst_count = self.moded.burst_count
         self.effective.burst_delay = self.moded.burst_delay
         self.effective.charge_time = self.moded.charge_time / self.moded.multiplicative_fire_rate
-        self.effective.reload_speed = self.moded.reload_speed + (0 if not self.weapon.data.context.get("is_battery", False) else float("inf") if self.moded.recharge_rate <= 0 else self.moded.magazine_capacity / self.moded.recharge_rate)
+        self.effective.reload_speed = self.moded.reload_speed + (0 if not self.weapon.context.get("is_battery", False) else float("inf") if self.moded.recharge_rate <= 0 else self.moded.magazine_capacity / self.moded.recharge_rate)
         self.effective.recharge_rate = self.moded.recharge_rate
-        self.effective.ammo_efficiency = 1 - (1 - self.moded.ammo_efficiency) / (2 if self.weapon.data.context.get("is_beam", False) else 1)
+        self.effective.ammo_efficiency = 1 - (1 - self.moded.ammo_efficiency) / (2 if self.weapon.context.get("is_beam", False) else 1)
         self.effective.magazine_capacity = self.moded.magazine_capacity
         self.effective.multishot = self.moded.multishot
         self.effective.weakpoint_crit_chance = self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance
@@ -61,7 +61,7 @@ class RangedCalculator(WeaponCalculator):
         self.average.fire_rate = self._average_fire_rate()
         self.average.procs_per_shot = self.effective.status_chance * self.effective.multishot
         self.average.weakpoint_crit_multiplier = 1 + self.average.weakpoint_crit_chance * (self.effective.crit_damage - 1)
-        self.average.beam_dot_multiplier = self.effective.multishot if self.weapon.data.context.get("is_beam", False) else 1
+        self.average.beam_dot_multiplier = self.effective.multishot if self.weapon.context.get("is_beam", False) else 1
         self.average.flat_dph = (self.effective.total_damage * self.effective.multishot + self.effective.explosion_total_damage) * self.effective.faction_damage * self.average.crit_multiplier
         self.average.flat_weakpoint_dph = (self.effective.total_damage * self.effective.multishot * self.effective.weakpoint_damage * self.average.weakpoint_crit_multiplier + self.effective.explosion_total_damage * self.average.crit_multiplier) * self.effective.faction_damage
         self.average.flat_dps = self.average.fire_rate * self.average.flat_dph

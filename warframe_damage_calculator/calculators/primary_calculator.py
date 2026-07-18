@@ -10,9 +10,9 @@ class PrimaryCalculator(RangedCalculator):
 
     def _compute_moded_stats(self) -> None:
         super()._compute_moded_stats()
-        self.moded.hunter_munitions = clamp(self.weapon.build.stats.total.hunter_munitions, 0, 0.3)
-        self.moded.primed_chamber = clamp(self.weapon.build.stats.total.primed_chamber, 0, 1.4)
-        self.moded.vigilante_bonus = clamp(self.weapon.build.stats.total.vigilante_bonus, 0, 0.3)
+        self.moded.hunter_munitions = clamp(self.weapon.build.results.total.hunter_munitions, 0, 0.3)
+        self.moded.primed_chamber = clamp(self.weapon.build.results.total.primed_chamber, 0, 1.4)
+        self.moded.vigilante_bonus = clamp(self.weapon.build.results.total.vigilante_bonus, 0, 0.3)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()

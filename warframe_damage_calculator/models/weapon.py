@@ -13,9 +13,11 @@ class Weapon:
     formatter_type = WeaponFormatter
 
     def __init__(self, data: Mapping[str, Any] | None = None) -> None:
-        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
+        values = Data({"stats": {}, "context": {}} | dict(data or {}))
+        self.stats = values.stats
+        self.context = values.context
         self.build = Build()
-        self.stats = self.calculator_type(self)
+        self.results = self.calculator_type(self)
         self.format = self.formatter_type(self)
 
     @overload
@@ -29,5 +31,5 @@ class Weapon:
         elif all(isinstance(arg, Upgrade) for arg in args): build = Build(*args)
         else: raise TypeError("configure() accepts one Build or multiple Upgrade instances")
         self.build = build
-        self.stats.recompute()
+        self.results.recompute()
         return self

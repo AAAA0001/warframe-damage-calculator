@@ -3,16 +3,16 @@ from .weapon_formatter import WeaponFormatter
 
 class MeleeFormatter(WeaponFormatter):
     def summary(self) -> str:
-        base = self.weapon.stats.base
-        effective = self.weapon.stats.effective
-        average = self.weapon.stats.average
+        base = self.weapon.results.base
+        effective = self.weapon.results.effective
+        average = self.weapon.results.average
         return "\n".join([
             f"{'ATTACK SPEED:':<14} {f'{base.attack_speed:.2f}x':<6} -> {effective.attack_speed:.2f}x",
             f"{'CRIT CHANCE:':<14} {f'{base.crit_chance:.2%}':<6} -> {effective.crit_chance:.2%}",
             f"{'CRIT DAMAGE:':<14} {f'{base.crit_damage:.2f}x':<6} -> {effective.crit_damage:.2f}x",
             f"{'STATUS CHANCE:':<14} {f'{base.status_chance:.2%}':<6} -> {effective.status_chance:.2%}",
             f"{'STATUS DAMAGE:':<14} {'1.00x':<6} -> {effective.status_damage:.2f}x",
-            *(f"{f'{dt.upper()}:':<14} {f'{base.damage.get(dt, 0):.2f}':<6} -> {effective.damage.get(dt):.2f}" for dt in effective.damage.data),
+            *(f"{f'{dt.upper()}:':<14} {f'{base.damage.get(dt, 0):.2f}':<6} -> {effective.damage.get(dt):.2f}" for dt, _ in effective.damage),
             f"{'TOTAL DAMAGE:':<14} {f'{base.total_damage:.2f}':<6} -> {effective.total_damage:.2f}",
             "-------------------------------------",
             f"{'FLAT DPH:':<14} {average.flat_dph:.2f}",

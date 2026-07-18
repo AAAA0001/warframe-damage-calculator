@@ -60,8 +60,8 @@ weapon = arsenal.get("Corinth Prime")
 multishot = arsenal.get("Galvanized Hell")
 cold = arsenal.get("Primed Chilling Grasp")
 
-multishot.data.context.kill = 4
-cold.data.context.rank = 3
+multishot.context.kill = 4
+cold.context.rank = 3
 weapon.configure(Build(multishot, cold))
 print(weapon.format.summary())
 ```
@@ -153,7 +153,7 @@ Typical workflow:
 2.  Create one or more `Upgrade` objects.
 3.  Combine them into a `Build` (optional).
 4.  Apply the build with `weapon.configure(build)` or `weapon.configure(upgrade_1, upgrade_2, ...)`.
-5.  Read metadata from `weapon.data.context` and calculated values from `weapon.stats`.
+5.  Read source values from `weapon.stats`, metadata from `weapon.context`, and calculated values from `weapon.results`.
 6.  Print results with `weapon.format.summary()`.
 
 Since `configure()` returns the weapon, the following is also valid:
@@ -182,8 +182,9 @@ Each weapon exposes three main components:
 
 | Attribute | Description |
 |-----------|-------------|
-| `weapon.data.context` | Weapon metadata and runtime context. |
-| `weapon.stats` | Calculator with `base`, `moded`, and `effective` stat buckets. |
+| `weapon.stats` | Source weapon statistics. |
+| `weapon.context` | Weapon metadata and runtime context. |
+| `weapon.results` | Calculator with `base`, `moded`, and `effective` stat buckets. |
 | `weapon.format` | Formatter for summaries and upgrade contribution output. |
 
 Use `weapon.format.upgrades()` to format the calculated contribution of each
@@ -218,18 +219,18 @@ Descriptive metadata is stored only in `context`. Upgrade contexts include
 `name`, `category`, `compatibility`, `incompatibility`, `requirements`,
 `max_rank`, `max_stacks`, and `is_exilus`; weapon contexts include `name`,
 `category`, `type`, and ranged trigger/beam/battery metadata when applicable.
-Runtime conditions remain in the same internal context object.
+Runtime conditions remain in the same context object.
 
 Weapon calculations expose attribute-accessible `base`, `moded`, and
 `effective` stat buckets. Read calculated values through attributes, for
-example, `weapon.stats.effective.crit_chance`.
+example, `weapon.results.effective.crit_chance`.
 
 Weapon and build conditions such as `bow` and `sacrificial set` resolve
 automatically. Combat conditions and stack counts are stored on each upgrade:
 
 ```python
-upgrade.data.context.headshot = True
-upgrade.data.context.kill = 3
+upgrade.context.headshot = True
+upgrade.context.kill = 3
 weapon.configure(build)
 ```
 
@@ -249,8 +250,8 @@ ranked = Upgrade(
   }
 )
 
-ranked.stats.resolve()
-print(ranked.stats.total.crit_chance)  # 0.6: 1.2 * (2 + 1) / (5 + 1)
+ranked.results.resolve()
+print(ranked.results.total.crit_chance)  # 0.6: 1.2 * (2 + 1) / (5 + 1)
 ```
 
 A rank requirement uses a mapping in `when`. Unlike a normally scaled effect,
@@ -264,8 +265,8 @@ rank_locked = Upgrade(
   }
 )
 
-rank_locked.stats.resolve()
-print(rank_locked.stats.total.multishot)  # 0.5
+rank_locked.results.resolve()
+print(rank_locked.results.total.multishot)  # 0.5
 ```
 
 #### Conditions and stacks
@@ -289,23 +290,23 @@ arcane = Upgrade(
   }
 )
 
-arcane.stats.resolve()
-print(arcane.stats.total.base_damage)  # 0.3
-print(arcane.stats.total.crit_chance)  # 0.2: 0.1 * 2 stacks
+arcane.results.resolve()
+print(arcane.results.total.base_damage)  # 0.3
+print(arcane.results.total.crit_chance)  # 0.2: 0.1 * 2 stacks
 ```
 
 Stack counts are capped by `max_stacks`. The generic `stacks` field is used
 when the specifically named condition is absent:
 
 ```python
-arcane.data.context.kill = 10
-arcane.stats.resolve()
-print(arcane.stats.total.crit_chance)  # 0.3: capped at 3 stacks
+arcane.context.kill = 10
+arcane.results.resolve()
+print(arcane.results.total.crit_chance)  # 0.3: capped at 3 stacks
 
-del arcane.data.context.kill
-arcane.data.context.stacks = 1
-arcane.stats.resolve()
-print(arcane.stats.total.crit_chance)  # 0.1
+del arcane.context.kill
+arcane.context.stacks = 1
+arcane.results.resolve()
+print(arcane.results.total.crit_chance)  # 0.1
 ```
 
 If a context contains only descriptive metadata and automatic weapon fields,
@@ -330,7 +331,7 @@ rifle_bonus = Upgrade(
 )
 
 bow.configure(rifle_bonus)
-resolved = rifle_bonus.stats.resolve(build=bow.build, weapon=bow)
+resolved = rifle_bonus.results.resolve(build=bow.build, weapon=bow)
 print(resolved["context"].weapon)  # "bow"
 print(resolved["context"].bow)     # True
 print(resolved["context"].rifle)   # True
@@ -346,19 +347,20 @@ steel = arsenal.get("Sacrificial Steel")
 
 melee.configure(pressure, steel)
 for upgrade in melee.build:
-    resolved = upgrade.stats.resolve(build=melee.build, weapon=melee)
+    resolved = upgrade.results.resolve(build=melee.build, weapon=melee)
     print(resolved["context"]["sacrificial set"])  # True
 ```
 
 During calculation, shared weapon and build values are applied to each upgrade
 without modifying its stored context. These include normalized weapon-type
 flags, the weapon type, and the `sacrificial set` condition. Rank-locked stats
-use `upgrade.data.context.rank`; it defaults to `max_rank`, or zero when the
+use `upgrade.context.rank`; it defaults to `max_rank`, or zero when the
 upgrade has no maximum rank.
 
-The `Upgrade` and `Build` models store data. Condition matching, rank scaling,
-stack limits, and effect merging are handled by their calculators when
-`stats.resolve()` is called.
+`Upgrade` exposes its source fields through `stats` and `context`; `Build`
+exposes its owned upgrades through `upgrades`. Condition matching, rank
+scaling, stack limits, and effect merging are handled by their calculators
+when `results.resolve()` is called.
 
 ### Damage
 

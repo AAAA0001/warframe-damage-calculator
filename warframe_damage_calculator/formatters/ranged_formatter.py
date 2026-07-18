@@ -3,9 +3,9 @@ from .weapon_formatter import WeaponFormatter
 
 class RangedFormatter(WeaponFormatter):
     def summary(self) -> str:
-        base = self.weapon.stats.base
-        effective = self.weapon.stats.effective
-        average = self.weapon.stats.average
+        base = self.weapon.results.base
+        effective = self.weapon.results.effective
+        average = self.weapon.results.average
         return "\n".join([
             f"{'FIRE RATE:':<25} {f'{base.fire_rate:.2f}rps':<7} -> {effective.fire_rate:.2f}rps",
             f"{'RELOAD SPEED:':<25} {f'{base.reload_speed:.2f}s':<7} -> {effective.reload_speed:.2f}s",
@@ -15,9 +15,9 @@ class RangedFormatter(WeaponFormatter):
             f"{'CRIT DAMAGE:':<25} {f'{base.crit_damage:.2f}x':<7} -> {effective.crit_damage:.2f}x",
             f"{'STATUS CHANCE:':<25} {f'{base.status_chance:.2%}':<7} -> {effective.status_chance:.2%}",
             f"{'STATUS DAMAGE:':<25} {'1.00x':<7} -> {effective.status_damage:.2f}x",
-            *(f"{f'{dt.upper()}:':<25} {f'{base.damage.get(dt, 0):.2f}':<7} -> {effective.damage.get(dt):.2f}" for dt in effective.damage.data),
+            *(f"{f'{dt.upper()}:':<25} {f'{base.damage.get(dt, 0):.2f}':<7} -> {effective.damage.get(dt):.2f}" for dt, _ in effective.damage),
             f"{'TOTAL DAMAGE | WEAKPOINT:':<25} {f'{base.total_damage * base.multishot:.2f}':<7} -> {effective.total_damage * effective.multishot:.2f} | {effective.total_damage * effective.multishot * effective.weakpoint_damage:.2f}",
-            *(f"{f'{dt.upper()}:':<25} {f'{base.explosion_damage.get(dt, 0):.2f}':<7} -> {effective.explosion_damage.get(dt):.2f}" for dt in effective.explosion_damage.data),
+            *(f"{f'{dt.upper()}:':<25} {f'{base.explosion_damage.get(dt, 0):.2f}':<7} -> {effective.explosion_damage.get(dt):.2f}" for dt, _ in effective.explosion_damage),
             f"{'TOTAL EXPLOSION DAMAGE:':<25} {f'{base.explosion_total_damage:.2f}':<7} -> {effective.explosion_total_damage:.2f}",
             "----------------------------------------------------------",
             f"{'AVERAGE FIRE RATE:':<25} {average.fire_rate:.2f}rps",

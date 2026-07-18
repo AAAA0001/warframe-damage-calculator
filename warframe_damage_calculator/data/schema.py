@@ -6,7 +6,8 @@ class DatabaseEntry:
     def __init__(self, category: str, name: str, data: Mapping[str, Any]) -> None:
         self.category = category
         self.name = name
-        self.data = dict(data)
+        self.stats = dict(data.get("stats", {}))
+        self.context = dict(data.get("context", data))
 
     @property
     def is_weapon(self) -> bool:

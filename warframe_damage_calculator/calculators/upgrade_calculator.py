@@ -27,20 +27,26 @@ class UpgradeCalculator:
     def _data(cls, data: Mapping[str, Any] | None) -> Data:
         return Data({cls._key(key): value for key, value in (data or {}).items()})
 
-    def _context(self, weapon_data: Data, build_data: Data) -> Data:
-        context = self._data(weapon_data.get("context"))
+    def _context(self, weapon: Data | object | None, build: Data | object | None) -> Data:
+        weapon_context = getattr(weapon, "context", None)
+        if weapon_context is None and isinstance(weapon, Mapping):
+            weapon_context = weapon.get("context")
+        context = self._data(weapon_context)
         weapon = self._key(context.get("type") or context.get("weapon") or "")
         types = {weapon, self._key(context.get("category") or "")} - {""}
         if weapon == "bow": types.add("rifle")
         context.update({key: key in types for key in self.AUTOMATIC - {"sacrificial set"}})
         context.weapon = weapon
-        names = {self._key(upgrade.context.get("name", "")) for upgrade in build_data.get("upgrades", [])}
+        upgrades = getattr(build, "upgrades", None)
+        if upgrades is None and isinstance(build, Mapping):
+            upgrades = build.get("upgrades", [])
+        names = {self._key(upgrade.context.get("name", "")) for upgrade in upgrades or []}
         context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
-        return context | self._data(self.upgrade.data.context)
+        return context | self._data(self.upgrade.context)
 
     def _count(self, value: Any, field: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-            raise ValueError(f"{field} on {self.upgrade.data.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
+            raise ValueError(f"{field} on {self.upgrade.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
         return value
 
     @classmethod
@@ -66,9 +72,7 @@ class UpgradeCalculator:
         self._add(self.total, stat, value)
 
     def resolve(self, weapon: Data | object | None = None, build: Data | object | None = None) -> dict[str, Data]:
-        weapon_data = getattr(weapon, "data", weapon) or Data()
-        build_data = getattr(build, "data", build) or Data({"upgrades": []})
-        context = self._context(weapon_data, build_data)
+        context = self._context(weapon, build)
         self.static = Data()
         self.conditional = Data()
         self.stacking = Data()
@@ -79,10 +83,10 @@ class UpgradeCalculator:
         rank = self._count(context.get("rank", max_rank or 0), "rank")
         rank = min(rank, max_rank) if max_rank is not None else rank
         multiplier = 1 if max_rank in {None, 0} else (rank + 1) / (max_rank + 1)
-        if any(isinstance(raw, dict) and raw.get("at_rank") is not None for effects in self.upgrade.data.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
+        if any(isinstance(raw, dict) and raw.get("at_rank") is not None for effects in self.upgrade.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
             multiplier = 1
         defaults = set(context) <= self.AUTOMATIC | self.METADATA
-        for stat, effects in self.upgrade.data.stats.items():
+        for stat, effects in self.upgrade.stats.items():
             for raw in effects if isinstance(effects, list) else [effects]:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 value, condition = effect.value, effect.get("when")

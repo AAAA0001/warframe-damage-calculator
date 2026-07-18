@@ -59,7 +59,7 @@ class WarframeDatabase:
     def _create(self, entry: DatabaseEntry, context: Mapping[str, Any] | None) -> DatabaseItem:
         item = self._factory.create(entry)
         if context is not None:
-            item.data.context.update(context)
+            item.context.update(context)
         return item
 
     def _iter_database_entries(self) -> Iterator[DatabaseEntry]:
@@ -81,26 +81,26 @@ class WarframeDatabase:
         key = normalize_identifier(attribute)
 
         if key == "name":
-            return item.data.context.get("name")
+            return item.context.get("name")
 
         if isinstance(item, Upgrade):
-            if key in item.data.context:
-                return item.data.context.get(key)
-            if key in item.data.stats:
-                return item.data.stats.get(key)
+            if key in item.context:
+                return item.context.get(key)
+            if key in item.stats:
+                return item.stats.get(key)
             return None
 
-        if key in item.data.context:
-            return item.data.context.get(key)
+        if key in item.context:
+            return item.context.get(key)
 
-        calculator = item.stats
+        calculator = item.results
         for state_name in ("base", "effective"):
             state = getattr(calculator, state_name, None)
             if state is not None and key in state:
                 return state.get(key)
 
-        if key in item.data.stats:
-            return item.data.stats.get(key)
+        if key in item.stats:
+            return item.stats.get(key)
         if hasattr(calculator, key):
             return getattr(calculator, key)
         if hasattr(item, key):

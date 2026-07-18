@@ -13,7 +13,7 @@ class WeaponCalculator:
 
     def __init__(self, weapon: Any) -> None:
         self.weapon = weapon
-        self.base = self._base(self.weapon.data.stats)
+        self.base = self._base(self.weapon.stats)
         self.moded = Data()
         self.effective = Data()
         self.average = Data()
@@ -28,18 +28,18 @@ class WeaponCalculator:
         return values
     
     def _compute_moded_stats(self) -> None:
-        self.moded.multiplicative_base_damage = max(1 + self.weapon.build.stats.total.multiplicative_base_damage, 1)
-        self.moded.base_damage = max(1 + self.weapon.build.stats.total.base_damage, 0)
-        self.moded.damage = self.moded.base_damage * self.base.damage.apply(self.weapon.build.stats.total.damage).combine().sorted()
+        self.moded.multiplicative_base_damage = max(1 + self.weapon.build.results.total.multiplicative_base_damage, 1)
+        self.moded.base_damage = max(1 + self.weapon.build.results.total.base_damage, 0)
+        self.moded.damage = self.moded.base_damage * self.base.damage.apply(self.weapon.build.results.total.damage).combine().sorted()
         self.moded.total_damage = self.moded.damage.total_damage()
-        self.moded.faction_damage = max(1 + self.weapon.build.stats.total.faction_damage, 1)
-        self.moded.flat_crit_chance = max(self.weapon.build.stats.total.flat_crit_chance, 0)
-        self.moded.multiplicative_crit_chance = max(1 + self.weapon.build.stats.total.multiplicative_crit_chance, 1)
-        self.moded.crit_chance = max(self.base.crit_chance * (1 + self.weapon.build.stats.total.crit_chance), 0)
-        self.moded.flat_crit_damage = max(self.weapon.build.stats.total.flat_crit_damage, 0)
-        self.moded.crit_damage = max(self.base.crit_damage * (1 + self.weapon.build.stats.total.crit_damage), 1)
-        self.moded.status_chance = max(self.base.status_chance * (1 + self.weapon.build.stats.total.status_chance), 0)
-        self.moded.status_damage = max(1 + self.weapon.build.stats.total.status_damage, 1)
+        self.moded.faction_damage = max(1 + self.weapon.build.results.total.faction_damage, 1)
+        self.moded.flat_crit_chance = max(self.weapon.build.results.total.flat_crit_chance, 0)
+        self.moded.multiplicative_crit_chance = max(1 + self.weapon.build.results.total.multiplicative_crit_chance, 1)
+        self.moded.crit_chance = max(self.base.crit_chance * (1 + self.weapon.build.results.total.crit_chance), 0)
+        self.moded.flat_crit_damage = max(self.weapon.build.results.total.flat_crit_damage, 0)
+        self.moded.crit_damage = max(self.base.crit_damage * (1 + self.weapon.build.results.total.crit_damage), 1)
+        self.moded.status_chance = max(self.base.status_chance * (1 + self.weapon.build.results.total.status_chance), 0)
+        self.moded.status_damage = max(1 + self.weapon.build.results.total.status_damage, 1)
 
     def _compute_effective_stats(self) -> None:
         self.effective.base_damage = self.moded.base_damage * self.moded.multiplicative_base_damage
@@ -56,15 +56,15 @@ class WeaponCalculator:
         self.average.crit_multiplier = 1 + self.average.crit_chance * (self.effective.crit_damage - 1)
 
     def recompute(self) -> None:
-        self.weapon.build.stats.resolve(self.weapon.data)
-        self.weapon.build.stats.total = self.DEFAULT_BUILD.copy() | self.weapon.build.stats.total
+        self.weapon.build.results.resolve(self.weapon)
+        self.weapon.build.results.total = self.DEFAULT_BUILD.copy() | self.weapon.build.results.total
         self._compute_moded_stats()
         self._compute_effective_stats()
         self._compute_average_stats()
 
     def contribution(self, upgrade: Upgrade) -> float:
         full = self.weapon.build
-        if all(equipped.data != upgrade.data for equipped in full):
+        if all((equipped.stats, equipped.context) != (upgrade.stats, upgrade.context) for equipped in full):
             return 0.0
         reduced = full - upgrade
         full_dps = self.average.total_dps
@@ -77,7 +77,7 @@ class WeaponCalculator:
             self.recompute()
 
     def contribution_values(self) -> dict[str, float]:
-        return {str(upgrade.data.context.name): self.contribution(upgrade) for upgrade in self.weapon.build}
+        return {str(upgrade.context.name): self.contribution(upgrade) for upgrade in self.weapon.build}
 
     def contribution_proportions(self) -> dict[str, float]:
         contributions = self.contribution_values()
