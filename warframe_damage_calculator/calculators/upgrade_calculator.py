@@ -2,7 +2,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from ..utils.constants import DAMAGE_TYPES
-from ..models.data import Data
+from ..models.data import Data, ResolvedStatValues
 from ..models.dist import Dist
 
 
@@ -12,11 +12,11 @@ class UpgradeCalculator:
 
     def __init__(self, upgrade: Any) -> None:
         self.upgrade = upgrade
-        self.static = Data()
-        self.conditional = Data()
-        self.stacking = Data()
-        self.rank_locked = Data()
-        self.total = Data()
+        self.static = ResolvedStatValues(defaults=False)
+        self.conditional = ResolvedStatValues(defaults=False)
+        self.stacking = ResolvedStatValues(defaults=False)
+        self.rank_locked = ResolvedStatValues(defaults=False)
+        self.total = ResolvedStatValues()
         self.resolve()
 
     @staticmethod
@@ -51,17 +51,13 @@ class UpgradeCalculator:
     def _add(stats: Data, stat: str, value: Any) -> None:
         if stat in DAMAGE_TYPES: stat, value = "damage", {stat: value}
         current = stats.get(stat)
-        if current is None: stats[stat] = value
+        if stat == "damage": stats[stat] = Dist(current) + Dist(value)
+        elif current is None: stats[stat] = value
         elif isinstance(value, bool): stats[stat] = current or value
         elif isinstance(current, dict) and isinstance(value, dict): stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in current | value}
         else: stats[stat] = current + value
 
-    @staticmethod
-    def _combine_damage(stats: Data) -> None:
-        if "damage" in stats:
-            stats.damage = Dist(stats.damage)
-
-    def _record(self, bucket: Data, stat: str, value: Any) -> None:
+    def _record(self, bucket: ResolvedStatValues, stat: str, value: Any) -> None:
         self._add(bucket, stat, value)
         self._add(self.total, stat, value)
 
@@ -69,11 +65,11 @@ class UpgradeCalculator:
         weapon_data = getattr(weapon, "data", weapon) or Data()
         build_data = getattr(build, "data", build) or Data({"upgrades": []})
         context = self._context(weapon_data, build_data)
-        self.static = Data()
-        self.conditional = Data()
-        self.stacking = Data()
-        self.rank_locked = Data()
-        self.total = Data()
+        self.static = ResolvedStatValues(defaults=False)
+        self.conditional = ResolvedStatValues(defaults=False)
+        self.stacking = ResolvedStatValues(defaults=False)
+        self.rank_locked = ResolvedStatValues(defaults=False)
+        self.total = ResolvedStatValues()
         maximums = [context.get(key) for key in ("max rank", "max stacks")]
         max_rank, max_stacks = (None if value is None else self._count(value, field) for value, field in zip(maximums, ("max rank", "max stacks")))
         rank = self._count(context.get("rank", max_rank or 0), "rank")
@@ -106,6 +102,4 @@ class UpgradeCalculator:
                     self._record(bucket, stat, value)
 
         context.rank = rank
-        for bucket in (self.static, self.conditional, self.stacking, self.rank_locked, self.total):
-            self._combine_damage(bucket)
         return {"stats": self.total, "context": context}

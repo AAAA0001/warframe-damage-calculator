@@ -5,31 +5,28 @@ from .ranged_calculator import RangedCalculator
 
 
 class SecondaryCalculator(RangedCalculator):
-    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
-    DEFAULT_BUILD = RangedCalculator.DEFAULT_BUILD | {"secondary_enervate": 0, "secondary_encumber": 0.0}
-
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        self.moded.secondary_enervate = clamp(self.weapon.build.results.total.secondary_enervate, 0, 6)
-        self.moded.secondary_encumber = clamp(self.weapon.build.results.total.secondary_encumber, 0, 0.24)
+    def _compute_modded_stats(self) -> None:
+        super()._compute_modded_stats()
+        self.modded.secondary_enervate = clamp(self.weapon.build.stats.total.secondary_enervate, 0, 6)
+        self.modded.secondary_encumber = clamp(self.weapon.build.stats.total.secondary_encumber, 0, 0.24)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
-        self.effective.secondary_enervate = self.moded.secondary_enervate
-        self.effective.secondary_encumber = self.moded.secondary_encumber
+        self.effective.secondary_enervate = self.modded.secondary_enervate
+        self.effective.secondary_encumber = self.modded.secondary_encumber
 
     def _compute_average_stats(self) -> None:
         super()._compute_average_stats()
-        secondary_enervate_bonus = self._average_secondary_enervate_bonus_for(self.moded.crit_chance * self.moded.multiplicative_crit_chance + self.moded.flat_crit_chance)
-        weakpoint_secondary_enervate_bonus = self._average_secondary_enervate_bonus_for(self.moded.weakpoint_crit_chance * (self.moded.multiplicative_crit_chance + self.moded.multiplicative_weakpoint_crit_chance - 1) + self.moded.flat_crit_chance)
+        secondary_enervate_bonus = self._average_secondary_enervate_bonus_for(self.modded.crit_chance * self.modded.multiplicative_crit_chance + self.modded.flat_crit_chance)
+        weakpoint_secondary_enervate_bonus = self._average_secondary_enervate_bonus_for(self.modded.weakpoint_crit_chance * (self.modded.multiplicative_crit_chance + self.modded.multiplicative_weakpoint_crit_chance - 1) + self.modded.flat_crit_chance)
         self.average.secondary_enervate_bonus = secondary_enervate_bonus
         self.average.weakpoint_secondary_enervate_bonus = weakpoint_secondary_enervate_bonus
         self.average.crit_chance = self.effective.crit_chance + secondary_enervate_bonus
         self.average.weakpoint_crit_chance = self.effective.weakpoint_crit_chance + weakpoint_secondary_enervate_bonus
         self.average.crit_multiplier = 1 + self.average.crit_chance * (self.effective.crit_damage - 1)
         self.average.weakpoint_crit_multiplier = 1 + self.average.weakpoint_crit_chance * (self.effective.crit_damage - 1)
-        self.average.flat_dph = (self.effective.total_damage * self.effective.multishot + self.effective.explosion_total_damage) * self.effective.faction_damage * self.average.crit_multiplier
-        self.average.flat_weakpoint_dph = (self.effective.total_damage * self.effective.multishot * self.effective.weakpoint_damage * self.average.weakpoint_crit_multiplier + self.effective.explosion_total_damage * self.average.crit_multiplier) * self.effective.faction_damage
+        self.average.flat_dph = (self.effective.damage.total_damage() * self.effective.multishot + self.effective.explosion_damage.total_damage()) * self.effective.faction_damage * self.average.crit_multiplier
+        self.average.flat_weakpoint_dph = (self.effective.damage.total_damage() * self.effective.multishot * self.effective.weakpoint_damage * self.average.weakpoint_crit_multiplier + self.effective.explosion_damage.total_damage() * self.average.crit_multiplier) * self.effective.faction_damage
         self.average.flat_dps = self.average.fire_rate * self.average.flat_dph
         self.average.flat_weakpoint_dps = self.average.fire_rate * self.average.flat_weakpoint_dph
         self.average.flat_dotph = self._flat_dotph_for(self.effective.damage, self.base.forced_procs, self.average.crit_chance, self.average.crit_multiplier) + self._flat_dotph_for(self.effective.explosion_damage, self.base.explosion_forced_procs, self.average.crit_chance, self.average.crit_multiplier, include_multishot=False)

@@ -5,20 +5,17 @@ from .ranged_calculator import RangedCalculator
 
 
 class PrimaryCalculator(RangedCalculator):
-    DEFAULT_STATS = RangedCalculator.DEFAULT_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
-    DEFAULT_BUILD = RangedCalculator.DEFAULT_BUILD | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
-
-    def _compute_moded_stats(self) -> None:
-        super()._compute_moded_stats()
-        self.moded.hunter_munitions = clamp(self.weapon.build.results.total.hunter_munitions, 0, 0.3)
-        self.moded.primed_chamber = clamp(self.weapon.build.results.total.primed_chamber, 0, 1.4)
-        self.moded.vigilante_bonus = clamp(self.weapon.build.results.total.vigilante_bonus, 0, 0.3)
+    def _compute_modded_stats(self) -> None:
+        super()._compute_modded_stats()
+        self.modded.hunter_munitions = clamp(self.weapon.build.stats.total.hunter_munitions, 0, 0.3)
+        self.modded.primed_chamber = clamp(self.weapon.build.stats.total.primed_chamber, 0, 1.4)
+        self.modded.vigilante_bonus = clamp(self.weapon.build.stats.total.vigilante_bonus, 0, 0.3)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()
-        self.effective.hunter_munitions = self.moded.hunter_munitions
-        self.effective.primed_chamber = self.moded.primed_chamber
-        self.effective.vigilante_bonus = self.moded.vigilante_bonus
+        self.effective.hunter_munitions = self.modded.hunter_munitions
+        self.effective.primed_chamber = self.modded.primed_chamber
+        self.effective.vigilante_bonus = self.modded.vigilante_bonus
         self.effective.crit_chance += self.effective.vigilante_bonus
         self.effective.weakpoint_crit_chance += self.effective.vigilante_bonus
 

@@ -1,22 +1,24 @@
 from collections.abc import Mapping
-from typing import Any, Self, overload
+from typing import Self, overload
 
 from ..calculators.weapon_calculator import WeaponCalculator
 from ..formatters.weapon_formatter import WeaponFormatter
+from ..utils.types import JsonValue
 from .build import Build
-from .data import Data
+from .data import WeaponData
 from .upgrade import Upgrade
 
 
 class Weapon:
+    data_type = WeaponData
     calculator_type = WeaponCalculator
     formatter_type = WeaponFormatter
 
-    def __init__(self, data: Mapping[str, Any] | None = None) -> None:
-        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
-        self.build = Build()
-        self.results = self.calculator_type(self)
+    def __init__(self, data: Mapping[str, JsonValue] | None = None) -> None:
+        self.data = self.data_type(data)
+        self.stats = self.calculator_type(self)
         self.format = self.formatter_type(self)
+        self.build = Build()
 
     @overload
     def configure(self, build: Build, /) -> Self: ...
@@ -29,5 +31,5 @@ class Weapon:
         elif all(isinstance(arg, Upgrade) for arg in args): build = Build(*args)
         else: raise TypeError("configure() accepts one Build or multiple Upgrade instances")
         self.build = build
-        self.results.recompute()
+        self.stats.recompute()
         return self

@@ -1,8 +1,10 @@
 from typing import get_args
 
 import pytest
+import warframe_damage_calculator as package
 
 from warframe_damage_calculator import Build, Data, Primary, Upgrade, arsenal
+from warframe_damage_calculator.models.data import BuildData, ResolvedStatValues, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
 from warframe_damage_calculator.models.dist import Dist
 from warframe_damage_calculator.models.weapon import Weapon
 from warframe_damage_calculator.utils.types import DamageType
@@ -24,15 +26,54 @@ def test_data_copy_is_independent():
     assert original.damage.impact == 2
 
 
+def test_typed_data_subclasses_preserve_nested_and_copy_types():
+    weapon = Primary({"stats": {"damage": {"impact": 1}, "crit_chance": 0.3}, "context": {"is_beam": True}})
+    upgrade = Upgrade({"stats": {"base_damage": 1}, "context": {"rank": 2}})
+    build = Build(upgrade)
+
+    assert isinstance(weapon.data, WeaponData)
+    assert isinstance(weapon.data.stats, WeaponInputStats)
+    assert isinstance(weapon.data.stats.damage, Dist)
+    assert weapon.data.stats.multishot == 1
+    assert isinstance(weapon.data.context, WeaponContext)
+    assert isinstance(weapon.stats.base, WeaponCalculatedStats)
+    assert isinstance(weapon.stats.modded, WeaponCalculatedStats)
+    assert isinstance(weapon.stats.effective, WeaponCalculatedStats)
+    assert isinstance(weapon.stats.average, WeaponAverageStats)
+    assert isinstance(upgrade.data, UpgradeData)
+    assert isinstance(upgrade.data.stats, UpgradeStatValues)
+    assert isinstance(upgrade.data.context, UpgradeContext)
+    assert isinstance(upgrade.stats.total, ResolvedStatValues)
+    assert upgrade.stats.total.crit_chance == 0
+    assert isinstance(build.data, BuildData)
+    assert isinstance(build.data.upgrades[0], UpgradeData)
+    assert isinstance(build.stats.total, ResolvedStatValues)
+    assert build.stats.total.crit_chance == 0
+
+    weapon.data.stats.damage = {"impact": 2}
+    upgrade.stats.total.damage = {"heat": 1}
+    assert weapon.data.stats.damage == Dist({"impact": 2})
+    assert upgrade.stats.total.damage == Dist({"heat": 1})
+
+    assert isinstance(weapon.data.copy(), WeaponData)
+    assert isinstance(weapon.data | {"context": {"is_beam": False}}, WeaponData)
+    assert isinstance({"context": {"is_beam": False}} | weapon.data, WeaponData)
+    assert isinstance(weapon.data.copy().stats, WeaponInputStats)
+
+
+def test_dist_is_not_exported_from_package_root():
+    assert not hasattr(package, "Dist")
+
+
 def test_calculator_normalizes_damage_distributions():
     stats = {field: {"impact": 1} for field in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs")}
     data = Data({"stats": stats, "context": {}})
-    calculator = Weapon(data).results
+    calculator = Weapon(data).stats
     assert all(isinstance(calculator.base[field], Dist) for field in ("damage", "forced_procs"))
     assert all(isinstance(data.stats[field], Data) for field in stats)
     ranged = Primary(data)
-    assert all(isinstance(ranged.results.base[field], Dist) for field in stats)
-    assert isinstance(Upgrade({"stats": {"heat": 1}}).results.total.damage, Dist)
+    assert all(isinstance(ranged.stats.base[field], Dist) for field in stats)
+    assert isinstance(Upgrade({"stats": {"heat": 1}}).stats.total.damage, Dist)
 
 
 def test_dist_filters_accept_generators():
@@ -47,15 +88,16 @@ def test_build_aggregation():
         Upgrade({"stats": {"base_damage": 0.5, "enabled": False}}),
         Upgrade({"stats": {"base_damage": 0.25, "enabled": True}}),
     )
-    assert build.results.total == {"base_damage": 0.75, "enabled": True}
+    assert build.stats.total.base_damage == 0.75
+    assert build.stats.total.enabled is True
 
 
 def test_native_multishot_status_chance_is_per_projectile():
     weapon = arsenal.get("Corinth Prime")
 
-    assert weapon.results.base.status_chance == pytest.approx(0.09)
-    assert weapon.results.base.multishot == 6
-    assert weapon.results.average.procs_per_shot == pytest.approx(0.54)
+    assert weapon.stats.base.status_chance == pytest.approx(0.09)
+    assert weapon.stats.base.multishot == 6
+    assert weapon.stats.average.procs_per_shot == pytest.approx(0.54)
 
 
 def test_negative_physical_damage_modifier_is_applied_before_filtering():
@@ -63,7 +105,7 @@ def test_negative_physical_damage_modifier_is_applied_before_filtering():
 
     weapon.configure(Upgrade({"stats": {"impact": -0.5}}))
 
-    assert weapon.results.effective.damage == Dist({"impact": 50})
+    assert weapon.stats.effective.damage == Dist({"impact": 50})
 
 
 def test_explosion_summary_iterates_damage_type_keys():
@@ -86,42 +128,42 @@ def test_multi_element_damage_order_is_deterministic_across_resolvers():
         Upgrade({"stats": {"heat": 3, "elements": {"heat": 3}}}),
     )
 
-    assert list(combined.results.total.damage.data) == ["cold", "toxin", "heat"]
-    assert list(combined.results.total.elements) == ["cold", "toxin", "heat"]
-    assert list(separate.results.total.damage.data) == ["cold", "toxin", "heat"]
-    assert list(separate.results.total.elements) == ["cold", "toxin", "heat"]
+    assert list(combined.stats.total.damage.data) == ["cold", "toxin", "heat"]
+    assert list(combined.stats.total.elements) == ["cold", "toxin", "heat"]
+    assert list(separate.stats.total.damage.data) == ["cold", "toxin", "heat"]
+    assert list(separate.stats.total.elements) == ["cold", "toxin", "heat"]
 
 
 def test_weapon_default_builds_are_independent():
     first = Primary()
     second = Primary()
 
-    first.build.results.total.damage.data["heat"] = 1
+    first.build.stats.total.damage.data["heat"] = 1
 
-    assert first.build.results.total.damage is not second.build.results.total.damage
-    assert second.build.results.total.damage == Dist()
-    assert first.results.DEFAULT_BUILD.damage == Dist()
+    assert first.build.stats.total.damage is not second.build.stats.total.damage
+    assert second.build.stats.total.damage == Dist()
+    assert first.build.stats.total.base_damage == 0
 
 
 def test_upgrade_resolver_can_be_reused_with_different_contexts():
     upgrade = Upgrade({"stats": {"base_damage": {"value": 1, "when": "primary"}}})
 
-    upgrade.results.resolve(weapon=Data({"context": {"type": "primary"}}))
-    assert upgrade.results.total.base_damage == 1
-    upgrade.results.resolve(weapon=Data({"context": {"type": "melee"}}))
-    assert "base_damage" not in upgrade.results.total
+    upgrade.stats.resolve(weapon=Data({"context": {"type": "primary"}}))
+    assert upgrade.stats.total.base_damage == 1
+    upgrade.stats.resolve(weapon=Data({"context": {"type": "melee"}}))
+    assert upgrade.stats.total.base_damage == 0
 
 
 def test_upgrade_resolver_exposes_resolved_effect_buckets():
     upgrade = Upgrade({"stats": {"base_damage": [1, {"value": 2, "when": "kill"}, {"value": 3, "when": "hit", "stacking": True}]}, "context": {"kill": True, "hit": 2}})
 
-    upgrade.results.resolve()
+    upgrade.stats.resolve()
 
-    assert upgrade.results.static == {"base_damage": 1}
-    assert upgrade.results.conditional == {"base_damage": 2}
-    assert upgrade.results.stacking == {"base_damage": 6}
-    assert upgrade.results.total == {"base_damage": 9}
-    assert not hasattr(upgrade.results, "stacked")
+    assert upgrade.stats.static == {"base_damage": 1}
+    assert upgrade.stats.conditional == {"base_damage": 2}
+    assert upgrade.stats.stacking == {"base_damage": 6}
+    assert upgrade.stats.total.base_damage == 9
+    assert not hasattr(upgrade.stats, "stacked")
 
 
 def test_model_data_is_public():
@@ -131,14 +173,13 @@ def test_model_data_is_public():
     damage = Dist({"impact": 1})
 
     assert all(hasattr(item, "data") for item in (weapon, upgrade, build, damage))
-    assert weapon.data.context == {}
-    assert upgrade.data.context == {}
-    assert not any(hasattr(item, "stats") for item in (weapon, upgrade, build))
-    assert weapon.results.weapon is weapon
-    assert upgrade.results.upgrade is upgrade
-    assert build.results.build is build
+    assert weapon.data.context == weapon.data_type.DEFAULT_CONTEXT
+    assert upgrade.data.context == UpgradeData.DEFAULT_CONTEXT
+    assert weapon.stats.weapon is weapon
+    assert upgrade.stats.upgrade is upgrade
+    assert build.stats.build is build
     assert weapon.format.weapon is weapon
-    assert not any(hasattr(item, "data") for item in (weapon.results, upgrade.results, build.results))
+    assert not any(hasattr(item, "data") for item in (weapon.stats, upgrade.stats, build.stats))
     assert not hasattr(weapon.format, "calculator")
 
 
@@ -152,26 +193,26 @@ def test_requested_calculator_api():
 
     assert weapon.data.context.name == "Example Weapon"
     assert weapon.build is build
-    assert weapon.results.weapon is weapon
-    assert weapon.build.results.total.damage == Dist({"heat": 1.2, "cold": 1.2})
-    assert weapon.results.base.magazine_capacity == 20
-    assert isinstance(weapon.results.average, Data)
-    assert mod1.results.static.multishot == 0.6
-    assert mod1.results.conditional.multishot == 1.2
-    assert mod1.results.stacking.status_chance == pytest.approx(1.5)
-    assert mod1.results.total.multishot == pytest.approx(1.8)
-    assert mod2.results.rank_locked.damage == Dist({"cold": 1.2})
-    assert mod2.results.total.damage == Dist({"heat": 1.2, "cold": 1.2})
-    assert build.results.total.damage == Dist({"heat": 1.2, "cold": 1.2})
-    assert build.results.conditional.multishot == 1.2
+    assert weapon.stats.weapon is weapon
+    assert weapon.build.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
+    assert weapon.stats.base.magazine_capacity == 20
+    assert isinstance(weapon.stats.average, Data)
+    assert mod1.stats.static.multishot == 0.6
+    assert mod1.stats.conditional.multishot == 1.2
+    assert mod1.stats.stacking.status_chance == pytest.approx(1.5)
+    assert mod1.stats.total.multishot == pytest.approx(1.8)
+    assert mod2.stats.rank_locked.damage == Dist({"cold": 1.2})
+    assert mod2.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
+    assert build.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
+    assert build.stats.conditional.multishot == 1.2
     resolved_build = weapon.build
-    resolved_total = resolved_build.results.total.copy()
-    weapon.results.recompute()
+    resolved_total = resolved_build.stats.total.copy()
+    weapon.stats.recompute()
     assert weapon.build is resolved_build
-    assert weapon.build.results.total == resolved_total
+    assert weapon.build.stats.total == resolved_total
     assert weapon.format.upgrades()
     assert weapon.build is resolved_build
-    assert weapon.build.results.total == resolved_total
+    assert weapon.build.stats.total == resolved_total
 
 
 def test_weapon_configure_supported_forms():
