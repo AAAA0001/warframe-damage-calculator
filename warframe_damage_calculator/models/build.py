@@ -9,7 +9,7 @@ from .upgrade import Upgrade
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
         self.data = Data({"upgrades": [upgrade.data.copy() for upgrade in upgrades]})
-        self.stats = BuildCalculator(self.data)
+        self.stats = BuildCalculator(self)
 
     def __iter__(self) -> Iterator[Upgrade]:
         return (Upgrade(data) for data in self.data.upgrades)

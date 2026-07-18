@@ -3,9 +3,9 @@ from .weapon_formatter import WeaponFormatter
 
 class RangedFormatter(WeaponFormatter):
     def summary(self) -> str:
-        base = self.calculator.base
-        effective = self.calculator.effective
-        average = self.calculator.average
+        base = self.weapon.stats.base
+        effective = self.weapon.stats.effective
+        average = self.weapon.stats.average
         return "\n".join([
             f"{'FIRE RATE:':<25} {f'{base.fire_rate:.2f}rps':<7} -> {effective.fire_rate:.2f}rps",
             f"{'RELOAD SPEED:':<25} {f'{base.reload_speed:.2f}s':<7} -> {effective.reload_speed:.2f}s",

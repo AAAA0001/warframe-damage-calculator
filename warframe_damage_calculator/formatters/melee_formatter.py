@@ -3,9 +3,9 @@ from .weapon_formatter import WeaponFormatter
 
 class MeleeFormatter(WeaponFormatter):
     def summary(self) -> str:
-        base = self.calculator.base
-        effective = self.calculator.effective
-        average = self.calculator.average
+        base = self.weapon.stats.base
+        effective = self.weapon.stats.effective
+        average = self.weapon.stats.average
         return "\n".join([
             f"{'ATTACK SPEED:':<14} {f'{base.attack_speed:.2f}x':<6} -> {effective.attack_speed:.2f}x",
             f"{'CRIT CHANCE:':<14} {f'{base.crit_chance:.2%}':<6} -> {effective.crit_chance:.2%}",

@@ -14,8 +14,9 @@ class Weapon:
 
     def __init__(self, data: Mapping[str, Any] | None = None) -> None:
         self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
-        self.stats = self.calculator_type(self.data)
-        self.format = self.formatter_type(self.stats)
+        self.build = Build()
+        self.stats = self.calculator_type(self)
+        self.format = self.formatter_type(self)
 
     @overload
     def configure(self, build: Build, /) -> Self: ...
@@ -27,5 +28,6 @@ class Weapon:
         if len(args) == 1 and isinstance(args[0], Build): build = args[0]
         elif all(isinstance(arg, Upgrade) for arg in args): build = Build(*args)
         else: raise TypeError("configure() accepts one Build or multiple Upgrade instances")
-        self.stats.set_build(build)
+        self.build = build
+        self.stats.recompute()
         return self

@@ -10,8 +10,8 @@ class UpgradeCalculator:
     AUTOMATIC = {"primary", "rifle", "bow", "shotgun", "sniper", "secondary", "pistol", "melee", "sacrificial set"}
     METADATA = {"name", "category", "type", "trigger", "is beam", "is battery", "compatibility", "incompatibility", "requirements", "max rank", "max stacks", "stacks", "is exilus", "rank", "weapon"}
 
-    def __init__(self, upgrade: Data) -> None:
-        self.data = upgrade
+    def __init__(self, upgrade: Any) -> None:
+        self.upgrade = upgrade
         self.static = Data()
         self.conditional = Data()
         self.stacking = Data()
@@ -36,11 +36,11 @@ class UpgradeCalculator:
         context.weapon = weapon
         names = {self._key(upgrade.context.get("name", "")) for upgrade in build_data.get("upgrades", [])}
         context["sacrificial set"] = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
-        return context | self._data(self.data.context)
+        return context | self._data(self.upgrade.data.context)
 
     def _count(self, value: Any, field: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-            raise ValueError(f"{field} on {self.data.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
+            raise ValueError(f"{field} on {self.upgrade.data.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
         return value
 
     @classmethod
@@ -79,10 +79,10 @@ class UpgradeCalculator:
         rank = self._count(context.get("rank", max_rank or 0), "rank")
         rank = min(rank, max_rank) if max_rank is not None else rank
         multiplier = 1 if max_rank in {None, 0} else (rank + 1) / (max_rank + 1)
-        if any(isinstance(raw, dict) and raw.get("at_rank") is not None for effects in self.data.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
+        if any(isinstance(raw, dict) and raw.get("at_rank") is not None for effects in self.upgrade.data.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
             multiplier = 1
         defaults = set(context) <= self.AUTOMATIC | self.METADATA
-        for stat, effects in self.data.stats.items():
+        for stat, effects in self.upgrade.data.stats.items():
             for raw in effects if isinstance(effects, list) else [effects]:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 value, condition = effect.value, effect.get("when")

@@ -1,6 +1,5 @@
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
-from ..models.data import Data
 from ..models.dist import Dist
 from .ranged_calculator import RangedCalculator
 
@@ -9,10 +8,10 @@ class SecondaryCalculator(RangedCalculator):
     DEFAULT_STATS = RangedCalculator.DEFAULT_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
     DEFAULT_BUILD = RangedCalculator.DEFAULT_BUILD | {"secondary_enervate": 0, "secondary_encumber": 0.0}
 
-    def _compute_moded_stats(self, resolved_build: Data) -> None:
-        super()._compute_moded_stats(resolved_build)
-        self.moded.secondary_enervate = clamp(resolved_build.secondary_enervate, 0, 6)
-        self.moded.secondary_encumber = clamp(resolved_build.secondary_encumber, 0, 0.24)
+    def _compute_moded_stats(self) -> None:
+        super()._compute_moded_stats()
+        self.moded.secondary_enervate = clamp(self.weapon.build.stats.total.secondary_enervate, 0, 6)
+        self.moded.secondary_encumber = clamp(self.weapon.build.stats.total.secondary_encumber, 0, 0.24)
 
     def _compute_effective_stats(self) -> None:
         super()._compute_effective_stats()

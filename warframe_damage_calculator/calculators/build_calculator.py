@@ -2,15 +2,15 @@ from typing import Any
 
 from ..models.data import Data
 from ..models.dist import Dist
+from ..models.upgrade import Upgrade
 from ..utils.constants import DAMAGE_TYPES
-from .upgrade_calculator import UpgradeCalculator
 
 
 class BuildCalculator:
     BUCKETS = ("static", "conditional", "stacking", "rank_locked", "total")
 
-    def __init__(self, build: Data) -> None:
-        self.data = build
+    def __init__(self, build: Any) -> None:
+        self.build = build
         self.static = Data()
         self.conditional = Data()
         self.stacking = Data()
@@ -42,9 +42,9 @@ class BuildCalculator:
         for bucket in self.BUCKETS:
             setattr(self, bucket, Data())
 
-        for upgrade in self.data.get("upgrades", []):
-            calculator = UpgradeCalculator(upgrade)
-            calculator.resolve(weapon_data, self.data)
+        for upgrade_data in self.build.data.get("upgrades", []):
+            calculator = Upgrade(upgrade_data).stats
+            calculator.resolve(weapon_data, self.build)
             for bucket in self.BUCKETS:
                 target = getattr(self, bucket)
                 for stat, value in getattr(calculator, bucket).items():

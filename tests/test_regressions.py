@@ -3,8 +3,8 @@ from typing import get_args
 import pytest
 
 from warframe_damage_calculator import Build, Data, Primary, Upgrade, arsenal
-from warframe_damage_calculator.calculators.weapon_calculator import WeaponCalculator
 from warframe_damage_calculator.models.dist import Dist
+from warframe_damage_calculator.models.weapon import Weapon
 from warframe_damage_calculator.utils.types import DamageType
 
 
@@ -27,7 +27,7 @@ def test_data_copy_is_independent():
 def test_calculator_normalizes_damage_distributions():
     stats = {field: {"impact": 1} for field in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs")}
     data = Data({"stats": stats, "context": {}})
-    calculator = WeaponCalculator(data)
+    calculator = Weapon(data).stats
     assert all(isinstance(calculator.base[field], Dist) for field in ("damage", "forced_procs"))
     assert all(isinstance(data.stats[field], Data) for field in stats)
     ranged = Primary(data)
@@ -93,9 +93,15 @@ def test_model_data_is_public():
     build = Build(upgrade)
     damage = Dist({"impact": 1})
 
-    assert all(hasattr(item, "data") for item in (weapon, weapon.stats, upgrade, build, damage))
+    assert all(hasattr(item, "data") for item in (weapon, upgrade, build, damage))
     assert weapon.data.context == {}
     assert upgrade.data.context == {}
+    assert weapon.stats.weapon is weapon
+    assert upgrade.stats.upgrade is upgrade
+    assert build.stats.build is build
+    assert weapon.format.weapon is weapon
+    assert not any(hasattr(item, "data") for item in (weapon.stats, upgrade.stats, build.stats))
+    assert not hasattr(weapon.format, "calculator")
 
 
 def test_requested_calculator_api():
@@ -107,6 +113,9 @@ def test_requested_calculator_api():
     weapon.configure(build)
 
     assert weapon.data.context.name == "Example Weapon"
+    assert weapon.build is build
+    assert weapon.stats.weapon is weapon
+    assert weapon.build.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
     assert weapon.stats.base.magazine_capacity == 20
     assert isinstance(weapon.stats.average, Data)
     assert mod1.stats.static.multishot == 0.6
@@ -117,6 +126,14 @@ def test_requested_calculator_api():
     assert mod2.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
     assert build.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
     assert build.stats.conditional.multishot == 1.2
+    resolved_build = weapon.build
+    resolved_total = resolved_build.stats.total.copy()
+    weapon.stats.recompute()
+    assert weapon.build is resolved_build
+    assert weapon.build.stats.total == resolved_total
+    assert weapon.format.upgrades()
+    assert weapon.build is resolved_build
+    assert weapon.build.stats.total == resolved_total
 
 
 def test_weapon_configure_supported_forms():
