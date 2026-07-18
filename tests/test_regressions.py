@@ -1,3 +1,4 @@
+from collections.abc import MutableMapping
 from typing import ClassVar, get_args
 
 import pytest
@@ -48,6 +49,15 @@ def test_data_copy_is_independent():
     copied.damage.impact = 4
     assert original.nested["items"][0].value == 1
     assert original.damage.impact == 2
+
+
+def test_data_is_a_custom_mutable_mapping():
+    data = Data({"nested": {"value": 1}})
+
+    assert isinstance(data, MutableMapping)
+    assert not isinstance(data, dict)
+    assert isinstance(data.nested, Data)
+    assert dict(data) == {"nested": {"value": 1}}
 
 
 def test_inline_default_data_behavior():

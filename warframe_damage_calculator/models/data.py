@@ -16,7 +16,7 @@ class Data(MutableMapping[str, DataValue]):
         cls._fields = dict(getattr(cls.__base__, "_fields", {}))
         cls._defaults = dict(getattr(cls.__base__, "_defaults", {}))
 
-        for name, annotation in cls.__dict__.get("__annotations__", {}).items():
+        for name, annotation in cls.__annotations__.items():
             if name.startswith("_") or get_origin(annotation) is ClassVar:
                 continue
 
@@ -46,23 +46,70 @@ class Data(MutableMapping[str, DataValue]):
     def __len__(self) -> int:
         return len(self._values)
 
+    def __repr__(self) -> str:
+        return repr(self._values)
+
+    def __deepcopy__(self, memo: dict[int, object]) -> Self:
+        copied = type(self).__new__(type(self))
+        object.__setattr__(copied, "_values", {})
+        memo[id(self)] = copied
+        copied.update(deepcopy(self._values, memo))
+        return copied
+
+    @staticmethod
+    def _convert(value: DataValue) -> DataValue:
+        if isinstance(value, Data): return value
+        if isinstance(value, Mapping): return Data(value)
+        if isinstance(value, list): return [Data._convert(item) for item in value]
+        return value
+
+    @staticmethod
+    def _convert_items(values: list[DataValue], item_type: object) -> list[DataValue]:
+        if not isinstance(item_type, type) or not issubclass(item_type, Data):
+            return [Data._convert(value) for value in values]
+
+        items: list[DataValue] = []
+        for value in values:
+            if isinstance(value, item_type):
+                items.append(value)
+            elif isinstance(value, Mapping):
+                items.append(item_type(value))
+            else:
+                items.append(value)
+        return items
+
+    @classmethod
+    def _convert_field(cls, key: str, value: DataValue) -> DataValue:
+        annotation = cls._fields.get(key)
+        if annotation is Dist:
+            return Dist(value)
+        if isinstance(annotation, type) and issubclass(annotation, Data) and isinstance(value, Mapping):
+            return value if isinstance(value, annotation) else annotation(value)
+        if get_origin(annotation) is list and isinstance(value, list):
+            return cls._convert_items(value, get_args(annotation)[0])
+        return cls._convert(value)
+
     def __getattr__(self, key: str) -> DataValue:
-        try:
-            return self[key]
-        except KeyError:
-            raise AttributeError(key) from None
+        if key.startswith("_"):
+            raise AttributeError(key)
+        try: return self[key]
+        except KeyError: raise AttributeError(key) from None
 
     def __setattr__(self, key: str, value: DataValue) -> None:
-        if key.startswith("_"):
-            object.__setattr__(self, key, value)
-        else:
-            self[key] = value
+        self[key] = value
 
     def __delattr__(self, key: str) -> None:
-        try:
-            del self[key]
-        except KeyError:
-            raise AttributeError(key) from None
+        try: del self[key]
+        except KeyError: raise AttributeError(key) from None
+
+    def __or__(self, other: Mapping[str, DataValue]) -> Self:
+        return type(self)(dict(self) | dict(other))
+
+    def __ror__(self, other: Mapping[str, DataValue]) -> Self:
+        return type(self)(dict(other) | dict(self))
+
+    def update(self, data: Mapping[str, DataValue], /) -> None:
+        for key, value in data.items(): self[key] = value
 
     def copy(self) -> Self:
         return deepcopy(self)

@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from typing import Any
 
 from ..models.data import Data, ResolvedStatValues
@@ -29,8 +30,8 @@ class BuildCalculator:
             stats[stat] = value
         elif isinstance(value, bool):
             stats[stat] = current or value
-        elif isinstance(current, dict) and isinstance(value, dict):
-            stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in current | value}
+        elif isinstance(current, Mapping) and isinstance(value, Mapping):
+            stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in dict(current) | dict(value)}
         else:
             stats[stat] = current + value
 

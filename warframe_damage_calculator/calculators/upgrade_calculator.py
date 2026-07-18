@@ -45,7 +45,7 @@ class UpgradeCalculator:
 
     @classmethod
     def _scale(cls, value: Any, multiplier: float) -> Any:
-        return {key: cls._scale(item, multiplier) for key, item in value.items()} if isinstance(value, dict) else value if isinstance(value, bool) else value * multiplier
+        return {key: cls._scale(item, multiplier) for key, item in value.items()} if isinstance(value, Mapping) else value if isinstance(value, bool) else value * multiplier
 
     @staticmethod
     def _add(stats: Data, stat: str, value: Any) -> None:
@@ -54,7 +54,7 @@ class UpgradeCalculator:
         if stat == "damage": stats[stat] = Dist(current) + Dist(value)
         elif current is None: stats[stat] = value
         elif isinstance(value, bool): stats[stat] = current or value
-        elif isinstance(current, dict) and isinstance(value, dict): stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in current | value}
+        elif isinstance(current, Mapping) and isinstance(value, Mapping): stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in dict(current) | dict(value)}
         else: stats[stat] = current + value
 
     def _record(self, bucket: ResolvedStatValues, stat: str, value: Any) -> None:
@@ -75,7 +75,7 @@ class UpgradeCalculator:
         rank = self._count(context.get("rank", max_rank or 0), "rank")
         rank = min(rank, max_rank) if max_rank is not None else rank
         multiplier = 1 if max_rank in {None, 0} else (rank + 1) / (max_rank + 1)
-        if any(isinstance(raw, dict) and raw.get("at_rank") is not None for effects in self.upgrade.data.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
+        if any(isinstance(raw, Mapping) and raw.get("at_rank") is not None for effects in self.upgrade.data.stats.values() for raw in (effects if isinstance(effects, list) else [effects])):
             multiplier = 1
         defaults = set(context) <= self.AUTOMATIC | self.METADATA
         for stat, effects in self.upgrade.data.stats.items():
@@ -83,7 +83,7 @@ class UpgradeCalculator:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 value, condition = effect.value, effect.get("when")
                 required_rank = effect.get("at_rank")
-                if required_rank is None and isinstance(condition, dict):
+                if required_rank is None and isinstance(condition, Mapping):
                     required_rank = condition.get("rank")
                 if required_rank is not None:
                     if rank >= self._count(required_rank, "required rank"):

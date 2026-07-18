@@ -1,5 +1,5 @@
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from typing import Any
 
 
@@ -16,6 +16,6 @@ def as_list(value: Any) -> list[Any]:
         return []
     if isinstance(value, list):
         return value
-    if isinstance(value, Iterable) and not isinstance(value, (str, bytes, dict)):
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes, Mapping)):
         return list(value)
     return [value]
