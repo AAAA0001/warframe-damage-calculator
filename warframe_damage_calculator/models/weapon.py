@@ -20,7 +20,6 @@ class Weapon:
         self.stats = self.calculator_type(self)
         self.format = self.formatter_type(self)
         
-
     @overload
     def configure(self, build: Build, /) -> Self: ...
 
