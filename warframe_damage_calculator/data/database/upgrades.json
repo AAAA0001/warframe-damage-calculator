@@ -130,7 +130,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Serration"
@@ -241,7 +242,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Galvanized Scope"
@@ -439,7 +441,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -690,7 +693,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -916,7 +920,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -970,7 +975,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -1031,7 +1037,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Primed Cryo Rounds"
@@ -1301,7 +1308,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -1319,7 +1327,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Primed Fast Hands"
@@ -1534,7 +1543,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Rifle Aptitude"
@@ -1559,7 +1569,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Split Chamber"
@@ -1716,7 +1727,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Argon Scope"
@@ -1897,7 +1909,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -1935,7 +1948,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -1991,7 +2005,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2046,7 +2061,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2198,7 +2214,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2234,7 +2251,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2443,7 +2461,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Primed Magazine Warp"
@@ -2463,7 +2482,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2608,7 +2628,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2952,7 +2973,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -2970,7 +2992,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3081,7 +3104,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3177,7 +3201,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3294,7 +3319,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Cryo Rounds"
@@ -3314,7 +3340,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Fast Hands"
@@ -3411,7 +3438,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Magazine Warp"
@@ -3527,7 +3555,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Shred"
@@ -3610,7 +3639,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3712,7 +3742,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3805,7 +3836,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Galvanized Aptitude"
@@ -3825,7 +3857,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3843,7 +3876,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3862,7 +3896,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -3932,7 +3967,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4096,7 +4132,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {
@@ -4141,7 +4178,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Amalgam Serration"
@@ -4309,7 +4347,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Primed Shred"
@@ -4371,7 +4410,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4392,7 +4432,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4416,7 +4457,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [
                     "Galvanized Chamber"
@@ -4475,7 +4517,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4530,7 +4573,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4673,7 +4717,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4764,7 +4809,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4965,7 +5011,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -4990,7 +5037,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -5032,7 +5080,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},
@@ -5107,7 +5156,8 @@
             "context": {
                 "compatibility": [
                     "bow",
-                    "rifle"
+                    "rifle",
+                    "sniper"
                 ],
                 "incompatibility": [],
                 "requirements": {},

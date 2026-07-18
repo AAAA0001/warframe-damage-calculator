@@ -25,6 +25,12 @@ def test_loader_context_and_attributes():
     assert regular.stats.effective.ammo_efficiency == 0
 
 
+def test_rifle_mods_are_tagged_as_sniper_compatible():
+    serration = arsenal.get("Serration")
+    assert "rifle" in serration.data.context.compatibility
+    assert "sniper" in serration.data.context.compatibility
+
+
 def test_default_distributions_are_independent():
     first_weapon = Primary()
     second_weapon = Primary()
