@@ -274,7 +274,7 @@ print(serration.stats.total.base_damage)  # 0.75
 ```
 
 Ordinary effects use proportional rank scaling. Rank-locked effects use
-`at_rank`, or `when={"rank": ...}`, and are included at full value only after
+`at_rank` and are included at full value only after
 the required rank is reached.
 
 ```python

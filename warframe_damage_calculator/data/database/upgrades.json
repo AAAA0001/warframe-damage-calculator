@@ -5401,9 +5401,7 @@
                 },
                 "weakpoint_damage": {
                     "value": 0.3,
-                    "when": {
-                        "rank": 5
-                    }
+                    "at_rank": 5
                 }
             }
         },
@@ -5487,9 +5485,7 @@
                 },
                 "reload_speed": {
                     "value": 0.3,
-                    "when": {
-                        "rank": 5
-                    }
+                    "at_rank": 5
                 }
             }
         },
@@ -5514,9 +5510,7 @@
                 },
                 "weakpoint_damage": {
                     "value": 0.3,
-                    "when": {
-                        "rank": 5
-                    }
+                    "at_rank": 5
                 }
             }
         },
@@ -5606,9 +5600,7 @@
                 },
                 "reload_speed": {
                     "value": 0.3,
-                    "when": {
-                        "rank": 5
-                    }
+                    "at_rank": 5
                 }
             }
         },

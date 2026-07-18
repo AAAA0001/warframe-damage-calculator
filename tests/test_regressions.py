@@ -8,6 +8,7 @@ from warframe_damage_calculator import Build, Data, Melee, Primary, Secondary, U
 from warframe_damage_calculator.models.data import BuildData, MeleeContext, MeleeInputStats, PrimaryContext, RangedInputStats, ResolvedStatValues, SecondaryContext, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
 from warframe_damage_calculator.models.dist import Dist
 from warframe_damage_calculator.models.weapon import Weapon
+from warframe_damage_calculator.data.loader import WarframeDatabase
 from warframe_damage_calculator.utils.types import DamageType
 
 
@@ -23,6 +24,18 @@ def test_loader_context_and_attributes():
     assert beam.stats.effective.ammo_efficiency == pytest.approx(0.5)
     assert regular.data.context.is_beam is False
     assert regular.stats.effective.ammo_efficiency == 0
+
+
+def test_loader_normalizes_legacy_rank_locked_effects():
+    database = WarframeDatabase({}, {"mod": {"Legacy": {
+        "context": {"max_rank": 5},
+        "stats": {"base_damage": {"value": 1, "when": {"rank": 5}}},
+    }}})
+
+    upgrade = database.get("Legacy", context={"rank": 5})
+
+    assert upgrade.data.stats.base_damage == {"value": 1, "at_rank": 5}
+    assert upgrade.stats.rank_locked.base_damage == 1
 
 
 def test_rifle_mods_are_tagged_as_sniper_compatible():

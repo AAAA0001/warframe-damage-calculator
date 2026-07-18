@@ -23,10 +23,34 @@ type WeaponFilter = Literal["weapon", "weapons"]
 type UpgradeFilter = Literal["upgrade", "upgrades", "mod", "mods", "arcane", "arcanes"]
 
 
+def _normalize_rank_locked_effect(value: Any) -> Any:
+    if isinstance(value, list):
+        return [_normalize_rank_locked_effect(item) for item in value]
+    if not isinstance(value, Mapping):
+        return value
+
+    normalized = {key: _normalize_rank_locked_effect(item) for key, item in value.items()}
+    condition = normalized.get("when")
+    if isinstance(condition, Mapping) and set(condition) == {"rank"}:
+        normalized["at_rank"] = condition["rank"]
+        del normalized["when"]
+    return normalized
+
+
+def _normalize_upgrades(upgrades: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = deepcopy(upgrades)
+    for entries in normalized.values():
+        for upgrade in entries.values():
+            stats = upgrade.get("stats", {})
+            for stat, effects in stats.items():
+                stats[stat] = _normalize_rank_locked_effect(effects)
+    return normalized
+
+
 class WarframeDatabase:
     def __init__(self, weapons: Mapping[str, Any], upgrades: Mapping[str, Any]) -> None:
         self.weapons = weapons
-        self.upgrades = upgrades
+        self.upgrades = _normalize_upgrades(upgrades)
         self._factory = DatabaseFactory()
         self._entries = tuple(self._iter_database_entries())
         self._name_index = {normalize_name(entry.name): entry for entry in self._entries}
