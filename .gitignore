@@ -55,6 +55,5 @@ Desktop.ini
 /_*.py
 
 # Raw data and generated reports; keep the database builder itself tracked.
-/database_builder/*
-!/database_builder/build_database_reformat.py
+/database_builder/
 /.wiki_weapon_cache/
