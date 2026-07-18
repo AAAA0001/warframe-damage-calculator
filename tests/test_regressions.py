@@ -218,6 +218,15 @@ def test_build_aggregation():
     assert build.stats.total.enabled is True
 
 
+def test_build_resolver_returns_none():
+    build = Build(Upgrade({"stats": {"base_damage": 0.5}}))
+
+    resolved = build.stats.resolve()
+
+    assert resolved is None
+    assert build.stats.total.base_damage == 0.5
+
+
 def test_native_multishot_status_chance_is_per_projectile():
     weapon = arsenal.get("Corinth Prime")
 
@@ -278,6 +287,15 @@ def test_upgrade_resolver_can_be_reused_with_different_contexts():
     assert upgrade.stats.total.base_damage == 1
     upgrade.stats.resolve(weapon=Data({"context": {"type": "melee"}}))
     assert upgrade.stats.total.base_damage == 0
+
+
+def test_upgrade_resolver_returns_none():
+    upgrade = Upgrade({"stats": {"base_damage": 1}, "context": {"rank": 2}})
+
+    resolved = upgrade.stats.resolve()
+
+    assert resolved is None
+    assert upgrade.stats.total.base_damage == 1
 
 
 def test_upgrade_resolver_exposes_resolved_effect_buckets():

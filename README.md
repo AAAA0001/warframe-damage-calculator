@@ -330,11 +330,16 @@ rifle_bonus = Upgrade(
 )
 
 bow.configure(rifle_bonus)
-resolved = rifle_bonus.stats.resolve(build=bow.build, weapon=bow)
-print(resolved["context"].weapon)  # "bow"
-print(resolved["context"].bow)     # True
-print(resolved["context"].rifle)   # True
+rifle_bonus.stats.resolve(build=bow.build, weapon=bow)
+print(rifle_bonus.stats.total.base_damage)  # 0.2
 ```
+
+`UpgradeCalculator.resolve()` updates the calculator's `static`, `conditional`,
+`stacking`, `rank_locked`, and `total` buckets in place and returns `None`.
+`BuildCalculator.resolve()` follows the same in-place behavior for the combined
+upgrade values in a build.
+Automatic weapon-type flags such as `bow` and `rifle` are used internally for
+condition matching.
 
 Build-wide conditions can depend on upgrade names. Equipping both Sacrificial
 mods enables `sacrificial set` on every upgrade in that build:
@@ -346,15 +351,15 @@ steel = arsenal.get("Sacrificial Steel")
 
 melee.configure(pressure, steel)
 for upgrade in melee.build:
-    resolved = upgrade.stats.resolve(build=melee.build, weapon=melee)
-    print(resolved["context"]["sacrificial set"])  # True
+    upgrade.stats.resolve(build=melee.build, weapon=melee)
+    print(upgrade.stats.total)
 ```
 
 During calculation, shared weapon and build values are applied to each upgrade
-without modifying its stored context. These include normalized weapon-type
-flags, the weapon type, and the `sacrificial set` condition. Rank-locked stats
-use `upgrade.data.context.rank`; it defaults to `max_rank`, or zero when the
-upgrade has no maximum rank.
+without modifying its stored context. These include internal normalized
+weapon-type flags, the weapon type, and the `sacrificial set` condition.
+Rank-locked stats use `upgrade.data.context.rank`; it defaults to `max_rank`,
+or zero when the upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models store data. Condition matching, rank scaling,
 stack limits, and effect merging are handled by their calculators when

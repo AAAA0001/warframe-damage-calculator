@@ -35,7 +35,7 @@ class BuildCalculator:
         else:
             stats[stat] = current + value
 
-    def resolve(self, weapon: Data | object | None = None) -> dict[str, Data]:
+    def resolve(self, weapon: Data | object | None = None) -> None:
         weapon_data = getattr(weapon, "data", weapon) or Data()
         for bucket in self.BUCKETS:
             setattr(self, bucket, ResolvedStatValues() if bucket == "total" else ResolvedStatValues.sparse())
@@ -47,5 +47,3 @@ class BuildCalculator:
                 target = getattr(self, bucket)
                 for stat, value in getattr(calculator, bucket).items():
                     self._add(target, stat, value)
-
-        return {"stats": self.total, "context": Data()}

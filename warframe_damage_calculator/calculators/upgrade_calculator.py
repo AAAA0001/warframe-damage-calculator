@@ -61,7 +61,7 @@ class UpgradeCalculator:
         self._add(bucket, stat, value)
         self._add(self.total, stat, value)
 
-    def resolve(self, weapon: Data | object | None = None, build: Data | object | None = None) -> dict[str, Data]:
+    def resolve(self, weapon: Data | object | None = None, build: Data | object | None = None) -> None:
         weapon_data = getattr(weapon, "data", weapon) or Data()
         build_data = getattr(build, "data", build) or Data({"upgrades": []})
         context = self._context(weapon_data, build_data)
@@ -100,6 +100,3 @@ class UpgradeCalculator:
                     value = self._scale(value, multiplier)
                     bucket = self.static if condition is None else self.conditional
                     self._record(bucket, stat, value)
-
-        context.rank = rank
-        return {"stats": self.total, "context": context}
