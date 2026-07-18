@@ -28,14 +28,16 @@ def test_calculator_normalizes_damage_distributions():
     stats = {field: {"impact": 1} for field in ("damage", "forced_procs", "explosion_damage", "explosion_forced_procs")}
     data = Data({"stats": stats, "context": {}})
     calculator = WeaponCalculator(data)
-    assert all(isinstance(calculator.base[field], Data) for field in stats)
+    assert all(isinstance(calculator.base[field], Dist) for field in ("damage", "forced_procs"))
     assert all(isinstance(data.stats[field], Data) for field in stats)
-    assert isinstance(Upgrade({"stats": {"heat": 1}}).resolve().data.stats.damage, Data)
+    ranged = Primary(data)
+    assert all(isinstance(ranged.stats.base[field], Dist) for field in stats)
+    assert isinstance(Upgrade({"stats": {"heat": 1}}).stats.total.damage, Dist)
 
 
 def test_dist_filters_accept_generators():
     damage = Dist({"impact": 1, "puncture": 2, "slash": 3})
-    assert isinstance(damage.data, Data)
+    assert dict(damage) == {"impact": 1, "puncture": 2, "slash": 3}
     assert damage.include(item for item in ("impact", "slash")) == Dist({"impact": 1, "slash": 3})
     assert damage.exclude(item for item in ("impact", "slash")) == Dist({"puncture": 2})
 
@@ -45,7 +47,77 @@ def test_build_aggregation():
         Upgrade({"stats": {"base_damage": 0.5, "enabled": False}}),
         Upgrade({"stats": {"base_damage": 0.25, "enabled": True}}),
     )
-    assert build.aggregate() == {"base_damage": 0.75, "enabled": True}
+    assert build.stats.total == {"base_damage": 0.75, "enabled": True}
+
+
+def test_native_multishot_status_chance_is_per_projectile():
+    weapon = arsenal.get("Corinth Prime")
+
+    assert weapon.stats.base.status_chance == pytest.approx(0.09)
+    assert weapon.stats.base.multishot == 6
+    assert weapon.stats.average_procs_per_shot == pytest.approx(0.54)
+
+
+def test_negative_physical_damage_modifier_is_applied_before_filtering():
+    weapon = Primary({"stats": {"damage": {"impact": 100}}})
+
+    weapon.configure(Upgrade({"stats": {"impact": -0.5}}))
+
+    assert weapon.stats.effective.damage == Dist({"impact": 50})
+
+
+def test_upgrade_resolver_can_be_reused_with_different_contexts():
+    upgrade = Upgrade({"stats": {"base_damage": {"value": 1, "when": "primary"}}})
+
+    upgrade.stats.resolve(weapon=Data({"context": {"type": "primary"}}))
+    assert upgrade.stats.total.base_damage == 1
+    upgrade.stats.resolve(weapon=Data({"context": {"type": "melee"}}))
+    assert "base_damage" not in upgrade.stats.total
+
+
+def test_upgrade_resolver_exposes_resolved_effect_buckets():
+    upgrade = Upgrade({"stats": {"base_damage": [1, {"value": 2, "when": "kill"}, {"value": 3, "when": "hit", "stacking": True}]}, "context": {"kill": True, "hit": 2}})
+
+    upgrade.stats.resolve()
+
+    assert upgrade.stats.static == {"base_damage": 1}
+    assert upgrade.stats.conditional == {"base_damage": 2}
+    assert upgrade.stats.stacking == {"base_damage": 6}
+    assert upgrade.stats.total == {"base_damage": 9}
+    assert not hasattr(upgrade.stats, "stacked")
+
+
+def test_model_data_is_public():
+    weapon = Primary()
+    upgrade = Upgrade()
+    build = Build(upgrade)
+    damage = Dist({"impact": 1})
+
+    assert all(hasattr(item, "data") for item in (weapon, weapon.stats, upgrade, build, damage))
+    assert weapon.data.context == {}
+    assert upgrade.data.context == {}
+
+
+def test_requested_calculator_api():
+    weapon = Primary({"stats": {"damage": {"impact": 100, "slash": 50}, "crit_chance": 0.3, "crit_damage": 2.2, "status_chance": 0.3, "multishot": 6, "fire_rate": 3.0, "reload_speed": 1.5, "magazine_cappacity": 20}, "context": {"name": "Example Weapon", "type": "shotgun", "trigger": "semi"}})
+    mod1 = Upgrade({"stats": {"base_damage": 1.6, "multishot": [0.6, {"value": 1.2, "when": "kill"}], "status_chance": {"value": 0.3, "when": "headshot", "stacks": True}}, "context": {"name": "Mod 1", "type": "mod", "max_stacks": 6, "headshot": 5}})
+    mod2 = Upgrade({"stats": {"damage": [{"heat": 1.2}, {"value": {"cold": 1.2}, "at_rank": 6}]}, "context": {"name": "Mod 2", "type": "mod", "max_rank": 10, "rank": 8}})
+    build = Build(mod1, mod2)
+
+    weapon.configure(build)
+
+    assert weapon.data.context.name == "Example Weapon"
+    assert weapon.calculate is weapon.stats
+    assert weapon.stats.base.magazine_capacity == 20
+    assert isinstance(weapon.stats.average, Data)
+    assert mod1.stats.static.multishot == 0.6
+    assert mod1.stats.conditional.multishot == 1.2
+    assert mod1.stats.stacking.status_chance == pytest.approx(1.5)
+    assert mod1.stats.total.multishot == pytest.approx(1.8)
+    assert mod2.stats.rank_locked.damage == Dist({"cold": 1.2})
+    assert mod2.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
+    assert build.stats.total.damage == Dist({"heat": 1.2, "cold": 1.2})
+    assert build.stats.conditional.multishot == 1.2
 
 
 def test_weapon_configure_supported_forms():

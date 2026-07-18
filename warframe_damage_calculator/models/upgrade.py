@@ -1,16 +1,11 @@
-from copy import deepcopy
+from collections.abc import Mapping
 
+from ..calculators.upgrade_calculator import UpgradeCalculator
 from ..utils.types import JsonValue
 from .data import Data
-from ..calculators.upgrade_calculator import UpgradeCalculator
 
 
 class Upgrade:
-    def __init__(self, data: dict[str, JsonValue] | None = None) -> None:
-        self.data = Data({"stats": {}, "context": {}} | (data or {}))
-
-    def copy(self) -> Upgrade:
-        return Upgrade(deepcopy(self.data))
-
-    def resolve(self, build: Data | None = None, weapon: Data | None = None) -> Upgrade:
-        return Upgrade(UpgradeCalculator(upgrade=self.data, build=build, weapon=weapon).resolve())
+    def __init__(self, data: Mapping[str, JsonValue] | None = None) -> None:
+        self.data = Data({"stats": {}, "context": {}} | dict(data or {}))
+        self.stats = UpgradeCalculator(self.data)

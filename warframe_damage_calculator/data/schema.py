@@ -1,11 +1,12 @@
+from collections.abc import Mapping
 from typing import Any
 
 
 class DatabaseEntry:
-    def __init__(self, category: str, name: str, data: dict[str, Any]) -> None:
+    def __init__(self, category: str, name: str, data: Mapping[str, Any]) -> None:
         self.category = category
         self.name = name
-        self.data = data
+        self.data = dict(data)
 
     @property
     def is_weapon(self) -> bool:

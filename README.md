@@ -153,7 +153,7 @@ Typical workflow:
 2.  Create one or more `Upgrade` objects.
 3.  Combine them into a `Build` (optional).
 4.  Apply the build with `weapon.configure(build)` or `weapon.configure(upgrade_1, upgrade_2, ...)`.
-5.  Read source values from `weapon.data` and calculated values from `weapon.stats`.
+5.  Read metadata from `weapon.data.context` and calculated values from `weapon.stats`.
 6.  Print results with `weapon.format.summary()`.
 
 Since `configure()` returns the weapon, the following is also valid:
@@ -182,7 +182,7 @@ Each weapon exposes three main components:
 
 | Attribute | Description |
 |-----------|-------------|
-| `weapon.data` | Original weapon data, containing `stats` and `context`. |
+| `weapon.data.context` | Weapon metadata and runtime context. |
 | `weapon.stats` | Calculator with `base`, `moded`, and `effective` stat buckets. |
 | `weapon.format` | Formatter for summaries and upgrade contribution output. |
 
@@ -249,8 +249,8 @@ ranked = Upgrade(
   }
 )
 
-resolved = ranked.resolve()
-print(resolved.data.stats.crit_chance)  # 0.6: 1.2 * (2 + 1) / (5 + 1)
+ranked.stats.resolve()
+print(ranked.stats.total.crit_chance)  # 0.6: 1.2 * (2 + 1) / (5 + 1)
 ```
 
 A rank requirement uses a mapping in `when`. Unlike a normally scaled effect,
@@ -264,7 +264,8 @@ rank_locked = Upgrade(
   }
 )
 
-print(rank_locked.resolve().data.stats.multishot)  # 0.5
+rank_locked.stats.resolve()
+print(rank_locked.stats.total.multishot)  # 0.5
 ```
 
 #### Conditions and stacks
@@ -288,9 +289,9 @@ arcane = Upgrade(
   }
 )
 
-resolved = arcane.resolve()
-print(resolved.data.stats.base_damage)  # 0.3
-print(resolved.data.stats.crit_chance)  # 0.2: 0.1 * 2 stacks
+arcane.stats.resolve()
+print(arcane.stats.total.base_damage)  # 0.3
+print(arcane.stats.total.crit_chance)  # 0.2: 0.1 * 2 stacks
 ```
 
 Stack counts are capped by `max_stacks`. The generic `stacks` field is used
@@ -298,11 +299,13 @@ when the specifically named condition is absent:
 
 ```python
 arcane.data.context.kill = 10
-print(arcane.resolve().data.stats.crit_chance)  # 0.3: capped at 3 stacks
+arcane.stats.resolve()
+print(arcane.stats.total.crit_chance)  # 0.3: capped at 3 stacks
 
 del arcane.data.context.kill
 arcane.data.context.stacks = 1
-print(arcane.resolve().data.stats.crit_chance)  # 0.1
+arcane.stats.resolve()
+print(arcane.stats.total.crit_chance)  # 0.1
 ```
 
 If a context contains only descriptive metadata and automatic weapon fields,
@@ -327,10 +330,10 @@ rifle_bonus = Upgrade(
 )
 
 bow.configure(rifle_bonus)
-resolved = rifle_bonus.resolve(build=bow.build.data, weapon=bow.data)
-print(resolved.data.context.weapon)  # "bow"
-print(resolved.data.context.bow)     # True
-print(resolved.data.context.rifle)   # True
+rifle_bonus.stats.resolve(build=bow.build, weapon=bow)
+print(rifle_bonus.stats.context.weapon)  # "bow"
+print(rifle_bonus.stats.context.bow)     # True
+print(rifle_bonus.stats.context.rifle)   # True
 ```
 
 Build-wide conditions can depend on upgrade names. Equipping both Sacrificial
@@ -343,8 +346,8 @@ steel = arsenal.get("Sacrificial Steel")
 
 melee.configure(pressure, steel)
 for upgrade in melee.build:
-    resolved = upgrade.resolve(build=melee.build.data, weapon=melee.data)
-    print(resolved.data.context["sacrificial set"])  # True
+    upgrade.stats.resolve(build=melee.build, weapon=melee)
+    print(upgrade.stats.context["sacrificial set"])  # True
 ```
 
 During calculation, shared weapon and build values are applied to each upgrade
@@ -354,8 +357,8 @@ use `upgrade.data.context.rank`; it defaults to `max_rank`, or zero when the
 upgrade has no maximum rank.
 
 The `Upgrade` and `Build` models store data. Condition matching, rank scaling,
-stack limits, and effect merging are handled by `UpgradeCalculator` when
-`Upgrade.resolve()` is called.
+stack limits, and effect merging are handled by their calculators when
+`stats.resolve()` is called.
 
 ### Damage
 

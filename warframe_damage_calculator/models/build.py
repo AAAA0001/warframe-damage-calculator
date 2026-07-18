@@ -1,38 +1,28 @@
 from collections.abc import Iterator
+from typing import Self
 
-from ..utils.types import JsonScalar
-from .data import Data, DataValue
+from ..calculators.build_calculator import BuildCalculator
+from .data import Data
 from .upgrade import Upgrade
+
 
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
-        self.data = Data({"upgrades": [upgrade.data for upgrade in upgrades]})
+        self.data = Data({"upgrades": [upgrade.data.copy() for upgrade in upgrades]})
+        self.stats = BuildCalculator(self.data)
 
     def __iter__(self) -> Iterator[Upgrade]:
         return (Upgrade(data) for data in self.data.upgrades)
-    
-    def __add__(self, other: Build | Upgrade) -> Build:
+
+    def __len__(self) -> int:
+        return len(self.data.upgrades)
+
+    def __add__(self, other: Self | Upgrade) -> Self:
         return Build(*self, other) if isinstance(other, Upgrade) else Build(*self, *other)
-    
-    def __radd__(self, other: Upgrade) -> Build:
+
+    def __radd__(self, other: Upgrade) -> Self:
         return Build(other, *self)
 
-    def __sub__(self, other: Build | Upgrade) -> Build:
-        excluded = [other.data] if isinstance(other, Upgrade) else other.data.upgrades
-        return Build(*(Upgrade(data) for data in self.data.upgrades if data not in excluded))
-
-    def resolve(self, weapon: Data | None = None) -> Build:
-        return Build(*(upgrade.resolve(build=self.data, weapon=weapon) for upgrade in self))
-        
-    def aggregate(self) -> Data:
-        stats = Data()
-        for stat, value in (item for upgrade in self for item in upgrade.data.stats.items()):
-            current = stats.get(stat)
-            if current is None: stats[stat] = value
-            elif isinstance(value, bool): stats[stat] = current or value
-            elif isinstance(current, dict) and isinstance(value, dict): stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in current.keys() | value.keys()}
-            else: stats[stat] = current + value
-        return stats
-    
-    def get(self, stat: str, default: JsonScalar = 0) -> DataValue:
-        return self.aggregate().get(stat, default)
+    def __sub__(self, other: Self | Upgrade) -> Self:
+        excluded = [other.data] if isinstance(other, Upgrade) else [upgrade.data for upgrade in other]
+        return Build(*(upgrade for upgrade in self if upgrade.data not in excluded))

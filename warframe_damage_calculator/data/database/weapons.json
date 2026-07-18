@@ -503,7 +503,7 @@
             "stats": {
                 "crit_chance": 0.1,
                 "crit_damage": 1.5,
-                "status_chance": 0.6,
+                "status_chance": 0.075,
                 "damage": {
                     "impact": 12.1,
                     "puncture": 3.3,
@@ -525,7 +525,7 @@
             "stats": {
                 "crit_chance": 0.15,
                 "crit_damage": 2.0,
-                "status_chance": 0.9,
+                "status_chance": 0.113,
                 "damage": {
                     "impact": 26.0,
                     "puncture": 6.0,
@@ -657,7 +657,7 @@
             "stats": {
                 "crit_chance": 0.25,
                 "crit_damage": 2.3,
-                "status_chance": 0.65,
+                "status_chance": 0.093,
                 "damage": {
                     "impact": 2.0,
                     "puncture": 13.0,
@@ -777,7 +777,7 @@
             "stats": {
                 "crit_chance": 0.2,
                 "crit_damage": 2.4,
-                "status_chance": 0.02,
+                "status_chance": 0.003,
                 "damage": {
                     "puncture": 30.0
                 },
@@ -797,7 +797,7 @@
             "stats": {
                 "crit_chance": 0.24,
                 "crit_damage": 2.4,
-                "status_chance": 0.14,
+                "status_chance": 0.02,
                 "damage": {
                     "puncture": 32.0
                 },
@@ -840,7 +840,7 @@
             "stats": {
                 "crit_chance": 0.35,
                 "crit_damage": 2.0,
-                "status_chance": 0.9,
+                "status_chance": 0.3,
                 "damage": {
                     "impact": 165.6,
                     "puncture": 9.2,
@@ -907,7 +907,7 @@
             "stats": {
                 "crit_chance": 0.27,
                 "crit_damage": 2.3,
-                "status_chance": 0.71,
+                "status_chance": 0.101,
                 "damage": {
                     "impact": 2.0,
                     "puncture": 13.0,
@@ -1001,7 +1001,7 @@
             "stats": {
                 "crit_chance": 0.16,
                 "crit_damage": 2.4,
-                "status_chance": 0.9,
+                "status_chance": 0.45,
                 "damage": {
                     "impact": 1.2,
                     "puncture": 1.2,
@@ -1023,7 +1023,7 @@
             "stats": {
                 "crit_chance": 0.3,
                 "crit_damage": 2.8,
-                "status_chance": 0.36,
+                "status_chance": 0.06,
                 "damage": {
                     "impact": 25.2,
                     "puncture": 37.8,
@@ -1045,7 +1045,7 @@
             "stats": {
                 "crit_chance": 0.3,
                 "crit_damage": 2.8,
-                "status_chance": 0.54,
+                "status_chance": 0.09,
                 "damage": {
                     "impact": 25.2,
                     "puncture": 37.8,
@@ -1184,7 +1184,7 @@
             "stats": {
                 "crit_chance": 0.075,
                 "crit_damage": 2.0,
-                "status_chance": 0.69,
+                "status_chance": 0.069,
                 "damage": {
                     "impact": 7.0,
                     "puncture": 7.0,
@@ -1301,7 +1301,7 @@
             "stats": {
                 "crit_chance": 0.08,
                 "crit_damage": 1.4,
-                "status_chance": 1.08,
+                "status_chance": 0.36,
                 "damage": {
                     "impact": 20.0,
                     "puncture": 120.0,
@@ -1324,7 +1324,7 @@
             "stats": {
                 "crit_chance": 0.2,
                 "crit_damage": 2.0,
-                "status_chance": 0.22,
+                "status_chance": 0.055,
                 "damage": {
                     "impact": 38.0,
                     "puncture": 68.4,
@@ -1620,7 +1620,7 @@
             "stats": {
                 "crit_chance": 0.1,
                 "crit_damage": 2.0,
-                "status_chance": 0.75,
+                "status_chance": 0.107,
                 "damage": {
                     "impact": 11.25,
                     "puncture": 48.75,
@@ -1923,7 +1923,7 @@
             "stats": {
                 "crit_chance": 0.21,
                 "crit_damage": 2.5,
-                "status_chance": 0.9,
+                "status_chance": 0.09,
                 "damage": {
                     "impact": 4.6,
                     "puncture": 4.6,
@@ -1946,7 +1946,7 @@
             "stats": {
                 "crit_chance": 0.23,
                 "crit_damage": 2.1,
-                "status_chance": 0.93,
+                "status_chance": 0.133,
                 "damage": {
                     "impact": 13.05,
                     "puncture": 56.55,
@@ -2087,7 +2087,7 @@
             "stats": {
                 "crit_chance": 0.21,
                 "crit_damage": 2.3,
-                "status_chance": 1.05,
+                "status_chance": 0.21,
                 "damage": {
                     "impact": 57.75,
                     "puncture": 9.625,
@@ -2365,7 +2365,7 @@
             "stats": {
                 "crit_chance": 0.075,
                 "crit_damage": 2.0,
-                "status_chance": 0.6,
+                "status_chance": 0.06,
                 "damage": {
                     "impact": 9.9,
                     "puncture": 2.7,
@@ -2789,7 +2789,7 @@
             "stats": {
                 "crit_chance": 0.19,
                 "crit_damage": 2.0,
-                "status_chance": 0.93,
+                "status_chance": 0.155,
                 "damage": {
                     "viral": 5.0
                 },
@@ -2810,7 +2810,7 @@
             "stats": {
                 "crit_chance": 0.03,
                 "crit_damage": 1.5,
-                "status_chance": 1.11,
+                "status_chance": 0.222,
                 "damage": {
                     "impact": 5.0,
                     "radiation": 10.0
@@ -2832,7 +2832,7 @@
             "stats": {
                 "crit_chance": 0.11,
                 "crit_damage": 1.9,
-                "status_chance": 1.11,
+                "status_chance": 0.222,
                 "damage": {
                     "impact": 5.0,
                     "radiation": 10.0
@@ -3038,7 +3038,7 @@
             "stats": {
                 "crit_chance": 0.16,
                 "crit_damage": 2.2,
-                "status_chance": 0.48,
+                "status_chance": 0.24,
                 "damage": {
                     "electricity": 10.0
                 },
@@ -3059,7 +3059,7 @@
             "stats": {
                 "crit_chance": 0.22,
                 "crit_damage": 2.4,
-                "status_chance": 0.9,
+                "status_chance": 0.45,
                 "damage": {
                     "electricity": 13.0
                 },
@@ -3148,7 +3148,7 @@
             "stats": {
                 "crit_chance": 0.06,
                 "crit_damage": 2.0,
-                "status_chance": 0.96,
+                "status_chance": 0.12,
                 "damage": {
                     "impact": 26.0,
                     "puncture": 26.0,
@@ -3235,7 +3235,7 @@
             "stats": {
                 "crit_chance": 0.15,
                 "crit_damage": 1.5,
-                "status_chance": 0.84,
+                "status_chance": 0.14,
                 "damage": {
                     "impact": 21.0,
                     "puncture": 21.0,
@@ -3419,7 +3419,7 @@
             "stats": {
                 "crit_chance": 0.11,
                 "crit_damage": 2.0,
-                "status_chance": 0.81,
+                "status_chance": 0.162,
                 "damage": {
                     "impact": 52.5,
                     "puncture": 8.75,
@@ -3598,7 +3598,7 @@
             "stats": {
                 "crit_chance": 0.075,
                 "crit_damage": 1.5,
-                "status_chance": 0.6,
+                "status_chance": 0.05,
                 "damage": {
                     "impact": 13.75,
                     "puncture": 3.75,
@@ -3620,7 +3620,7 @@
             "stats": {
                 "crit_chance": 0.24,
                 "crit_damage": 2.2,
-                "status_chance": 0.8,
+                "status_chance": 0.067,
                 "damage": {
                     "impact": 24.3,
                     "puncture": 8.1,
@@ -3642,7 +3642,7 @@
             "stats": {
                 "crit_chance": 0.18,
                 "crit_damage": 2.2,
-                "status_chance": 1.2,
+                "status_chance": 0.12,
                 "damage": {
                     "impact": 26.0,
                     "puncture": 6.0,
@@ -3937,7 +3937,7 @@
             "stats": {
                 "crit_chance": 0.31,
                 "crit_damage": 2.5,
-                "status_chance": 0.52,
+                "status_chance": 0.26,
                 "damage": {
                     "electricity": 18.0
                 },
@@ -4116,7 +4116,7 @@
             "stats": {
                 "crit_chance": 0.1,
                 "crit_damage": 2.0,
-                "status_chance": 0.84,
+                "status_chance": 0.168,
                 "damage": {
                     "impact": 21.0,
                     "puncture": 21.0,
@@ -4138,7 +4138,7 @@
             "stats": {
                 "crit_chance": 0.1,
                 "crit_damage": 2.0,
-                "status_chance": 0.9,
+                "status_chance": 0.113,
                 "damage": {
                     "impact": 19.5,
                     "puncture": 19.5,
@@ -4267,7 +4267,7 @@
             "stats": {
                 "crit_chance": 0.25,
                 "crit_damage": 2.0,
-                "status_chance": 0.75,
+                "status_chance": 0.107,
                 "damage": {
                     "impact": 11.25,
                     "puncture": 48.75,
@@ -4700,7 +4700,7 @@
             "stats": {
                 "crit_chance": 0.06,
                 "crit_damage": 2.0,
-                "status_chance": 0.22,
+                "status_chance": 0.031,
                 "damage": {
                     "impact": 33.6,
                     "puncture": 4.2,
@@ -4722,7 +4722,7 @@
             "stats": {
                 "crit_chance": 0.06,
                 "crit_damage": 2.0,
-                "status_chance": 0.9,
+                "status_chance": 0.129,
                 "damage": {
                     "impact": 40.0,
                     "puncture": 5.0,
@@ -5250,7 +5250,7 @@
             "stats": {
                 "crit_chance": 0.2,
                 "crit_damage": 2.0,
-                "status_chance": 0.6,
+                "status_chance": 0.15,
                 "damage": {
                     "impact": 3.8,
                     "puncture": 41.8,
@@ -5294,7 +5294,7 @@
             "stats": {
                 "crit_chance": 0.17,
                 "crit_damage": 2.0,
-                "status_chance": 0.51,
+                "status_chance": 0.051,
                 "damage": {
                     "impact": 9.0,
                     "puncture": 5.0,
@@ -5316,7 +5316,7 @@
             "stats": {
                 "crit_chance": 0.06,
                 "crit_damage": 2.0,
-                "status_chance": 0.66,
+                "status_chance": 0.094,
                 "damage": {
                     "impact": 33.6,
                     "puncture": 4.2,
@@ -5338,7 +5338,7 @@
             "stats": {
                 "crit_chance": 0.06,
                 "crit_damage": 2.0,
-                "status_chance": 0.9,
+                "status_chance": 0.129,
                 "damage": {
                     "impact": 40.0,
                     "puncture": 5.0,
@@ -5580,7 +5580,7 @@
             "stats": {
                 "crit_chance": 0.04,
                 "crit_damage": 1.5,
-                "status_chance": 0.9,
+                "status_chance": 0.129,
                 "damage": {
                     "radiation": 40.0
                 },
@@ -5916,7 +5916,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "multishot": 1.0,
                 "fire_rate": 0.0,
@@ -6162,7 +6162,7 @@
             "stats": {
                 "crit_chance": 0.16,
                 "crit_damage": 1.8,
-                "status_chance": 1.44,
+                "status_chance": 1.2,
                 "damage": {
                     "viral": 2.0
                 },
@@ -6254,7 +6254,7 @@
             "stats": {
                 "crit_chance": 0.29,
                 "crit_damage": 2.0,
-                "status_chance": 1.11,
+                "status_chance": 0.111,
                 "damage": {
                     "impact": 6.75,
                     "puncture": 3.75,
@@ -6543,7 +6543,7 @@
             "stats": {
                 "crit_chance": 0.08,
                 "crit_damage": 1.5,
-                "status_chance": 0.96,
+                "status_chance": 0.137,
                 "damage": {
                     "radiation": 40.0
                 },
@@ -6846,7 +6846,7 @@
             "stats": {
                 "crit_chance": 0.2,
                 "crit_damage": 2.0,
-                "status_chance": 0.3,
+                "status_chance": 0.025,
                 "damage": {
                     "impact": 2.2,
                     "puncture": 2.2,
@@ -6868,7 +6868,7 @@
             "stats": {
                 "crit_chance": 0.24,
                 "crit_damage": 2.2,
-                "status_chance": 0.36,
+                "status_chance": 0.036,
                 "damage": {
                     "impact": 1.92,
                     "puncture": 1.92,
@@ -7049,7 +7049,7 @@
             "stats": {
                 "crit_chance": 0.24,
                 "crit_damage": 2.4,
-                "status_chance": 0.72,
+                "status_chance": 0.18,
                 "damage": {
                     "puncture": 8.0,
                     "toxin": 32.0
@@ -7454,7 +7454,7 @@
             "stats": {
                 "crit_chance": 0.18,
                 "crit_damage": 2.0,
-                "status_chance": 1.0,
+                "status_chance": 0.1,
                 "damage": {
                     "radiation": 26.0
                 },
@@ -7548,7 +7548,7 @@
             "stats": {
                 "crit_chance": 0.25,
                 "crit_damage": 2.7,
-                "status_chance": 0.33,
+                "status_chance": 0.165,
                 "damage": {
                     "impact": 4.0,
                     "puncture": 3.333,
@@ -7614,7 +7614,7 @@
             "stats": {
                 "crit_chance": 0.1,
                 "crit_damage": 2.0,
-                "status_chance": 0.99,
+                "status_chance": 0.066,
                 "damage": {
                     "impact": 18.8,
                     "puncture": 23.5,
@@ -7813,7 +7813,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "multishot": 1.0,
                 "fire_rate": 0.0,
@@ -8218,7 +8218,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -8592,7 +8592,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -8642,7 +8642,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -8674,7 +8674,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -8828,7 +8828,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -10230,7 +10230,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -10451,7 +10451,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -10754,7 +10754,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -10913,7 +10913,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -10927,7 +10927,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -11189,7 +11189,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }
@@ -11488,7 +11488,7 @@
             "stats": {
                 "crit_chance": 0.0,
                 "crit_damage": 1.0,
-                "status_chance": 0,
+                "status_chance": 0.0,
                 "damage": {},
                 "attack_speed": 0.0
             }

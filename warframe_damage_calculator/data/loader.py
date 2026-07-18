@@ -1,5 +1,5 @@
 from pathlib import Path
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from typing import Any, Literal, overload, Self
 
 from ..models.upgrade import Upgrade
@@ -23,7 +23,7 @@ type UpgradeFilter = Literal["upgrade", "upgrades", "mod", "mods", "arcane", "ar
 
 
 class WarframeDatabase:
-    def __init__(self, weapons: dict[str, Any], upgrades: dict[str, Any]) -> None:
+    def __init__(self, weapons: Mapping[str, Any], upgrades: Mapping[str, Any]) -> None:
         self.weapons = weapons
         self.upgrades = upgrades
         self._factory = DatabaseFactory()
@@ -39,7 +39,10 @@ class WarframeDatabase:
         folder = Path(folder)
         return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
 
-    def get(self, name: str | None = None, *, type: str | None = None, context: dict[str, Any] | None = None, attribute: str | None = None) -> DatabaseItem | None | list[str] | dict[str, DatabaseItem] | dict[str, object | None]:
+    @overload
+    def get(self, name: str) -> Primary | Secondary | Melee | Upgrade: ...
+
+    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> DatabaseItem | None | list[str] | dict[str, DatabaseItem] | dict[str, object | None]:
         if name is not None:
             entry = self._name_index.get(normalize_name(name))
             if entry is None or not entry_matches(entry, type):
@@ -53,7 +56,7 @@ class WarframeDatabase:
 
         return {entry.name: self._apply_attribute(self._create(entry, context), attribute) for entry in entries}
 
-    def _create(self, entry: DatabaseEntry, context: dict[str, Any] | None) -> DatabaseItem:
+    def _create(self, entry: DatabaseEntry, context: Mapping[str, Any] | None) -> DatabaseItem:
         item = self._factory.create(entry)
         if context is not None:
             item.data.context.update(context)

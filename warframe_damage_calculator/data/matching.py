@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from typing import Any
 
 from .normalization import as_list, normalize_identifier
@@ -45,7 +46,7 @@ def _normalized_values(value: Any) -> set[str]:
     return {normalize_identifier(item) for item in as_list(value)}
 
 
-def _requirements_match_type(requirements: dict[str, Any], requested: set[str]) -> bool:
+def _requirements_match_type(requirements: Mapping[str, Any], requested: set[str]) -> bool:
     for key, value in requirements.items():
         if normalize_identifier(key) in requested:
             return True
