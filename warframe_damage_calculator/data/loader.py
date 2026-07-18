@@ -1,5 +1,6 @@
 from pathlib import Path
 from collections.abc import Iterator, Mapping
+from copy import deepcopy
 from typing import Any, Literal, overload, Self
 
 from ..models.upgrade import Upgrade
@@ -57,10 +58,9 @@ class WarframeDatabase:
         return {entry.name: self._apply_attribute(self._create(entry, context), attribute) for entry in entries}
 
     def _create(self, entry: DatabaseEntry, context: Mapping[str, Any] | None) -> DatabaseItem:
-        item = self._factory.create(entry)
-        if context is not None:
-            item.data.context.update(context)
-        return item
+        data = deepcopy(entry.data)
+        data["context"] = dict(data.get("context", {})) | dict(context or {})
+        return self._factory.create(DatabaseEntry(entry.category, entry.name, data))
 
     def _iter_database_entries(self) -> Iterator[DatabaseEntry]:
         for category, entries in self.weapons.items():

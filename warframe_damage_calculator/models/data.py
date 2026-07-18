@@ -22,7 +22,7 @@ class Data(dict[str, DataValue]):
     def _convert_field(cls, key: str, value: DataValue) -> DataValue:
         annotation = next((base.__annotations__[key] for base in cls.__mro__ if key in getattr(base, "__annotations__", {})), None)
         if annotation is Dist:
-            return value if isinstance(value, Dist) else Dist(value)
+            return Dist(value)
         if isinstance(annotation, type) and issubclass(annotation, Data) and isinstance(value, Mapping):
             return value if isinstance(value, annotation) else annotation(value)
         if get_origin(annotation) is list and isinstance(value, list):

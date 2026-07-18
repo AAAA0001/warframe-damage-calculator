@@ -13,8 +13,31 @@ from warframe_damage_calculator.utils.types import DamageType
 def test_loader_context_and_attributes():
     upgrade = arsenal.get("Serration", context={"rank": 2})
     assert upgrade.data.context.rank == 2
+    assert upgrade.stats.total.base_damage == pytest.approx(0.45)
     assert arsenal.get("Serration", attribute="name") == "Serration"
     assert arsenal.get("Serration", attribute="base_damage") is not None
+
+    beam = arsenal.get("Corinth Prime", context={"is_beam": True})
+    regular = arsenal.get("Corinth Prime")
+    assert beam.stats.effective.ammo_efficiency == pytest.approx(0.5)
+    assert regular.data.context.is_beam is False
+    assert regular.stats.effective.ammo_efficiency == 0
+
+
+def test_default_distributions_are_independent():
+    first_weapon = Primary()
+    second_weapon = Primary()
+    first_upgrade = Upgrade()
+    second_upgrade = Upgrade()
+
+    first_weapon.data.stats.damage.data["impact"] = 1
+    first_upgrade.stats.total.damage.data["heat"] = 1
+
+    assert first_weapon.data.stats.damage is not second_weapon.data.stats.damage
+    assert second_weapon.data.stats.damage == Dist()
+    assert first_weapon.data_type.DEFAULT_STATS["damage"] == Dist()
+    assert first_upgrade.stats.total.damage is not second_upgrade.stats.total.damage
+    assert second_upgrade.stats.total.damage == Dist()
 
 
 def test_data_copy_is_independent():
