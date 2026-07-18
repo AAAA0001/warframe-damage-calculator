@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping, MutableMapping
 from copy import deepcopy
 from typing import ClassVar, Self, get_args, get_origin
 
@@ -6,77 +6,63 @@ from ..utils.types import DataValue, JsonValue, Number
 from .dist import Dist
 
 
-class Data(dict[str, DataValue]):
+class Data(MutableMapping[str, DataValue]):
     _fields: ClassVar[dict[str, object]] = {}
     _defaults: ClassVar[dict[str, DataValue]] = {}
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
+
         cls._fields = dict(getattr(cls.__base__, "_fields", {}))
         cls._defaults = dict(getattr(cls.__base__, "_defaults", {}))
-        for field, annotation in cls.__annotations__.items():
-            if field.startswith("_") or get_origin(annotation) is ClassVar:
+
+        for name, annotation in cls.__dict__.get("__annotations__", {}).items():
+            if name.startswith("_") or get_origin(annotation) is ClassVar:
                 continue
-            cls._fields[field] = annotation
-            if field in cls.__dict__:
-                cls._defaults[field] = cls.__dict__[field]
-                delattr(cls, field)
+
+            cls._fields[name] = annotation
+
+            if name in cls.__dict__:
+                cls._defaults[name] = cls.__dict__[name]
+                delattr(cls, name)
 
     def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
-        super().__init__()
+        object.__setattr__(self, "_values", {})
         self.update(deepcopy(self._defaults))
         self.update(data or {})
 
-    @staticmethod
-    def _convert(value: DataValue) -> DataValue:
-        if isinstance(value, Data): return value
-        if isinstance(value, Mapping): return Data(value)
-        if isinstance(value, list): return [Data._convert(item) for item in value]
-        return value
+    def __getitem__(self, key: str) -> DataValue:
+        return self._values[key]
 
-    @staticmethod
-    def _convert_items(values: list[DataValue], item_type: object) -> list[DataValue]:
-        if not isinstance(item_type, type) or not issubclass(item_type, Data):
-            return [Data._convert(value) for value in values]
-        items: list[DataValue] = []
-        for value in values:
-            if isinstance(value, item_type): items.append(value)
-            elif isinstance(value, Mapping): items.append(item_type(value))
-            else: items.append(value)
-        return items
+    def __setitem__(self, key: str, value: DataValue) -> None:
+        self._values[key] = self._convert_field(key, value)
 
-    @classmethod
-    def _convert_field(cls, key: str, value: DataValue) -> DataValue:
-        annotation = cls._fields.get(key)
-        if annotation is Dist:
-            return Dist(value)
-        if isinstance(annotation, type) and issubclass(annotation, Data) and isinstance(value, Mapping):
-            return value if isinstance(value, annotation) else annotation(value)
-        if get_origin(annotation) is list and isinstance(value, list):
-            return cls._convert_items(value, get_args(annotation)[0])
-        return cls._convert(value)
+    def __delitem__(self, key: str) -> None:
+        del self._values[key]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._values)
+
+    def __len__(self) -> int:
+        return len(self._values)
 
     def __getattr__(self, key: str) -> DataValue:
-        try: return self[key]
-        except KeyError: raise AttributeError(key) from None
-
-    def __delattr__(self, key: str) -> None:
-        try: del self[key]
-        except KeyError: raise AttributeError(key) from None
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(key) from None
 
     def __setattr__(self, key: str, value: DataValue) -> None:
-        dict.__setitem__(self, key, self._convert_field(key, value))
+        if key.startswith("_"):
+            object.__setattr__(self, key, value)
+        else:
+            self[key] = value
 
-    __setitem__ = __setattr__
-
-    def __or__(self, other: Mapping[str, DataValue]) -> Self:
-        return type(self)(dict(self) | dict(other))
-
-    def __ror__(self, other: Mapping[str, DataValue]) -> Self:
-        return type(self)(dict(other) | dict(self))
-
-    def update(self, data: Mapping[str, DataValue], /) -> None:
-        for key, value in data.items(): self[key] = value
+    def __delattr__(self, key: str) -> None:
+        try:
+            del self[key]
+        except KeyError:
+            raise AttributeError(key) from None
 
     def copy(self) -> Self:
         return deepcopy(self)
