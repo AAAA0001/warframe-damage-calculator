@@ -1,6 +1,6 @@
 from collections.abc import Mapping
 from copy import deepcopy
-from typing import Self, get_args, get_origin
+from typing import ClassVar, Self, get_args, get_origin
 
 from ..utils.types import DataValue, JsonValue, Number
 from .dist import Dist
@@ -57,63 +57,101 @@ class Data(dict[str, DataValue]):
         return deepcopy(self)
 
 
-class WeaponContext(Data):
+class DefaultData(Data):
+    DEFAULTS: ClassVar[Mapping[str, DataValue]] = {}
+
+    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
+        super().__init__(self.DEFAULTS | dict(data or {}))
+
+
+class ModelData(Data):
+    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
+        super().__init__({"stats": {}, "context": {}} | dict(data or {}))
+
+
+class WeaponContext(DefaultData):
+    DEFAULTS = {"category": "Weapon", "type": "", "name": ""}
+
     name: str
     category: str
     type: str
+
+
+class RangedContext(WeaponContext):
+    DEFAULTS = WeaponContext.DEFAULTS | {"trigger": "", "is_beam": False, "is_battery": False}
+
     trigger: str
     is_beam: bool
     is_battery: bool
 
 
-class WeaponInputStats(Data):
+class PrimaryContext(RangedContext):
+    DEFAULTS = RangedContext.DEFAULTS | {"category": "Primary"}
+
+
+class SecondaryContext(RangedContext):
+    DEFAULTS = RangedContext.DEFAULTS | {"category": "Secondary"}
+
+
+class MeleeContext(WeaponContext):
+    pass
+
+
+class WeaponInputStats(DefaultData):
+    DEFAULTS = {"damage": {}, "forced_procs": {}, "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0}
+
     damage: Dist
     forced_procs: Dist
+    crit_chance: Number
+    crit_damage: Number
+    status_chance: Number
+
+
+class RangedInputStats(WeaponInputStats):
+    DEFAULTS = WeaponInputStats.DEFAULTS | {"explosion_damage": {}, "explosion_forced_procs": {}, "multishot": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0}
+
     explosion_damage: Dist
     explosion_forced_procs: Dist
-    attack_speed: Number
     burst_count: int
     burst_delay: Number
     charge_time: Number
-    crit_chance: Number
-    crit_damage: Number
     fire_rate: Number
     magazine_capacity: Number
     multishot: Number
     recharge_rate: Number
     reload_speed: Number
-    status_chance: Number
+    weakpoint_damage: Number
 
 
-class WeaponData(Data):
+class MeleeInputStats(WeaponInputStats):
+    DEFAULTS = WeaponInputStats.DEFAULTS | {"attack_speed": 1.0}
+
+    attack_speed: Number
+
+
+class WeaponData(ModelData):
     stats: WeaponInputStats
     context: WeaponContext
 
-    DEFAULT_STATS = {"damage": Dist(), "forced_procs": Dist(), "crit_chance": 0.0, "crit_damage": 1.0, "status_chance": 0.0, "multiplicative_base_damage": 1.0, "base_damage": 0.0, "faction_damage": 1.0, "flat_crit_chance": 0.0, "multiplicative_crit_chance": 1.0, "flat_crit_damage": 0.0, "status_damage": 1.0}
-    DEFAULT_CONTEXT = {"category": "Weapon", "type": "", "name": ""}
-
-    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
-        values = dict(data or {})
-        super().__init__(values | {"stats": self.DEFAULT_STATS | values.get("stats", {}), "context": self.DEFAULT_CONTEXT | values.get("context", {})})
-
 
 class RangedData(WeaponData):
-    DEFAULT_STATS = WeaponData.DEFAULT_STATS | {"explosion_damage": Dist(), "explosion_forced_procs": Dist(), "multishot": 1.0, "fire_rate": 0.05, "burst_count": 1, "burst_delay": 0.0, "charge_time": 0.0, "reload_speed": 0.0, "recharge_rate": 0.0, "magazine_capacity": 1, "weakpoint_damage": 3.0, "multiplicative_fire_rate": 1.0, "ammo_efficiency": 0.0, "multiplicative_weakpoint_crit_chance": 1.0, "weakpoint_crit_chance": 0.0, "internal_bleeding": 0.0}
-    DEFAULT_CONTEXT = WeaponData.DEFAULT_CONTEXT | {"trigger": "", "is_beam": False, "is_battery": False}
+    stats: RangedInputStats
+    context: RangedContext
 
 
 class MeleeData(WeaponData):
-    DEFAULT_STATS = WeaponData.DEFAULT_STATS | {"attack_speed": 1.0, "melee_doughty": 0.0, "melee_duplicate": 0.0}
+    stats: MeleeInputStats
+    context: MeleeContext
 
 
 class PrimaryData(RangedData):
-    DEFAULT_STATS = RangedData.DEFAULT_STATS | {"hunter_munitions": 0.0, "primed_chamber": 0.0, "vigilante_bonus": 0.0}
-    DEFAULT_CONTEXT = RangedData.DEFAULT_CONTEXT | {"category": "Primary"}
+    stats: RangedInputStats
+    context: PrimaryContext
 
 
 class SecondaryData(RangedData):
-    DEFAULT_STATS = RangedData.DEFAULT_STATS | {"secondary_enervate": 0, "secondary_encumber": 0.0}
-    DEFAULT_CONTEXT = RangedData.DEFAULT_CONTEXT | {"category": "Secondary"}
+    stats: RangedInputStats
+    context: SecondaryContext
 
 
 class WeaponCalculatedStats(Data):
@@ -182,7 +220,9 @@ class WeaponAverageStats(Data):
     weakpoint_secondary_enervate_bonus: Number
 
 
-class UpgradeContext(Data):
+class UpgradeContext(DefaultData):
+    DEFAULTS = {"category": "Upgrade", "type": "", "name": "", "compatibility": [], "incompatibility": [], "requirements": {}, "max_rank": None, "max_stacks": None, "is_exilus": False}
+
     name: str
     category: str
     type: str
@@ -253,16 +293,9 @@ class UpgradeStatValues(Data):
     weakpoint_damage: JsonValue
 
 
-class UpgradeData(Data):
+class UpgradeData(ModelData):
     stats: UpgradeStatValues
     context: UpgradeContext
-
-    DEFAULT_STATS: dict[str, DataValue] = {}
-    DEFAULT_CONTEXT = {"category": "Upgrade", "type": "", "name": "", "compatibility": [], "incompatibility": [], "requirements": {}, "max_rank": None, "max_stacks": None, "is_exilus": False}
-
-    def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
-        values = dict(data or {})
-        super().__init__(values | {"stats": self.DEFAULT_STATS | values.get("stats", {}), "context": self.DEFAULT_CONTEXT | values.get("context", {})})
 
 
 class ResolvedStatValues(Data):

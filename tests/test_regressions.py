@@ -3,8 +3,8 @@ from typing import get_args
 import pytest
 import warframe_damage_calculator as package
 
-from warframe_damage_calculator import Build, Data, Primary, Upgrade, arsenal
-from warframe_damage_calculator.models.data import BuildData, ResolvedStatValues, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
+from warframe_damage_calculator import Build, Data, Melee, Primary, Secondary, Upgrade, arsenal
+from warframe_damage_calculator.models.data import BuildData, MeleeContext, MeleeInputStats, PrimaryContext, RangedInputStats, ResolvedStatValues, SecondaryContext, UpgradeContext, UpgradeData, UpgradeStatValues, WeaponAverageStats, WeaponCalculatedStats, WeaponContext, WeaponData, WeaponInputStats
 from warframe_damage_calculator.models.dist import Dist
 from warframe_damage_calculator.models.weapon import Weapon
 from warframe_damage_calculator.utils.types import DamageType
@@ -35,9 +35,11 @@ def test_default_distributions_are_independent():
 
     assert first_weapon.data.stats.damage is not second_weapon.data.stats.damage
     assert second_weapon.data.stats.damage == Dist()
-    assert first_weapon.data_type.DEFAULT_STATS["damage"] == Dist()
+    assert type(first_weapon.data.stats).DEFAULTS["damage"] == {}
     assert first_upgrade.stats.total.damage is not second_upgrade.stats.total.damage
     assert second_upgrade.stats.total.damage == Dist()
+    first_upgrade.data.context.compatibility.append("rifle")
+    assert second_upgrade.data.context.compatibility == []
 
 
 def test_data_copy_is_independent():
@@ -82,6 +84,29 @@ def test_typed_data_subclasses_preserve_nested_and_copy_types():
     assert isinstance(weapon.data | {"context": {"is_beam": False}}, WeaponData)
     assert isinstance({"context": {"is_beam": False}} | weapon.data, WeaponData)
     assert isinstance(weapon.data.copy().stats, WeaponInputStats)
+
+
+def test_weapon_input_defaults_and_category_types():
+    primary = Primary({"stats": {"crit_chance": 0.4}, "context": {"is_beam": True}})
+    secondary = Secondary()
+    melee = Melee()
+
+    assert type(primary.data.stats) is RangedInputStats
+    assert type(primary.data.context) is PrimaryContext
+    assert type(secondary.data.stats) is RangedInputStats
+    assert type(secondary.data.context) is SecondaryContext
+    assert type(melee.data.stats) is MeleeInputStats
+    assert type(melee.data.context) is MeleeContext
+    assert primary.data.stats.crit_chance == 0.4
+    assert primary.data.context.is_beam is True
+    assert primary.data.stats.multishot == 1
+    assert primary.data.stats.fire_rate == 0.05
+    assert primary.data.stats.weakpoint_damage == 3
+    assert melee.data.stats.attack_speed == 1
+
+    calculator_only = {"multiplicative_base_damage", "base_damage", "faction_damage", "flat_crit_chance", "multiplicative_crit_chance", "flat_crit_damage", "status_damage", "multiplicative_fire_rate", "ammo_efficiency", "multiplicative_weakpoint_crit_chance", "weakpoint_crit_chance", "internal_bleeding", "hunter_munitions", "primed_chamber", "vigilante_bonus", "secondary_enervate", "secondary_encumber", "melee_doughty", "melee_duplicate"}
+    assert calculator_only.isdisjoint(primary.data.stats)
+    assert calculator_only.isdisjoint(melee.data.stats)
 
 
 def test_dist_is_not_exported_from_package_root():
@@ -196,8 +221,8 @@ def test_model_data_is_public():
     damage = Dist({"impact": 1})
 
     assert all(hasattr(item, "data") for item in (weapon, upgrade, build, damage))
-    assert weapon.data.context == weapon.data_type.DEFAULT_CONTEXT
-    assert upgrade.data.context == UpgradeData.DEFAULT_CONTEXT
+    assert weapon.data.context == PrimaryContext.DEFAULTS
+    assert upgrade.data.context == UpgradeContext.DEFAULTS
     assert weapon.stats.weapon is weapon
     assert upgrade.stats.upgrade is upgrade
     assert build.stats.build is build
