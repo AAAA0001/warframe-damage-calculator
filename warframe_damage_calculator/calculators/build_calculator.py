@@ -9,12 +9,13 @@ from ..utils.constants import DAMAGE_TYPES
 
 
 class BuildCalculator:
-    BUCKETS = ("static", "conditional", "stacking", "rank_locked", "total")
+    BUCKETS = ("static", "conditional", "modular", "stacking", "rank_locked", "total")
 
     def __init__(self, build: Any) -> None:
         self.build = build
         self.static = ResolvedStat()
         self.conditional = ResolvedStat()
+        self.modular = ResolvedStat()
         self.stacking = ResolvedStat()
         self.rank_locked = ResolvedStat()
         self.total = ResolvedStat()

@@ -16,6 +16,7 @@ class UpgradeCalculator:
         self.upgrade = upgrade
         self.static = ResolvedStat()
         self.conditional = ResolvedStat()
+        self.modular = ResolvedStat()
         self.stacking = ResolvedStat()
         self.rank_locked = ResolvedStat()
         self.total = ResolvedStat()
@@ -82,6 +83,7 @@ class UpgradeCalculator:
         context = self._context(weapon_data, build_data)
         self.static = ResolvedStat()
         self.conditional = ResolvedStat()
+        self.modular = ResolvedStat()
         self.stacking = ResolvedStat()
         self.rank_locked = ResolvedStat()
         self.total = ResolvedStat()
@@ -106,7 +108,8 @@ class UpgradeCalculator:
                     required_rank = condition.get("rank")
                 if required_rank is not None:
                     if rank >= self._count(required_rank, "required rank"):
-                        self._record(self.rank_locked, stat, value)
+                        bucket = self.modular if required_upgrade is not None else self.rank_locked
+                        self._record(bucket, stat, value)
                 elif effect.get("stacking", effect.get("stacks", False)):
                     condition = self._key(condition)
                     stacks_value = context.upgrade.get("stacks")
@@ -116,8 +119,9 @@ class UpgradeCalculator:
                     if stacks:
                         value = self._scale(value, multiplier)
                         value = value if isinstance(value, bool) else value * stacks
-                        self._record(self.stacking, stat, value)
+                        bucket = self.modular if required_upgrade is not None else self.stacking
+                        self._record(bucket, stat, value)
                 elif condition is None or self._condition(context, condition):
                     value = self._scale(value, multiplier)
-                    bucket = self.static if condition is None and required_upgrade is None else self.conditional
+                    bucket = self.modular if required_upgrade is not None else self.static if condition is None else self.conditional
                     self._record(bucket, stat, value)

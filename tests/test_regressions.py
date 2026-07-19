@@ -339,9 +339,12 @@ def test_upgrade_effect_can_require_an_equipped_upgrade():
     alone = Build(bonus)
     together = Build(bonus, partner)
 
+    bonus.stats.resolve(build=together)
+    assert bonus.stats.modular.base_damage == 2
     assert alone.stats.total.base_damage == 1
     assert together.stats.static.base_damage == 1
-    assert together.stats.conditional.base_damage == 2
+    assert together.stats.conditional == {}
+    assert together.stats.modular.base_damage == 2
     assert together.stats.total.base_damage == 3
 
     pressure = arsenal.get("Sacrificial Pressure")
@@ -449,6 +452,7 @@ def test_upgrade_resolver_exposes_resolved_effect_buckets():
 
     assert upgrade.stats.static == {"base_damage": 1}
     assert upgrade.stats.conditional == {"base_damage": 2}
+    assert upgrade.stats.modular == {}
     assert upgrade.stats.stacking == {"base_damage": 6}
     assert upgrade.stats.total.base_damage == 9
     assert not hasattr(upgrade.stats, "stacked")

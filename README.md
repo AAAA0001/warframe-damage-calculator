@@ -37,7 +37,7 @@ is not a complete simulation of Warframe combat.
 - Rank-locked effects
 - Effects that require another equipped upgrade
 - Automatic weapon-category conditions such as `primary`, `shotgun`, or `bow`
-- Separate `static`, `conditional`, `stacking`, `rank_locked`, and `total` result buckets
+- Separate `static`, `conditional`, `modular`, `stacking`, `rank_locked`, and `total` result buckets
 
 ### Special mechanics
 
@@ -212,7 +212,7 @@ assert all(isinstance(item, Upgrade) for item in (pressure, steel, duplicate))
 
 weapon.configure(Build(pressure, steel, duplicate))
 
-print(weapon.build.stats.conditional)
+print(weapon.build.stats.modular)
 print(f"Duplicate multiplier: {weapon.stats.average.melee_duplicate_multiplier:.3f}x")
 print(weapon.format.summary())
 ```
@@ -826,12 +826,14 @@ Both upgrade and build calculators expose:
 ```python
 upgrade.stats.static
 upgrade.stats.conditional
+upgrade.stats.modular
 upgrade.stats.stacking
 upgrade.stats.rank_locked
 upgrade.stats.total
 
 build.stats.static
 build.stats.conditional
+build.stats.modular
 build.stats.stacking
 build.stats.rank_locked
 build.stats.total
