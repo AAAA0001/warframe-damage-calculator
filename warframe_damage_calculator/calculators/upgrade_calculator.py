@@ -88,12 +88,10 @@ class UpgradeCalculator:
         self._record(self.static, stat, self._scale(value, multiplier))
 
     def _compute_conditional_stats(self, context: SetupContext, stat: str, value: Any, condition: Any, multiplier: float) -> None:
-        if self._condition(context, condition):
-            self._record(self.conditional, stat, self._scale(value, multiplier))
+        if self._condition(context, condition): self._record(self.conditional, stat, self._scale(value, multiplier))
 
     def _compute_rank_locked_stats(self, bucket: ResolvedStat, stat: str, value: Any, required_rank: Any, rank: int) -> None:
-        if rank >= self._count(required_rank, "required rank"):
-            self._record(bucket, stat, value)
+        if rank >= self._count(required_rank, "required rank"): self._record(bucket, stat, value)
 
     def _compute_stacking_stats(self, context: SetupContext, bucket: ResolvedStat, stat: str, value: Any, stacks_on: Any, max_stacks: int | None, multiplier: float, defaults: bool) -> None:
         condition = self._key(stacks_on)
@@ -110,12 +108,9 @@ class UpgradeCalculator:
             return
         condition = effect.get("when")
         required_rank = self._required_rank(effect)
-        if required_rank is not None:
-            self._compute_rank_locked_stats(self.modular, stat, effect.value, required_rank, rank)
-        elif effect.get("stacks_on") is not None:
-            self._compute_stacking_stats(context, self.modular, stat, effect.value, effect.stacks_on, max_stacks, multiplier, defaults)
-        elif condition is None or self._condition(context, condition):
-            self._record(self.modular, stat, self._scale(effect.value, multiplier))
+        if required_rank is not None: self._compute_rank_locked_stats(self.modular, stat, effect.value, required_rank, rank)
+        elif effect.get("stacks_on") is not None: self._compute_stacking_stats(context, self.modular, stat, effect.value, effect.stacks_on, max_stacks, multiplier, defaults)
+        elif condition is None or self._condition(context, condition): self._record(self.modular, stat, self._scale(effect.value, multiplier))
 
     def resolve(self, weapon: Data | object | None = None, build: Data | object | None = None) -> None:
         weapon_data = getattr(weapon, "data", weapon) or Data()
@@ -141,13 +136,8 @@ class UpgradeCalculator:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 condition = effect.get("when")
                 required_rank = self._required_rank(effect)
-                if effect.get("when_equipped") is not None:
-                    self._compute_modular_stats(context, stat, effect, rank, max_stacks, multiplier, defaults)
-                elif required_rank is not None:
-                    self._compute_rank_locked_stats(self.rank_locked, stat, effect.value, required_rank, rank)
-                elif effect.get("stacks_on") is not None:
-                    self._compute_stacking_stats(context, self.stacking, stat, effect.value, effect.stacks_on, max_stacks, multiplier, defaults)
-                elif condition is None:
-                    self._compute_static_stats(stat, effect.value, multiplier)
-                else:
-                    self._compute_conditional_stats(context, stat, effect.value, condition, multiplier)
+                if effect.get("when_equipped") is not None: self._compute_modular_stats(context, stat, effect, rank, max_stacks, multiplier, defaults)
+                elif required_rank is not None: self._compute_rank_locked_stats(self.rank_locked, stat, effect.value, required_rank, rank)
+                elif effect.get("stacks_on") is not None: self._compute_stacking_stats(context, self.stacking, stat, effect.value, effect.stacks_on, max_stacks, multiplier, defaults)
+                elif condition is None: self._compute_static_stats(stat, effect.value, multiplier)
+                else: self._compute_conditional_stats(context, stat, effect.value, condition, multiplier)
