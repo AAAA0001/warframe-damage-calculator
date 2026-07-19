@@ -101,8 +101,7 @@ class UpgradeCalculator:
     def _compute_modular_stats(self, context: SetupContext, stat: str, effect: Data, rank: int, max_stacks: int | None, multiplier: float, defaults: bool) -> None:
         required = effect.when_equipped if isinstance(effect.when_equipped, list) else [effect.when_equipped]
         equipped = {self._key(name) for name in context.build.equipped}
-        if not all(self._key(name) in equipped for name in required):
-            return
+        if not all(self._key(name) in equipped for name in required): return
         condition = effect.get("when")
         required_rank = self._required_rank(effect)
         if required_rank is not None: self._compute_rank_locked_stats(self.modular, stat, effect.value, required_rank, rank)
