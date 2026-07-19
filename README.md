@@ -487,8 +487,8 @@ weapon_names = arsenal.get(type="weapon", attribute="name")
 model. Other attributes return a dictionary of extracted values:
 
 ```python
-weapon_crit = arsenal.get(type="weapon", attribute="crit_chance")
-shotgun_compatibility = arsenal.get(type="shotgun", attribute="compatibility")
+weapon_crits = arsenal.get(type="weapon", attribute="crit_chance")
+shotgun_triggers = arsenal.get(type="shotgun", attribute="trigger")
 ```
 
 ### Type filters
