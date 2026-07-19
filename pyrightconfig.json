@@ -1,8 +1,0 @@
-{
-    "include": [
-        "warframe_damage_calculator/data/loader.py",
-        "tests/typecheck_get.py"
-    ],
-    "typeCheckingMode": "strict",
-    "pythonVersion": "3.14"
-}

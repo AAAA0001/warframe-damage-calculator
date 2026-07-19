@@ -1,7 +1,7 @@
 from pathlib import Path
 from collections.abc import Iterator, Mapping
 from copy import deepcopy
-from typing import Any, cast, Literal, overload, Self
+from typing import Any, Literal, overload, Self
 
 from ..models.data import Data
 from ..models.melee import Melee
@@ -27,21 +27,20 @@ type UpgradeFilter = Literal["upgrade", "upgrades", "mod", "mods", "arcane", "ar
 
 def _normalize_rank_locked_effect(value: Any) -> Any:
     if isinstance(value, list):
-        return [_normalize_rank_locked_effect(item) for item in cast(list[Any], value)]
+        return [_normalize_rank_locked_effect(item) for item in value]
     if not isinstance(value, Mapping):
         return value
 
-    values = cast(Mapping[str, Any], value)
-    normalized: dict[str, Any] = {key: _normalize_rank_locked_effect(item) for key, item in values.items()}
+    normalized = {key: _normalize_rank_locked_effect(item) for key, item in value.items()}
     condition = normalized.get("when")
-    if isinstance(condition, Mapping) and set(cast(Mapping[object, object], condition)) == {"rank"}:
-        normalized["at_rank"] = cast(Mapping[str, Any], condition)["rank"]
+    if isinstance(condition, Mapping) and set(condition) == {"rank"}:
+        normalized["at_rank"] = condition["rank"]
         del normalized["when"]
     return normalized
 
 
 def _normalize_upgrades(upgrades: Mapping[str, Any]) -> dict[str, Any]:
-    normalized = deepcopy(dict(upgrades))
+    normalized = deepcopy(upgrades)
     for entries in normalized.values():
         for upgrade in entries.values():
             stats = upgrade.get("stats", {})
@@ -107,10 +106,7 @@ class WarframeDatabase:
     def get(self, name: None = ..., *, type: WeaponFilter, context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, WeaponItem]: ...
 
     @overload
-    def get(self, name: None = ..., *, type: None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, DatabaseItem]: ...
-
-    @overload
-    def get(self, name: None = ..., *, type: str, context: Mapping[str, Any] | None = ..., attribute: None = ...) -> Mapping[str, DatabaseItem]: ...
+    def get(self, name: None = ..., *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, DatabaseItem]: ...
 
     def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> object | None:
         if name is not None:
@@ -251,14 +247,9 @@ class _BundledDatabase(WarframeDatabase):
     def get(self, name: None = ..., *, type: WeaponFilter, context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, WeaponItem]: ...
 
     @overload
-    def get(self, name: None = ..., *, type: None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, DatabaseItem]: ...
+    def get(self, name: None = ..., *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, DatabaseItem]: ...
 
-    @overload
-    def get(self, name: None = ..., *, type: str, context: Mapping[str, Any] | None = ..., attribute: None = ...) -> Mapping[str, DatabaseItem]: ...
-
-    # The overloads above include the complete base set after the bundled-name
-    # refinements; Pyright does not recognize that augmented set as compatible.
-    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> object | None:  # pyright: ignore[reportIncompatibleMethodOverride]
+    def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> object | None:
         return super().get(name, type=type, context=context, attribute=attribute)
 
 
