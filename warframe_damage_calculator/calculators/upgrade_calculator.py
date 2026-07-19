@@ -37,8 +37,9 @@ class UpgradeCalculator:
         key = self._key(key)
         for field, value in context.items():
             if self._key(field) == key:
-                return value
-        return context.get(key.replace(" ", "_"), default)
+                return default if value is None else value
+        value = context.get(key.replace(" ", "_"), default)
+        return default if value is None else value
 
     def _condition(self, context: SetupContext, condition: Any) -> bool:
         condition = self._key(condition)

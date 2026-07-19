@@ -24,7 +24,34 @@ def test_loader_context_and_attributes():
     regular = arsenal.get("Corinth Prime")
     assert beam.stats.effective.ammo_efficiency == pytest.approx(0.5)
     assert regular.data.context.is_beam is False
+    assert arsenal.get("Corinth Prime", attribute="is_beam") is False
+    assert arsenal.get("Corinth Prime", attribute="missing") is None
     assert regular.stats.effective.ammo_efficiency == 0
+
+
+def test_bundled_stacking_upgrades_use_default_and_explicit_stack_counts():
+    blood_rush = arsenal.get("Blood Rush")
+    power_throw = arsenal.get("Power Throw")
+    weeping_wounds = arsenal.get("Weeping Wounds")
+
+    assert blood_rush.stats.stacking.crit_chance == pytest.approx(4.4)
+    assert power_throw.data.stats.base_damage.value == 1
+    assert power_throw.stats.stacking.base_damage == 3
+    assert weeping_wounds.stats.stacking.status_chance == pytest.approx(4.4)
+
+    no_stacks = arsenal.get("Blood Rush", context={"stacks": 0})
+    assert no_stacks.data.context.stacks == 0
+    assert no_stacks.stats.stacking == {}
+
+
+def test_all_bundled_database_queries_load():
+    all_items = arsenal.get()
+    mods = arsenal.get(type="mod")
+
+    assert all_items
+    assert mods
+    assert all(item is not None for item in all_items.values())
+    assert all(isinstance(item, Upgrade) for item in mods.values())
 
 
 def test_loader_normalizes_legacy_rank_locked_effects():

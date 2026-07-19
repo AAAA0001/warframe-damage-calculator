@@ -3,11 +3,12 @@ from collections.abc import Iterator, Mapping
 from copy import deepcopy
 from typing import Any, Literal, overload, Self
 
-from ..models.upgrade import Upgrade
-from ..models.weapon import Weapon
+from ..models.data import Data
+from ..models.melee import Melee
 from ..models.primary import Primary
 from ..models.secondary import Secondary
-from ..models.melee import Melee
+from ..models.upgrade import Upgrade
+from ..models.weapon import Weapon
 from .construction import DatabaseFactory
 from .matching import entry_matches
 from .normalization import normalize_identifier, normalize_name
@@ -65,7 +66,19 @@ class WarframeDatabase:
         return cls.from_files(folder / "weapons.json", folder / "upgrades.json")
 
     @overload
-    def get(self, name: str) -> Primary | Secondary | Melee | Upgrade: ...
+    def get(self, name: str, *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> DatabaseItem | None: ...
+
+    @overload
+    def get(self, name: str, *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: str) -> object | None: ...
+
+    @overload
+    def get(self, name: None = ..., *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: Literal["name"]) -> list[str]: ...
+
+    @overload
+    def get(self, name: None = ..., *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: str) -> list[str] | dict[str, object | None]: ...
+
+    @overload
+    def get(self, name: None = ..., *, type: str | None = ..., context: Mapping[str, Any] | None = ..., attribute: None = ...) -> dict[str, DatabaseItem]: ...
 
     def get(self, name: str | None = None, *, type: str | None = None, context: Mapping[str, Any] | None = None, attribute: str | None = None) -> DatabaseItem | None | list[str] | dict[str, DatabaseItem] | dict[str, object | None]:
         if name is not None:
@@ -101,6 +114,13 @@ class WarframeDatabase:
         return cls._extract_attribute(item, attribute)
 
     @staticmethod
+    def _data_value(data: Data, key: str) -> tuple[bool, object | None]:
+        try:
+            return True, data[key]
+        except KeyError:
+            return False, None
+
+    @staticmethod
     def _extract_attribute(item: DatabaseItem, attribute: str) -> object | None:
         key = normalize_identifier(attribute)
 
@@ -108,23 +128,29 @@ class WarframeDatabase:
             return item.data.context.get("name")
 
         if isinstance(item, Upgrade):
-            if key in item.data.context:
-                return item.data.context.get(key)
-            if key in item.data.stats:
-                return item.data.stats.get(key)
+            found, value = WarframeDatabase._data_value(item.data.context, key)
+            if found:
+                return value
+            found, value = WarframeDatabase._data_value(item.data.stats, key)
+            if found:
+                return value
             return None
 
-        if key in item.data.context:
-            return item.data.context.get(key)
+        found, value = WarframeDatabase._data_value(item.data.context, key)
+        if found:
+            return value
 
         calculator = item.stats
         for state_name in ("base", "effective"):
             state = getattr(calculator, state_name, None)
-            if state is not None and key in state:
-                return state.get(key)
+            if isinstance(state, Data):
+                found, value = WarframeDatabase._data_value(state, key)
+                if found:
+                    return value
 
-        if key in item.data.stats:
-            return item.data.stats.get(key)
+        found, value = WarframeDatabase._data_value(item.data.stats, key)
+        if found:
+            return value
         if hasattr(calculator, key):
             return getattr(calculator, key)
         if hasattr(item, key):

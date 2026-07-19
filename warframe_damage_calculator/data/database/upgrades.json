@@ -3131,7 +3131,7 @@
             },
             "stats": {
                 "base_damage": {
-                    "value": 1.833,
+                    "value": 1.0,
                     "stacks_on": "stacks"
                 }
             }
