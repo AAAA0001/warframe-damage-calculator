@@ -241,7 +241,10 @@ Melee fields:
 - `attack_speed`
 
 Unspecified fields use the model defaults defined by its typed `Data`
-subclasses.
+subclasses. Defaults are readable through attributes and `with_defaults()`, but
+`Data` iteration and `dict(data)` include only fields explicitly supplied or
+assigned. This keeps every typed `Data` object sparse without losing its normal
+default-value behavior.
 
 ---
 

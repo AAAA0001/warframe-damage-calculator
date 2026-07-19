@@ -7,7 +7,7 @@ from ..models.upgrade import Upgrade
 class WeaponCalculator:
     def __init__(self, weapon: Any) -> None:
         self.weapon = weapon
-        self.base = WeaponCalculatedStats(self.weapon.data.stats.copy())
+        self.base = WeaponCalculatedStats(self.weapon.data.stats.with_defaults())
         self.modded = WeaponCalculatedStats()
         self.effective = WeaponCalculatedStats()
         self.average = WeaponAverageStats()

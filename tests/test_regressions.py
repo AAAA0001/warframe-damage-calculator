@@ -99,6 +99,8 @@ def test_inline_default_data_behavior():
 
     assert first.inherited == "supplied"
     assert second.inherited == "child"
+    assert dict(first) == {"inherited": "supplied"}
+    assert dict(second) == {}
     assert first.mutable == []
     assert "absent" not in first
     with pytest.raises(AttributeError):
@@ -109,8 +111,19 @@ def test_inline_default_data_behavior():
 
     first.mutable.append(1)
     first.damage.data["impact"] = 2
+    assert first.mutable == [1]
+    assert first.damage == Dist({"impact": 2})
     assert second.mutable == []
     assert second.damage == Dist({"impact": 1})
+
+    copied = first.copy()
+    copied.mutable.append(2)
+    copied.damage.data["impact"] = 3
+    assert copied.mutable == [1, 2]
+    assert copied.damage == Dist({"impact": 3})
+    assert first.mutable == [1]
+    assert first.damage == Dist({"impact": 2})
+    assert dict(Child()) == {}
 
     existing = Child()
     container = Container({"entries": [{"inherited": "mapped"}, existing]})
@@ -129,6 +142,8 @@ def test_inline_default_data_behavior():
 
     resolved = ResolvedStatValues({"base_damage": 1})
     other = ResolvedStatValues()
+    assert dict(resolved) == {"base_damage": 1}
+    assert dict(other) == {}
     assert resolved.base_damage == 1
     assert resolved.crit_chance == 0.0
     assert resolved.enabled is False
@@ -138,6 +153,12 @@ def test_inline_default_data_behavior():
     assert isinstance(resolved.elements, Data)
     assert resolved.damage is not other.damage
     assert resolved.elements is not other.elements
+    assert all(hasattr(other, field) for field in ResolvedStatValues._fields)
+
+    dense = second.with_defaults()
+    assert dense["inherited"] == "child"
+    assert dense["mutable"] == []
+    assert "absent" not in dense
 
 
 def test_typed_data_subclasses_preserve_nested_and_copy_types():

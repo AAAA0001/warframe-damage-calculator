@@ -12,10 +12,10 @@ class UpgradeCalculator:
 
     def __init__(self, upgrade: Any) -> None:
         self.upgrade = upgrade
-        self.static = ResolvedStatValues.sparse()
-        self.conditional = ResolvedStatValues.sparse()
-        self.stacking = ResolvedStatValues.sparse()
-        self.rank_locked = ResolvedStatValues.sparse()
+        self.static = ResolvedStatValues()
+        self.conditional = ResolvedStatValues()
+        self.stacking = ResolvedStatValues()
+        self.rank_locked = ResolvedStatValues()
         self.total = ResolvedStatValues()
         self.resolve()
 
@@ -65,10 +65,10 @@ class UpgradeCalculator:
         weapon_data = getattr(weapon, "data", weapon) or Data()
         build_data = getattr(build, "data", build) or Data({"upgrades": []})
         context = self._context(weapon_data, build_data)
-        self.static = ResolvedStatValues.sparse()
-        self.conditional = ResolvedStatValues.sparse()
-        self.stacking = ResolvedStatValues.sparse()
-        self.rank_locked = ResolvedStatValues.sparse()
+        self.static = ResolvedStatValues()
+        self.conditional = ResolvedStatValues()
+        self.stacking = ResolvedStatValues()
+        self.rank_locked = ResolvedStatValues()
         self.total = ResolvedStatValues()
         maximums = [context.get(key) for key in ("max rank", "max stacks")]
         max_rank, max_stacks = (None if value is None else self._count(value, field) for value, field in zip(maximums, ("max rank", "max stacks")))

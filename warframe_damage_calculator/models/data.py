@@ -28,17 +28,33 @@ class Data(MutableMapping[str, DataValue]):
 
     def __init__(self, data: Mapping[str, DataValue] | None = None) -> None:
         object.__setattr__(self, "_values", {})
-        self.update(deepcopy(self._defaults))
+        object.__setattr__(self, "_default_values", {})
+        object.__setattr__(self, "_suppressed_defaults", set())
         self.update(data or {})
 
     def __getitem__(self, key: str) -> DataValue:
-        return self._values[key]
+        if key in self._values:
+            return self._values[key]
+        if key in self._suppressed_defaults or key not in self._defaults:
+            raise KeyError(key)
+        if key not in self._default_values:
+            default = deepcopy(self._defaults[key])
+            self._default_values[key] = self._convert_field(key, default)
+        return self._default_values[key]
 
     def __setitem__(self, key: str, value: DataValue) -> None:
+        self._suppressed_defaults.discard(key)
+        self._default_values.pop(key, None)
         self._values[key] = self._convert_field(key, value)
 
     def __delitem__(self, key: str) -> None:
-        del self._values[key]
+        if key in self._values:
+            del self._values[key]
+        elif key not in self._defaults or key in self._suppressed_defaults:
+            raise KeyError(key)
+        self._default_values.pop(key, None)
+        if key in self._defaults:
+            self._suppressed_defaults.add(key)
 
     def __iter__(self) -> Iterator[str]:
         return iter(self._values)
@@ -52,8 +68,11 @@ class Data(MutableMapping[str, DataValue]):
     def __deepcopy__(self, memo: dict[int, object]) -> Self:
         copied = type(self).__new__(type(self))
         object.__setattr__(copied, "_values", {})
+        object.__setattr__(copied, "_default_values", {})
+        object.__setattr__(copied, "_suppressed_defaults", self._suppressed_defaults.copy())
         memo[id(self)] = copied
         copied.update(deepcopy(self._values, memo))
+        object.__setattr__(copied, "_default_values", deepcopy(self._default_values, memo))
         return copied
 
     @staticmethod
@@ -102,6 +121,9 @@ class Data(MutableMapping[str, DataValue]):
         try: del self[key]
         except KeyError: raise AttributeError(key) from None
 
+    def __contains__(self, key: object) -> bool:
+        return key in self._values
+
     def __or__(self, other: Mapping[str, DataValue]) -> Self:
         return type(self)(dict(self) | dict(other))
 
@@ -114,13 +136,15 @@ class Data(MutableMapping[str, DataValue]):
     def copy(self) -> Self:
         return deepcopy(self)
 
-
-class ZeroData(Data):
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
-        for field in cls._fields:
-            cls._defaults.setdefault(field, 0.0)
-
+    def with_defaults(self) -> dict[str, DataValue]:
+        """Return explicit values plus readable declared defaults."""
+        values = {
+            key: self[key]
+            for key in self._defaults
+            if key not in self._suppressed_defaults
+        }
+        values.update(self._values)
+        return values
 
 class ModelData(Data):
     stats: Data = {}
@@ -344,46 +368,41 @@ class UpgradeData(ModelData):
     context: UpgradeContext
 
 
-class ResolvedStatValues(ZeroData):
+class ResolvedStatValues(Data):
     damage: Dist = Dist()
     elements: Data = Data()
-    ammo_efficiency: Number
-    attack_speed: Number
-    base_damage: Number
-    crit_chance: Number
-    crit_damage: Number
+    ammo_efficiency: Number = 0.0
+    attack_speed: Number = 0.0
+    base_damage: Number = 0.0
+    crit_chance: Number = 0.0
+    crit_damage: Number = 0.0
     enabled: bool = False
-    faction_damage: Number
-    fire_rate: Number
+    faction_damage: Number = 0.0
+    fire_rate: Number = 0.0
     fire_rate_lock: bool = False
-    flat_crit_chance: Number
-    flat_crit_damage: Number
-    hunter_munitions: Number
-    internal_bleeding: Number
-    magazine_capacity: Number
-    melee_doughty: Number
-    melee_duplicate: Number
-    multiplicative_base_damage: Number
-    multiplicative_crit_chance: Number
-    multiplicative_fire_rate: Number
-    multiplicative_weakpoint_crit_chance: Number
-    multishot: Number
+    flat_crit_chance: Number = 0.0
+    flat_crit_damage: Number = 0.0
+    hunter_munitions: Number = 0.0
+    internal_bleeding: Number = 0.0
+    magazine_capacity: Number = 0.0
+    melee_doughty: Number = 0.0
+    melee_duplicate: Number = 0.0
+    multiplicative_base_damage: Number = 0.0
+    multiplicative_crit_chance: Number = 0.0
+    multiplicative_fire_rate: Number = 0.0
+    multiplicative_weakpoint_crit_chance: Number = 0.0
+    multishot: Number = 0.0
     multishot_lock: bool = False
-    primed_chamber: Number
-    reload_speed: Number
-    secondary_encumber: Number
-    secondary_enervate: Number
-    status_chance: Number
-    status_damage: Number
-    vigilante_bonus: Number
-    weakpoint_crit_chance: Number
-    weakpoint_damage: Number
+    primed_chamber: Number = 0.0
+    reload_speed: Number = 0.0
+    secondary_encumber: Number = 0.0
+    secondary_enervate: Number = 0.0
+    status_chance: Number = 0.0
+    status_damage: Number = 0.0
+    vigilante_bonus: Number = 0.0
+    weakpoint_crit_chance: Number = 0.0
+    weakpoint_damage: Number = 0.0
 
-    @classmethod
-    def sparse(cls) -> Self:
-        values = cls()
-        values.clear()
-        return values
 
 class BuildData(Data):
     upgrades: list[UpgradeData]
