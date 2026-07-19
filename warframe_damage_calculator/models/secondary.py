@@ -5,6 +5,9 @@ from .ranged import Ranged
 
 
 class Secondary(Ranged):
+    data: SecondaryData
+    stats: SecondaryCalculator
+    format: SecondaryFormatter
     data_type = SecondaryData
     calculator_type = SecondaryCalculator
     formatter_type = SecondaryFormatter
