@@ -751,7 +751,6 @@ Each configured weapon exposes:
 |---|---|
 | `weapon.data` | Original weapon input and context. |
 | `weapon.build` | Active build. |
-| `weapon.build.stats` | Resolved and aggregated upgrade calculator. |
 | `weapon.stats` | Weapon calculator and all calculated states. |
 | `weapon.format` | Text formatter. |
 
