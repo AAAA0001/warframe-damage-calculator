@@ -8,7 +8,8 @@ dynamic = ["version"]
 description = "Average DPS/DPH calculator for Warframe weapons."
 readme = "README.md"
 requires-python = ">=3.14"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 
 authors = [
     { name = "Marcos Escobar Sánchez-Ocaña" }
@@ -28,7 +29,6 @@ classifiers = [
     "Topic :: Games/Entertainment",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.14",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 

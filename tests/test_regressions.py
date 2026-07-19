@@ -1,5 +1,7 @@
 from collections.abc import MutableMapping
-from typing import ClassVar, assert_type, get_args
+from json import load
+from pathlib import Path
+from typing import ClassVar, get_args
 
 import pytest
 import warframe_damage_calculator as package
@@ -10,6 +12,7 @@ from warframe_damage_calculator.models.fields import BuildContext, BuildData, Me
 from warframe_damage_calculator.models.dist import Dist
 from warframe_damage_calculator.models.weapon import Weapon
 from warframe_damage_calculator.data.loader import WarframeDatabase
+from warframe_damage_calculator.data.bundled_names import MeleeName, PrimaryName, SecondaryName, UpgradeName
 from warframe_damage_calculator.utils.types import DamageType
 
 
@@ -29,11 +32,28 @@ def test_loader_context_and_attributes():
     assert regular.stats.effective.ammo_efficiency == 0
 
 
-def test_bundled_literal_names_have_specific_types():
-    assert_type(arsenal.get("Corinth Prime"), Primary)
-    assert_type(arsenal.get("Kuva Nukor"), Secondary)
-    assert_type(arsenal.get("Prisma Skana"), Melee)
-    assert_type(arsenal.get("Serration"), Upgrade)
+def test_bundled_literal_names_match_database_categories_exactly():
+    database = Path(__file__).parents[1] / "warframe_damage_calculator" / "data" / "database"
+    with (database / "weapons.json").open(encoding="utf-8") as file:
+        weapons = load(file)
+    with (database / "upgrades.json").open(encoding="utf-8") as file:
+        upgrades = load(file)
+
+    expected = {
+        PrimaryName: set(weapons["primary"]),
+        SecondaryName: set(weapons["secondary"]),
+        MeleeName: set(weapons["melee"]),
+        UpgradeName: {name for entries in upgrades.values() for name in entries},
+    }
+    aliases = {alias: list(get_args(alias.__value__)) for alias in expected}
+
+    assert all(len(names) == len(set(names)) for names in aliases.values())
+    all_names = [name for names in aliases.values() for name in names]
+    database_names = [name for entries in weapons.values() for name in entries]
+    database_names.extend(name for entries in upgrades.values() for name in entries)
+    assert len(all_names) == len(set(all_names))
+    assert len(database_names) == len(set(database_names))
+    assert {alias: set(names) for alias, names in aliases.items()} == expected
 
 
 def test_bundled_stacking_upgrades_use_default_and_explicit_stack_counts():
