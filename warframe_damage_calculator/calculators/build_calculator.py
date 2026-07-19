@@ -38,8 +38,7 @@ class BuildCalculator:
 
     def resolve(self, weapon: Data | object | None = None) -> None:
         weapon_data = getattr(weapon, "data", weapon) or Data()
-        names = {" ".join(str(upgrade.context.get("name", "")).casefold().split()) for upgrade in self.build.data.get("upgrades", [])}
-        self.build.data.context.sacrificial_set = {"sacrificial pressure", "sacrificial steel"}.issubset(names)
+        self.build.data.context.equipped = [" ".join(str(upgrade.context.get("name", "")).casefold().split()) for upgrade in self.build.data.get("upgrades", [])]
         for bucket in self.BUCKETS:
             setattr(self, bucket, ResolvedStat())
 

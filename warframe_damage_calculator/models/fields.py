@@ -245,7 +245,7 @@ class UpgradeContext(Data):
 
 
 class BuildContext(Data):
-    sacrificial_set: bool = False
+    equipped: list[str] = []
 
 
 class SetupContext(Data):

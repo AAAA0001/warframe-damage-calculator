@@ -46,9 +46,12 @@ class UpgradeCalculator:
             types = {weapon, self._key(context.weapon.get("category") or "")} - {""}
             if weapon == "bow": types.add("rifle")
             return condition in types
-        if condition == "sacrificial set":
-            return bool(context.build.sacrificial_set)
         return bool(self._value(context.upgrade, condition, True))
+
+    def _equipped(self, context: SetupContext, required: Any) -> bool:
+        required = required if isinstance(required, list) else [required]
+        equipped = {self._key(name) for name in context.build.equipped}
+        return all(self._key(name) in equipped for name in required)
 
     def _count(self, value: Any, field: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
@@ -95,6 +98,9 @@ class UpgradeCalculator:
             for raw in effects if isinstance(effects, list) else [effects]:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 value, condition = effect.value, effect.get("when")
+                required_upgrade = effect.get("when_equiped")
+                if required_upgrade is not None and not self._equipped(context, required_upgrade):
+                    continue
                 required_rank = effect.get("at_rank")
                 if required_rank is None and isinstance(condition, Mapping):
                     required_rank = condition.get("rank")
@@ -113,5 +119,5 @@ class UpgradeCalculator:
                         self._record(self.stacking, stat, value)
                 elif condition is None or self._condition(context, condition):
                     value = self._scale(value, multiplier)
-                    bucket = self.static if condition is None else self.conditional
+                    bucket = self.static if condition is None and required_upgrade is None else self.conditional
                     self._record(bucket, stat, value)

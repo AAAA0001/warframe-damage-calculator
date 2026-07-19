@@ -351,8 +351,7 @@ context. Examples include:
 - `primary`, `secondary`, and `melee`
 - `rifle`, `bow`, `shotgun`, `sniper`, and `pistol`
 - the normalized weapon type in `weapon`
-- `sacrificial set` when both Sacrificial Pressure and Sacrificial Steel are
-  equipped
+- `when_equiped` effects when the named upgrade is present in the build
 
 A bow also satisfies the `rifle` condition.
 

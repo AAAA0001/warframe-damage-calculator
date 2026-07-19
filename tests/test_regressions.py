@@ -317,16 +317,39 @@ def test_build_context_tracks_upgrade_mutations():
     pressure = Upgrade({"context": {"name": "Sacrificial Pressure"}})
     steel = Upgrade({"context": {"name": "Sacrificial Steel"}})
 
-    assert build.data.context.sacrificial_set is False
+    assert build.data.context.equipped == []
 
     build.data.upgrades.append(pressure.data)
     build.data.upgrades.append(steel.data)
     build.stats.resolve()
-    assert build.data.context.sacrificial_set is True
+    assert build.data.context.equipped == ["sacrificial pressure", "sacrificial steel"]
 
     build.data.upgrades.pop()
     build.stats.resolve()
-    assert build.data.context.sacrificial_set is False
+    assert build.data.context.equipped == ["sacrificial pressure"]
+
+
+def test_upgrade_effect_can_require_an_equipped_upgrade():
+    bonus = Upgrade({
+        "context": {"name": "Bonus"},
+        "stats": {"base_damage": [1, {"value": 2, "when_equiped": "Partner"}]},
+    })
+    partner = Upgrade({"context": {"name": "Partner"}})
+
+    alone = Build(bonus)
+    together = Build(bonus, partner)
+
+    assert alone.stats.total.base_damage == 1
+    assert together.stats.static.base_damage == 1
+    assert together.stats.conditional.base_damage == 2
+    assert together.stats.total.base_damage == 3
+
+    pressure = arsenal.get("Sacrificial Pressure")
+    steel = arsenal.get("Sacrificial Steel")
+    assert Build(steel).stats.total.crit_chance == 2.2
+    sacrificial = Build(pressure, steel)
+    assert sacrificial.stats.total.base_damage == 1.375
+    assert sacrificial.stats.total.crit_chance == 2.75
 
 
 def test_build_resolver_returns_none():

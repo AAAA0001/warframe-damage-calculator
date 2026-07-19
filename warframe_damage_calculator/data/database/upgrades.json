@@ -3932,7 +3932,7 @@
                     1.1,
                     {
                         "value": 0.275,
-                        "when": "sacrificial set"
+                        "when_equiped": "Sacrificial Steel"
                     }
                 ]
             }
@@ -3958,7 +3958,7 @@
                     2.2,
                     {
                         "value": 0.55,
-                        "when": "sacrificial set"
+                        "when_equiped": "Sacrificial Pressure"
                     }
                 ]
             }
