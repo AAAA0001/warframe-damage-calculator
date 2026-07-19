@@ -355,6 +355,29 @@ def test_upgrade_effect_can_require_an_equipped_upgrade():
     assert sacrificial.stats.total.crit_chance == 2.75
 
 
+def test_automatic_special_mechanics_are_static_upgrade_stats():
+    encumber = arsenal.get("Secondary Encumber")
+    enervate = arsenal.get("Secondary Enervate")
+    duplicate = arsenal.get("Melee Duplicate")
+    doughty = arsenal.get("Melee Doughty")
+    bleeding = arsenal.get("Internal Bleeding")
+    hemorrhage = arsenal.get("Hemorrhage")
+
+    assert encumber.stats.static.secondary_encumber == 0.24
+    assert encumber.stats.conditional == {}
+    assert enervate.data.stats == {"secondary_enervate": 6}
+    assert enervate.stats.static.secondary_enervate == 6
+    assert enervate.stats.conditional == {}
+    assert duplicate.stats.static.melee_duplicate == 1
+    assert duplicate.stats.conditional == {}
+    assert doughty.stats.static.melee_doughty == 2
+    assert doughty.stats.conditional == {}
+    assert bleeding.stats.static.internal_bleeding == 0.35
+    assert bleeding.stats.conditional == {}
+    assert hemorrhage.stats.static.internal_bleeding == 0.35
+    assert hemorrhage.stats.conditional == {}
+
+
 def test_build_resolver_returns_none():
     build = Build(Upgrade({"stats": {"base_damage": 0.5}}))
 

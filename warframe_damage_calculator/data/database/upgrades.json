@@ -2034,10 +2034,7 @@
                 "category": "mod"
             },
             "stats": {
-                "internal_bleeding": {
-                    "value": 0.35,
-                    "when": "impact proc"
-                }
+                "internal_bleeding": 0.35
             }
         },
         "Higasa Serration": {
@@ -2263,10 +2260,7 @@
                 "category": "mod"
             },
             "stats": {
-                "internal_bleeding": {
-                    "value": 0.35,
-                    "when": "impact proc"
-                }
+                "internal_bleeding": 0.35
             }
         },
         "Ion Infusion": {
@@ -5299,10 +5293,7 @@
                 "category": "arcane"
             },
             "stats": {
-                "melee_doughty": {
-                    "value": 2.0,
-                    "when": "puncture proc"
-                }
+                "melee_doughty": 2.0
             }
         },
         "Melee Duplicate": {
@@ -5319,10 +5310,7 @@
                 "category": "arcane"
             },
             "stats": {
-                "melee_duplicate": {
-                    "value": 1.0,
-                    "when": "critical hit"
-                }
+                "melee_duplicate": 1.0
             }
         },
         "Melee Exposure": {
@@ -5549,10 +5537,7 @@
                 "category": "arcane"
             },
             "stats": {
-                "secondary_encumber": {
-                    "value": 0.24,
-                    "when": "status proc"
-                }
+                "secondary_encumber": 0.24
             }
         },
         "Secondary Enervate": {
@@ -5569,14 +5554,7 @@
                 "category": "arcane"
             },
             "stats": {
-                "flat_crit_chance": {
-                    "value": 0.3,
-                    "when": "hit"
-                },
-                "secondary_enervate": {
-                    "value": 18.0,
-                    "when": "hit"
-                }
+                "secondary_enervate": 6
             }
         },
         "Secondary Merciless": {

@@ -167,10 +167,7 @@ is recalculated.
 from warframe_damage_calculator import Build, Secondary, Upgrade, arsenal
 
 weapon = arsenal.get("Kuva Nukor")
-encumber = arsenal.get(
-    "Secondary Encumber",
-    context={"status proc": True},
-)
+encumber = arsenal.get("Secondary Encumber")
 
 assert isinstance(weapon, Secondary)
 assert isinstance(encumber, Upgrade)
@@ -183,10 +180,11 @@ print(f"Expected DoT per attack:   {average.flat_dotph:.2f}")
 print(f"Total DPS:                 {average.total_dps:.2f}")
 ```
 
-Secondary Enervate is configured in the same way:
+Secondary Enervate is configured in the same way. Its per-hit critical-chance
+state and reset behavior are handled automatically:
 
 ```python
-enervate = arsenal.get("Secondary Enervate", context={"hit": True})
+enervate = arsenal.get("Secondary Enervate")
 assert isinstance(enervate, Upgrade)
 weapon.configure(enervate)
 
@@ -202,10 +200,7 @@ from warframe_damage_calculator import Build, Melee, Upgrade, arsenal
 weapon = arsenal.get("Prisma Skana")
 pressure = arsenal.get("Sacrificial Pressure")
 steel = arsenal.get("Sacrificial Steel")
-duplicate = arsenal.get(
-    "Melee Duplicate",
-    context={"critical hit": True},
-)
+duplicate = arsenal.get("Melee Duplicate")
 
 assert isinstance(weapon, Melee)
 assert all(isinstance(item, Upgrade) for item in (pressure, steel, duplicate))
