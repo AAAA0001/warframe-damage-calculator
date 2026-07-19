@@ -13,6 +13,7 @@ class Weapon:
     data: WeaponData
     stats: WeaponCalculator
     format: WeaponFormatter
+    
     data_type = WeaponData
     calculator_type = WeaponCalculator
     formatter_type = WeaponFormatter
