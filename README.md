@@ -213,8 +213,7 @@ print(weapon.format.summary())
 ```
 
 Sacrificial Pressure and Sacrificial Steel detect each other through their
-`when_equiped` effects. The spelling is intentionally shown exactly as it exists
-in the current upgrade schema.
+`when_equipped` effects.
 
 ### Build composition and comparison
 
@@ -339,7 +338,7 @@ name. Upgrade `reload_speed` values are additive reload-speed modifiers.
 A stat may contain one effect or a list of effects:
 
 ```python
-from warframe_damage_calculator import Upgrade
+from warframe_damage_calculator import Build, Upgrade
 
 upgrade = Upgrade(
     {
@@ -353,6 +352,7 @@ upgrade = Upgrade(
                     "stacking": True,
                 },
                 {"value": 0.25, "at_rank": 5},
+                {"value": 0.15, "when_equipped": "Partner"},
             ],
         },
         "context": {
@@ -365,12 +365,15 @@ upgrade = Upgrade(
         },
     }
 )
+partner = Upgrade({"context": {"name": "Partner"}})
+upgrade.stats.resolve(build=Build(upgrade, partner))
 
 print(upgrade.stats.static.base_damage)       # 0.30
 print(upgrade.stats.conditional.base_damage)  # 0.20
+print(upgrade.stats.modular.base_damage)      # 0.15
 print(upgrade.stats.stacking.base_damage)     # 0.20
 print(upgrade.stats.rank_locked.base_damage)  # 0.25
-print(upgrade.stats.total.base_damage)        # 0.95
+print(upgrade.stats.total.base_damage)        # 1.10
 ```
 
 The equivalent stacking marker `"stacks": True` is also accepted.
@@ -665,7 +668,7 @@ An upgrade stat accepts these forms:
 | Conditional | `{"value": 0.3, "when": "headshot"}` | Active when the named condition is truthy. |
 | Stacking | `{"value": 0.1, "when": "kill", "stacking": True}` | Multiplied by the named stack count. |
 | Rank-locked | `{"value": 0.3, "at_rank": 5}` | Added at full value once the required rank is reached. |
-| Equipped requirement | `{"value": 0.55, "when_equiped": "Partner"}` | Active when the named upgrade is in the same build. |
+| Equipped requirement | `{"value": 0.55, "when_equipped": "Partner"}` | Active when the named upgrade is in the same build. |
 | Multiple effects | `[1.0, {...}, {...}]` | Resolves every listed effect independently. |
 
 Boolean effects aggregate with logical OR. Numeric values add together.
@@ -734,7 +737,7 @@ automatically:
 - `primary`, `secondary`, and `melee`
 - `rifle`, `bow`, `shotgun`, `sniper`, and `pistol`
 - the normalized weapon type
-- `when_equiped` requirements from the active build
+- `when_equipped` requirements from the active build
 
 A bow also satisfies the `rifle` condition.
 

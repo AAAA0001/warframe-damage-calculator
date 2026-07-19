@@ -3926,7 +3926,7 @@
                     1.1,
                     {
                         "value": 0.275,
-                        "when_equiped": "Sacrificial Steel"
+                        "when_equipped": "Sacrificial Steel"
                     }
                 ]
             }
@@ -3952,7 +3952,7 @@
                     2.2,
                     {
                         "value": 0.55,
-                        "when_equiped": "Sacrificial Pressure"
+                        "when_equipped": "Sacrificial Pressure"
                     }
                 ]
             }

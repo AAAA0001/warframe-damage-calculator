@@ -332,7 +332,7 @@ def test_build_context_tracks_upgrade_mutations():
 def test_upgrade_effect_can_require_an_equipped_upgrade():
     bonus = Upgrade({
         "context": {"name": "Bonus"},
-        "stats": {"base_damage": [1, {"value": 2, "when_equiped": "Partner"}]},
+        "stats": {"base_damage": [1, {"value": 2, "when_equipped": "Partner"}]},
     })
     partner = Upgrade({"context": {"name": "Partner"}})
 

@@ -100,7 +100,7 @@ class UpgradeCalculator:
             for raw in effects if isinstance(effects, list) else [effects]:
                 effect = raw if isinstance(raw, Data) and "value" in raw else Data({"value": raw})
                 value, condition = effect.value, effect.get("when")
-                required_upgrade = effect.get("when_equiped")
+                required_upgrade = effect.get("when_equipped")
                 if required_upgrade is not None and not self._equipped(context, required_upgrade):
                     continue
                 required_rank = effect.get("at_rank")
