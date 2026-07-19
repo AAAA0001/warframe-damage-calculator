@@ -50,11 +50,6 @@ class UpgradeCalculator:
             return condition in types
         return bool(self._value(context.upgrade, condition, True))
 
-    def _equipped(self, context: SetupContext, required: Any) -> bool:
-        required = required if isinstance(required, list) else [required]
-        equipped = {self._key(name) for name in context.build.equipped}
-        return all(self._key(name) in equipped for name in required)
-
     def _count(self, value: Any, field: str) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
             raise ValueError(f"{field} on {self.upgrade.data.context.name or '<unnamed upgrade>'!r} must be a non-negative integer")
@@ -104,7 +99,9 @@ class UpgradeCalculator:
             self._record(bucket, stat, value if isinstance(value, bool) else value * stacks)
 
     def _compute_modular_stats(self, context: SetupContext, stat: str, effect: Data, rank: int, max_stacks: int | None, multiplier: float, defaults: bool) -> None:
-        if not self._equipped(context, effect.when_equipped):
+        required = effect.when_equipped if isinstance(effect.when_equipped, list) else [effect.when_equipped]
+        equipped = {self._key(name) for name in context.build.equipped}
+        if not all(self._key(name) in equipped for name in required):
             return
         condition = effect.get("when")
         required_rank = self._required_rank(effect)
