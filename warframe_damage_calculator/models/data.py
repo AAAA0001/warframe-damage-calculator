@@ -152,10 +152,6 @@ class Data(MutableMapping[str, DataValue]):
         return deepcopy(self)
 
     def with_defaults(self) -> dict[str, DataValue]:
-        values = {
-            key: self._convert_field(key, deepcopy(default))
-            for key, default in self._defaults.items()
-            if key not in self._suppressed_defaults
-        }
+        values = {key: self._convert_field(key, deepcopy(default)) for key, default in self._defaults.items() if key not in self._suppressed_defaults}
         values.update(deepcopy(self._values))
         return values
