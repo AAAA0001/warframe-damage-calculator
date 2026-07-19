@@ -573,10 +573,10 @@ Use `with_defaults()` for a detached, dense snapshot:
 
 ```python
 snapshot = weapon.data.stats.with_defaults()
-snapshot["damage"]
+snapshot["crit_chance"] = 2
 
 # The original model is unchanged.
-print(weapon.data.stats.damage.total_damage())  # 0
+print(weapon.data.stats.crit_chance)  # 0
 ```
 
 `copy()` performs a deep copy, including nested data, lists, and damage
