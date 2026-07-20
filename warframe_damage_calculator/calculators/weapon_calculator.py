@@ -1,29 +1,14 @@
 from math import expm1, log1p
-from typing import TYPE_CHECKING
+from typing import Any
 
 from ..models.build import Build
-from ..models.data import Data
-from ..models.fields import Attack, AverageStats, CalculatedStats, ResolvedStat
+from ..models.fields import Attack, AttackBucket, CalculatedStats
 from ..models.upgrade import Upgrade
 from ..utils.constants import DOT_MULTIPLIERS
 
-if TYPE_CHECKING:
-    from ..models.weapon import Weapon
-
-
-class AttackBucket(Data):
-    name: str = ""
-    attack: Attack = Attack()
-    build: ResolvedStat = ResolvedStat()
-    base: CalculatedStats = CalculatedStats()
-    modded: CalculatedStats = CalculatedStats()
-    effective: CalculatedStats = CalculatedStats()
-    average: AverageStats = AverageStats()
-    children: list["AttackBucket"] = []
-
 
 class WeaponCalculator:
-    def __init__(self, weapon: "Weapon") -> None:
+    def __init__(self, weapon: Any) -> None:
         self.weapon = weapon
         self.recompute()
 

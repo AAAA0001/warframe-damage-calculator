@@ -1,5 +1,6 @@
 from ..utils.functions import clamp, true_round
-from .weapon_calculator import AttackBucket, WeaponCalculator
+from ..models.fields import AttackBucket
+from .weapon_calculator import WeaponCalculator
 
 
 class MeleeCalculator(WeaponCalculator):

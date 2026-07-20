@@ -432,3 +432,14 @@ class ResolvedStat(Data):
     vigilante_bonus: Number = 0.0
     weakpoint_crit_chance: Number = 0.0
     weakpoint_damage: Number = 0.0
+
+
+class AttackBucket(Data):
+    name: str = ""
+    attack: Attack = Attack()
+    build: ResolvedStat = ResolvedStat()
+    base: CalculatedStats = CalculatedStats()
+    modded: CalculatedStats = CalculatedStats()
+    effective: CalculatedStats = CalculatedStats()
+    average: AverageStats = AverageStats()
+    children: list["AttackBucket"] = []

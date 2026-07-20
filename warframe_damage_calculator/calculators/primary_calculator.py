@@ -1,7 +1,7 @@
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
+from ..models.fields import AttackBucket
 from .ranged_calculator import RangedCalculator
-from .weapon_calculator import AttackBucket
 
 
 class PrimaryCalculator(RangedCalculator):

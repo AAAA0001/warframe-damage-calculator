@@ -3,11 +3,10 @@ from types import MappingProxyType
 from typing import get_args
 
 from warframe_damage_calculator import Build, Primary, Upgrade, Weapon, arsenal
-from warframe_damage_calculator.calculators.weapon_calculator import AttackBucket
 from warframe_damage_calculator.loader.bundled_names import MeleeName, PrimaryName, SecondaryName, UpgradeName
 from warframe_damage_calculator.models.data import Data
 from warframe_damage_calculator.models.dist import Dist
-from warframe_damage_calculator.models.fields import Attack, Attacks, CalculatedStats, DistData, Evolutions, ResolvedStat
+from warframe_damage_calculator.models.fields import Attack, AttackBucket, Attacks, CalculatedStats, DistData, Evolutions, ResolvedStat
 
 
 def galvanized_build() -> Build:
