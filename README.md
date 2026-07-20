@@ -1048,6 +1048,7 @@ shots, projectiles, or animation frames.
 ### Fire cycle
 
 - Charge time and burst timing are included in average fire rate.
+- Condition Overload uses the expected number of distinct status types acquired over a five-second firing window.
 - `fire_rate_lock` ignores additive and multiplicative fire-rate upgrades.
 - `multishot_lock` preserves native multishot but ignores upgrade multishot.
 - Beam weapons apply beam-specific ammo-efficiency and DoT multishot behavior.
