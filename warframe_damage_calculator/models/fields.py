@@ -370,10 +370,6 @@ class UpgradeData(Data):
         return runtime
 
 
-class BuildData(Data):
-    upgrades: list[UpgradeData]
-    context: BuildContext = {}
-
 # ------------------------------------------------------------------------
 # Output Stats
 # ------------------------------------------------------------------------

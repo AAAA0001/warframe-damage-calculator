@@ -2,14 +2,12 @@ from collections.abc import Iterator
 from typing import Self
 
 from ..calculators.build_calculator import BuildCalculator
-from .fields import BuildData
 from .upgrade import Upgrade
 
 
 class Build:
     def __init__(self, *upgrades: Upgrade) -> None:
         self.upgrades = [self._copy_upgrade(upgrade) for upgrade in upgrades]
-        self.data = BuildData({"upgrades": [upgrade.data.copy() for upgrade in self.upgrades]})
         self.stats = BuildCalculator(self)
 
     def __iter__(self) -> Iterator[Upgrade]:

@@ -389,9 +389,8 @@ upgrade.stats.resolve()
 print(upgrade.stats.total)
 ```
 
-When an upgrade is already inside a build, create a new `Build` from the updated
-upgrade or modify `build.data.upgrades` deliberately and call
-`build.stats.resolve()`. Calling `weapon.configure(build)` or
+When an upgrade is already inside a build, update the matching item in
+`build.upgrades` and call `build.stats.resolve()`. Calling `weapon.configure(build)` or
 `weapon.stats.recompute()` then refreshes the weapon outputs.
 
 ---
@@ -540,8 +539,7 @@ weapon.data.stats
 weapon.data.context
 upgrade.data.stats
 upgrade.data.context
-build.data.upgrades
-build.data.context
+build.upgrades
 ```
 
 Nested mappings are converted to typed data objects, so fields support both

@@ -3,7 +3,7 @@ from typing import Any
 
 from ..models.data import Data
 from ..models.dist import Dist
-from ..models.fields import ResolvedStat
+from ..models.fields import BuildContext, ResolvedStat
 from ..models.upgrade import Upgrade
 from ..utils.constants import DAMAGE_TYPES
 
@@ -46,13 +46,15 @@ class BuildCalculator:
 
     def resolve(self, weapon: Data | object | None = None) -> None:
         weapon_data = getattr(weapon, "data", weapon) or Data()
-        self.build.data.context.equipped = [" ".join(str(upgrade.data.name or "").casefold().split()) for upgrade in self.build.upgrades]
+        build_data = Data({"context": BuildContext({
+            "equipped": [" ".join(str(upgrade.data.name or "").casefold().split()) for upgrade in self.build.upgrades]
+        })})
         for bucket in self.BUCKETS:
             setattr(self, bucket, ResolvedStat())
 
         for upgrade in self.build.upgrades:
             calculator = upgrade.stats
-            calculator.resolve(weapon_data, self.build)
+            calculator.resolve(weapon_data, build_data)
             for bucket in self.BUCKETS:
                 target = getattr(self, bucket)
                 for stat, value in getattr(calculator, bucket).items():

@@ -129,6 +129,12 @@ class PublicApiTests(unittest.TestCase):
         reduced = build - chamber
         self.assertEqual([upgrade.data.name for upgrade in reduced], ["Galvanized Aptitude"])
 
+    def test_build_has_one_canonical_upgrade_collection(self):
+        build = galvanized_build()
+
+        self.assertFalse(hasattr(build, "data"))
+        self.assertTrue(build.upgrades)
+
     def test_configure_and_set_mode_are_order_independent(self):
         build = galvanized_build()
         first = arsenal.get("Corinth Prime").configure(build).set_mode("Air Burst Projectile")
