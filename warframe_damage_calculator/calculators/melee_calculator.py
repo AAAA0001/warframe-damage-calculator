@@ -20,13 +20,21 @@ class MeleeCalculator(WeaponCalculator):
 
     def _compute_average_stats(self) -> None:
         super()._compute_average_stats()
-        damage = self.effective.damage
+        related_flat = sum(state.damage.total_damage() * state.faction_damage * (1 + state.crit_chance * (state.crit_damage - 1)) for state in self.related.values())
+        related_dot = self._related_dotph()
 
         self.average.melee_doughty_bonus = true_round(10 * self.effective.damage.weight("puncture") * self.effective.status_chance * self.effective.melee_doughty, 1)
         self.average.melee_duplicate_multiplier = 1 + self.effective.melee_duplicate * max(0, 1 - abs(self.effective.crit_chance - 1))
-        self.average.flat_dph = self.effective.damage.total_damage() * self.effective.faction_damage * self.average.crit_multiplier * self.average.melee_duplicate_multiplier
+        self.average.flat_dph = self.effective.damage.total_damage() * self.effective.faction_damage * self.average.crit_multiplier * self.average.melee_duplicate_multiplier + related_flat
         self.average.flat_dps = self.effective.attack_speed * self.average.flat_dph
-        self.average.flat_dotph = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * self.effective.status_chance * self.effective.status_damage * self.effective.faction_damage ** 2 * self.average.crit_multiplier * self.average.melee_duplicate_multiplier
+        self.average.flat_dotph = self._flat_dotph_for(self.effective) + related_dot
         self.average.flat_dotps = self.effective.attack_speed * self.average.flat_dotph
         self.average.total_dph = self.average.flat_dph + self.average.flat_dotph
         self.average.total_dps = self.average.flat_dps + self.average.flat_dotps
+
+    def _flat_dotph_for(self, state) -> float:
+        regular = sum(multiplier * state.damage.get(damage_type) * state.damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * state.status_chance
+        forced = sum(multiplier * state.forced_procs.get(damage_type) * state.damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS)
+        crit_multiplier = 1 + state.crit_chance * (state.crit_damage - 1)
+        duplicate_multiplier = 1 + self.effective.melee_duplicate * max(0, 1 - abs(state.crit_chance - 1))
+        return (regular + forced) * state.status_damage * state.faction_damage ** 2 * crit_multiplier * duplicate_multiplier

@@ -1,6 +1,4 @@
 from ..utils.functions import clamp, true_round
-from ..utils.constants import DOT_MULTIPLIERS
-from ..models.fields import CalculatedStats
 from .weapon_calculator import WeaponCalculator
 
 
@@ -44,15 +42,13 @@ class RangedCalculator(WeaponCalculator):
 
     def _compute_average_stats(self) -> None:
         super()._compute_average_stats()
-        self._compute_related_attacks()
         is_beam = any(attack.get("delivery") == "beam" for attack in self.weapon.data.entry.attacks.values())
         related_flat = sum(state.damage.total_damage() * state.multishot * state.faction_damage * (1 + state.crit_chance * (state.crit_damage - 1)) for state in self.related.values())
         related_weakpoint = sum(state.damage.total_damage() * state.multishot * state.faction_damage * state.weakpoint_damage * (1 + state.weakpoint_crit_chance * (state.crit_damage - 1)) for state in self.related.values())
-        related_dot = sum((sum(multiplier * state.damage.get(damage_type) * state.damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * state.status_chance + sum(multiplier * state.forced_procs.get(damage_type) * state.damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS)) * (1 + state.crit_chance * (state.crit_damage - 1)) * state.status_damage * state.faction_damage ** 2 * state.multishot for state in self.related.values())
-        self.related_dot = related_dot
+        related_dot = self._related_dotph()
 
         self.average.weakpoint_crit_chance = self.effective.weakpoint_crit_chance
-        self.average.fire_rate = self._average_fire_rate()
+        self.average.fire_rate = self._attacks_per_second_for(self.weapon.mode)
         self.average.procs_per_shot = self.effective.status_chance * self.effective.multishot
         self.average.weakpoint_crit_multiplier = 1 + self.average.weakpoint_crit_chance * (self.effective.crit_damage - 1)
         self.average.beam_dot_multiplier = self.effective.multishot if is_beam else 1
@@ -68,38 +64,3 @@ class RangedCalculator(WeaponCalculator):
         self.average.total_weakpoint_dph = self.average.flat_weakpoint_dph + self.average.flat_weakpoint_dotph
         self.average.total_dps = self.average.flat_dps + self.average.flat_dotps
         self.average.total_weakpoint_dps = self.average.flat_weakpoint_dps + self.average.flat_weakpoint_dotps
-
-    def _compute_related_attacks(self) -> None:
-        self.related_base: dict[str, CalculatedStats] = {}
-        self.related: dict[str, CalculatedStats] = {}
-        child_names = self.weapon.mode.get("children", [])
-        build = self.build.stats.total
-        for name in child_names:
-            mode = self.weapon.data.entry.attacks.get(name)
-            if mode is None:
-                continue
-            display_name = name.replace("_", " ").title()
-            base = self.weapon.mode_stats_type(dict(mode.stats)).with_defaults()
-            self.related_base[display_name] = CalculatedStats(base)
-            state = CalculatedStats()
-            damage = base["damage"].apply(build.damage).combine().sorted()
-            co_bonus = self._condition_overload_bonus(build, damage, base["forced_procs"], mode.stats.co_factor)
-            base_damage = max(1 + build.base_damage + (co_bonus if mode.stats.co_effect != "multiplies" else 0), 0)
-            multiplicative_damage = max(1 + build.multiplicative_base_damage + (co_bonus if mode.stats.co_effect == "multiplies" else 0), 1)
-            state.damage = base_damage * damage * multiplicative_damage
-            state.forced_procs = base["forced_procs"]
-            state.faction_damage = self.effective.faction_damage
-            state.crit_chance = max(base["crit_chance"] * (1 + build.crit_chance) * self.modded.multiplicative_crit_chance + self.modded.flat_crit_chance, 0)
-            state.crit_damage = max(base["crit_damage"] * (1 + build.crit_damage) + self.modded.flat_crit_damage, 1)
-            state.status_chance = max(base["status_chance"] * (1 + build.status_chance), 0)
-            state.status_damage = self.effective.status_damage
-            state.multishot = max(base["multishot"] * (1 if build.multishot_lock else (1 + build.multishot)), 1)
-            state.weakpoint_damage = self.effective.weakpoint_damage
-            state.weakpoint_crit_chance = state.crit_chance + max(base["crit_chance"] * build.weakpoint_crit_chance, 0)
-            self.related[display_name] = state
-
-    def _average_fire_rate(self) -> float:
-        cycle_time = self.effective.magazine_capacity / self.effective.burst_count * (self.effective.charge_time + (self.effective.burst_count - 1) * self.effective.burst_delay) + (self.effective.magazine_capacity / self.effective.burst_count - (1 - self.effective.ammo_efficiency)) / self.effective.fire_rate + (1 - self.effective.ammo_efficiency) * self.effective.reload_speed
-        if cycle_time <= 0:
-            return float("inf")
-        return self.effective.magazine_capacity / cycle_time

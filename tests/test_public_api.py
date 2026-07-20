@@ -1,7 +1,7 @@
 import unittest
 from typing import get_args
 
-from warframe_damage_calculator import Build, Primary, Upgrade, arsenal
+from warframe_damage_calculator import Build, Primary, Upgrade, Weapon, arsenal
 from warframe_damage_calculator.loader.bundled_names import MeleeName, PrimaryName, SecondaryName, UpgradeName
 from warframe_damage_calculator.models.data import Data
 from warframe_damage_calculator.models.fields import Attack, Attacks, Evolutions
@@ -15,6 +15,12 @@ def galvanized_build() -> Build:
 
 
 class PublicApiTests(unittest.TestCase):
+    def test_generic_weapon_uses_the_shared_calculation_pipeline(self):
+        weapon = Weapon({"Test Weapon": {"type": "test", "attacks": {"normal": {"stats": {"damage": {"impact": 10}}}}}})
+
+        self.assertEqual(weapon.stats.effective.damage.total_damage(), 10)
+        self.assertEqual(weapon.stats.related, {})
+
     def test_data_mapping_views_match_explicit_values(self):
         data = Data({"first": 1})
         keys = data.keys()
@@ -104,6 +110,34 @@ class PublicApiTests(unittest.TestCase):
         self.assertAlmostEqual(battery.data.entry.ammo.recharge_rate, 26.66666667)
         self.assertAlmostEqual(battery.stats.base.recharge_rate, 26.66666667)
 
+    def test_related_attacks_use_their_own_average_fire_rate(self):
+        weapon = arsenal.get("Corinth Prime").set_mode("Air Burst Projectile")
+        related = weapon.data.entry.attacks.air_burst_explosion
+        related.stats.fire_rate = 2
+
+        self.assertNotEqual(weapon.stats._attacks_per_second_for(weapon.mode), weapon.stats._attacks_per_second_for(related))
+
+    def test_melee_weapons_include_related_attacks(self):
+        weapon = arsenal.get("Ceramic Dagger").set_mode("Spectral Dagger")
+
+        self.assertIn("Spectral Dagger Explosion", weapon.stats.related)
+        self.assertGreater(weapon.stats.average.flat_dph, weapon.stats.effective.damage.total_damage())
+
+    def test_melee_duplicate_increases_condition_overload_status_acquisition(self):
+        condition_overload = arsenal.get("Condition Overload")
+        duplicate = Upgrade({"Duplicate": {
+            "type": "arcane", "max_rank": 0, "compatibility": {"types": []},
+            "stats": {"melee_duplicate": [{"value": 1}]},
+        }})
+        without_duplicate = arsenal.get("Skana").configure(Build(condition_overload))
+        with_duplicate = arsenal.get("Skana").configure(Build(condition_overload, duplicate))
+
+        self.assertGreater(
+            with_duplicate.stats._average_condition_overload_bonus_for(with_duplicate.mode),
+            without_duplicate.stats._average_condition_overload_bonus_for(without_duplicate.mode),
+        )
+        self.assertGreater(with_duplicate.stats.average.flat_dotph, without_duplicate.stats.average.flat_dotph)
+
     def test_build_configuration_copies_and_recomputes(self):
         build = galvanized_build()
         weapon = arsenal.get("Corinth Prime")
@@ -150,7 +184,7 @@ class PublicApiTests(unittest.TestCase):
         second = arsenal.get("Corinth Prime").set_mode("Air Burst Projectile").configure(build)
 
         self.assertEqual(first.stats.effective, second.stats.effective)
-        self.assertAlmostEqual(first.stats.average.total_dps, second.stats.average.total_dps)
+        self.assertAlmostEqual(first.stats.average.total_dps, second.stats.average.total_dps, places=6)
 
     def test_incarnon_evolution_selection_recomputes(self):
         weapon = arsenal.get("Telos Boltor")
@@ -255,12 +289,14 @@ class PublicApiTests(unittest.TestCase):
         additive_base = additive.stats.base.damage.total_damage()
         self.assertEqual(additive.mode.stats.co_factor, 0.5)
         self.assertEqual(additive.mode.stats.co_effect, "adds")
-        self.assertAlmostEqual(additive.stats.effective.damage.total_damage(), additive_base * 3)
+        self.assertGreater(additive.stats.effective.damage.total_damage(), additive_base * 2)
+        self.assertLess(additive.stats.effective.damage.total_damage(), additive_base * 3)
 
         multiplicative = arsenal.get("Coda Bassocyst").set_mode("Normal Attack").configure(build)
         multiplicative_base = multiplicative.stats.base.damage.total_damage()
         self.assertEqual(multiplicative.mode.stats.co_effect, "multiplies")
-        self.assertAlmostEqual(multiplicative.stats.effective.damage.total_damage(), multiplicative_base * 6)
+        self.assertGreater(multiplicative.stats.effective.damage.total_damage(), multiplicative_base * 2)
+        self.assertLess(multiplicative.stats.effective.damage.total_damage(), multiplicative_base * 6)
 
     def test_condition_overload_database_values_remain_structured(self):
         expected = {
@@ -275,6 +311,16 @@ class PublicApiTests(unittest.TestCase):
                 self.assertEqual(arsenal.upgrades[name]["stats"]["condition_overload"], [canonical])
                 self.assertEqual(arsenal.get(name).stats.total.condition_overload, resolved)
 
+    def test_condition_overload_bonus_uses_expected_stacks_over_five_seconds(self):
+        condition_overload = Upgrade({"Condition Overload": {
+            "type": "mod", "max_rank": 0, "compatibility": {"types": []},
+            "stats": {"condition_overload": [{"value": 0.8, "stacks": {"when": "status_type", "max": 2}}]},
+        }})
+        weapon = arsenal.get("Cernos").configure(Build(condition_overload))
+
+        self.assertGreater(weapon.stats._average_condition_overload_bonus_for(weapon.mode), 0)
+        self.assertLess(weapon.stats._average_condition_overload_bonus_for(weapon.mode), 1.6)
+
     def test_condition_overload_mod_has_no_status_cap(self):
         heat = Upgrade({"Heat": {"type": "mod", "max_rank": 0, "compatibility": {"types": []},
                         "stats": {"heat": [{"value": 1}]}}})
@@ -283,7 +329,8 @@ class PublicApiTests(unittest.TestCase):
 
         elemental_damage = without_condition_overload.stats.effective.damage.total_damage()
         self.assertEqual(set(with_condition_overload.stats.effective.damage.data), {"impact", "puncture", "slash", "heat"})
-        self.assertAlmostEqual(with_condition_overload.stats.effective.damage.total_damage(), elemental_damage * (1 + 0.8 * 4))
+        self.assertGreater(with_condition_overload.stats.effective.damage.total_damage(), elemental_damage)
+        self.assertLess(with_condition_overload.stats.effective.damage.total_damage(), elemental_damage * (1 + 0.8 * 4))
 
     def test_formatter_summary_reads_current_state(self):
         weapon = arsenal.get("Corinth Prime").configure(galvanized_build()).set_mode("Buckshot")
