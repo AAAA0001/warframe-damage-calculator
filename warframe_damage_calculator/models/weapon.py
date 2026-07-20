@@ -33,23 +33,11 @@ class Weapon:
     def set_mode(self, name: str) -> Self:
         key = "_".join(name.casefold().replace("-", " ").split())
         match = self.data.entry.attacks.get(key)
-        if match is None:
-            available = ", ".join(identifier.replace("_", " ").title() for identifier in self.data.entry.attacks)
-            raise ValueError(f"Unknown attack {name!r} for {self.data.name!r}. Available attacks: {available}")
         self.mode = match
         self.stats.recompute()
         return self
 
     def set_evolutions(self, **selections: int) -> Self:
-        for evolution, perk in selections.items():
-            tier_id = evolution.removeprefix("evolution_")
-            tier = self.data.entry.evolutions.get(tier_id)
-            if tier is None:
-                available = ", ".join(f"evolution_{tier}" for tier in self.data.entry.evolutions)
-                raise ValueError(f"Unknown evolution {evolution!r}. Available evolutions: {available}")
-            if str(perk) not in tier:
-                available = ", ".join(tier)
-                raise ValueError(f"Invalid perk {perk} for {evolution}. Available perks: {available}")
         self.evolutions.update(selections)
         self.stats.recompute()
         return self
