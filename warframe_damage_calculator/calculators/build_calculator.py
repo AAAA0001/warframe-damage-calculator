@@ -13,12 +13,6 @@ class BuildCalculator:
 
     def __init__(self, build: Any) -> None:
         self.build = build
-        self.static = ResolvedStat()
-        self.conditional = ResolvedStat()
-        self.modular = ResolvedStat()
-        self.stacking = ResolvedStat()
-        self.rank_locked = ResolvedStat()
-        self.total = ResolvedStat()
         self.resolve()
 
     @staticmethod

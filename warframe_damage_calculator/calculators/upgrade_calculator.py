@@ -14,12 +14,6 @@ class UpgradeCalculator:
 
     def __init__(self, upgrade: Any) -> None:
         self.upgrade = upgrade
-        self.static = ResolvedStat()
-        self.conditional = ResolvedStat()
-        self.modular = ResolvedStat()
-        self.stacking = ResolvedStat()
-        self.rank_locked = ResolvedStat()
-        self.total = ResolvedStat()
         self.resolve()
 
     @staticmethod
