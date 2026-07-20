@@ -3,7 +3,7 @@ from warframe_damage_calculator import Build, Upgrade, Primary, arsenal
 
 def main() -> None:
     weapon = arsenal.get("Corinth Prime")
-    mod1 = Upgrade({"Riven": {"type": "mod",  "max_rank": 0,  "compatibility": {"names": ["Corinth Prime"]},  "stats": {"impact": -0.886, "crit_damage": 0.855, "multishot": 1.126, "crit_chance": 0.887}}})
+    mod1 = Upgrade({"Riven": {"type": "mod", "max_rank": 0, "compatibility": {"names": ["Corinth Prime"]}, "stats": {"impact": -0.886, "crit_damage": 0.855, "multishot": 1.126, "crit_chance": 0.887}}})
     mod2 = arsenal.get("Galvanized Hell")
     mod3 = arsenal.get("Semi-Shotgun Cannonade")
     mod4 = arsenal.get("Hunter Munitions")
