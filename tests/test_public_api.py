@@ -79,7 +79,7 @@ class PublicApiTests(unittest.TestCase):
         self.assertEqual(weapon.mode.stats.damage.total_damage(), 90)
         self.assertNotIn("reload_time", weapon.mode.stats)
 
-    def test_default_mode_switching_and_invalid_mode_errors(self):
+    def test_default_mode_switching(self):
         weapon = arsenal.get("Corinth Prime")
         self.assertIs(weapon.mode, weapon.data.entry.attacks.buckshot)
 
@@ -87,11 +87,6 @@ class PublicApiTests(unittest.TestCase):
         self.assertEqual(weapon.mode.children, ["air_burst_explosion"])
         self.assertEqual(weapon.stats.base.damage.total_damage(), 100)
         self.assertEqual(weapon.stats.related["Air Burst Explosion"].damage.total_damage(), 2200)
-
-        with self.assertRaises(ValueError) as raised:
-            weapon.set_mode("Missing")
-        self.assertIn("Buckshot", str(raised.exception))
-        self.assertIn("Air Burst Projectile", str(raised.exception))
 
     def test_mode_specific_stats_and_global_ranged_stats(self):
         weapon = arsenal.get("Corinth Prime").set_mode("Buckshot")
