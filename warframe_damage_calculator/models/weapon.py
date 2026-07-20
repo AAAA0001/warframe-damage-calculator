@@ -24,8 +24,6 @@ class Weapon:
 
     def configure(self, build: Build | None = None) -> Self:
         build = Build() if build is None else build
-        if not isinstance(build, Build):
-            raise TypeError("configure() requires a Build")
         self.build = build.copy()
         self.stats.recompute()
         return self
