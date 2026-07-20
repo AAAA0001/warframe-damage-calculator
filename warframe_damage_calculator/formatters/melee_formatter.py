@@ -3,8 +3,8 @@ from .weapon_formatter import WeaponFormatter
 
 class MeleeFormatter(WeaponFormatter):
     def summary(self) -> str:
-        base = self.weapon.stats.base
-        effective = self.weapon.stats.effective
+        base = self.weapon.stats.parent.base
+        effective = self.weapon.stats.parent.effective
         average = self.weapon.stats.average
         return "\n".join([
             f"{self.weapon.data.name} - {next(key for key, attack in self.weapon.data.entry.attacks.items() if attack is self.weapon.mode).replace('_', ' ').title()}",

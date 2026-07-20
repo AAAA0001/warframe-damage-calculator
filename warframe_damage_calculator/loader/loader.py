@@ -117,7 +117,7 @@ class WarframeDatabase:
             if key in data:
                 return data[key]
         if isinstance(item, Weapon):
-            for state in (item.stats.base, item.stats.effective):
+            for state in (item.stats.parent.base, item.stats.parent.effective):
                 if key in state:
                     return state[key]
             if key in item.mode:

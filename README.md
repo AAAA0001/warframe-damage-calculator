@@ -242,7 +242,7 @@ weapon.set_evolutions(evolution_2=1, evolution_3=2)
 weapon.set_mode("Incarnon Form")
 
 print(weapon.evolutions)
-print(weapon.stats.effective.damage.total_damage())
+print(weapon.stats.parent.effective.damage.total_damage())
 ```
 
 Selections are validated against the weapon's evolution tiers and perks. Each
@@ -252,9 +252,9 @@ weapon is recomputed.
 ### Read results
 
 ```python
-print(weapon.stats.base)
-print(weapon.stats.modded)
-print(weapon.stats.effective)
+print(weapon.stats.parent.base)
+print(weapon.stats.parent.modded)
+print(weapon.stats.parent.effective)
 print(weapon.stats.average)
 
 print(weapon.stats.average.total_dph)
@@ -364,14 +364,15 @@ weapon = Primary(
 
 weapon.set_mode("Projectile")
 
-print(weapon.stats.effective.damage)
-print(weapon.stats.related["Explosion"].damage)
+print(weapon.stats.parent.effective.damage)
+print(weapon.stats.related[0].damage)
 print(weapon.stats.average.total_dps)
 ```
 
 For ranged weapons, selected attacks may name child attacks through `children`.
 Their direct and DoT contributions are calculated automatically and exposed in
-`weapon.stats.related` and `weapon.stats.related_base`.
+`weapon.stats.related` and `weapon.stats.related_base`. Both are ordered lists;
+the corresponding display labels are available through `weapon.stats.related_names`.
 
 ### Constructing a melee weapon
 
@@ -404,7 +405,7 @@ weapon = Melee(
     }
 )
 
-print(weapon.stats.base.attack_speed)
+print(weapon.stats.parent.base.attack_speed)
 print(weapon.stats.average.total_dps)
 ```
 
@@ -751,7 +752,7 @@ copied_data = weapon.data.copy()
 Damage and forced-proc fields are converted to `Dist` objects:
 
 ```python
-damage = weapon.stats.effective.damage
+damage = weapon.stats.parent.effective.damage
 
 print(damage.total_damage())
 print(damage.weight("slash"))
@@ -845,13 +846,17 @@ Each weapon exposes:
 
 | Bucket | Description |
 |---|---|
-| `weapon.stats.base` | Dense normalized stats for the selected attack. |
-| `weapon.stats.modded` | Intermediate additive, multiplicative, and locked values. |
-| `weapon.stats.effective` | Final stats used by expected-value calculations. |
-| `weapon.stats.average` | Expected DPH, DoT, DPS, and mechanic-specific outputs. |
+| `weapon.stats.parent` | Complete calculation bucket for the selected attack, including recursive `children`. |
+| `weapon.stats.parent.base` | Dense normalized stats for the selected attack. |
+| `weapon.stats.parent.modded` | Intermediate additive, multiplicative, and locked values. |
+| `weapon.stats.parent.effective` | Final stats used by expected-value calculations. |
+| `weapon.stats.parent.average` | Expected values for the selected attack by itself. |
+| `weapon.stats.average` | Combined parent-and-descendant DPH, DoT, and DPS using the parent's attack rate. |
 
-Ranged calculators additionally expose `weapon.stats.related_base` and
-`weapon.stats.related` for the selected attack's child attacks.
+Each item in `weapon.stats.parent.children` is calculated through the same
+base, modded, effective, and average pipeline. The existing
+`weapon.stats.related_base` and `weapon.stats.related` lists remain available
+for direct child attacks, in the same order as `weapon.stats.parent.children`.
 
 ```python
 average = weapon.stats.average

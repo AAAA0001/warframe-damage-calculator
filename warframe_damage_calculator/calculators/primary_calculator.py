@@ -1,59 +1,59 @@
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
-from ..models.dist import Dist
 from .ranged_calculator import RangedCalculator
+from .weapon_calculator import AttackBucket
 
 
 class PrimaryCalculator(RangedCalculator):
-    def _compute_modded_stats(self) -> None:
-        super()._compute_modded_stats()
-        build = self.build.stats.total
-        
-        self.modded.hunter_munitions = clamp(build.hunter_munitions, 0, 0.3)
-        self.modded.primed_chamber = clamp(build.primed_chamber, 0, 1.4)
-        self.modded.vigilante_bonus = clamp(build.vigilante_bonus, 0, 0.3)
+    def _compute_modded_stats(self, bucket: AttackBucket) -> None:
+        super()._compute_modded_stats(bucket)
+        build, modded = bucket.build.stats.total, bucket.modded
 
-    def _compute_effective_stats(self) -> None:
-        super()._compute_effective_stats()
-        self.effective.hunter_munitions = self.modded.hunter_munitions
-        self.effective.primed_chamber = self.modded.primed_chamber
-        self.effective.vigilante_bonus = self.modded.vigilante_bonus
-        self.effective.crit_chance += self.effective.vigilante_bonus
-        self.effective.weakpoint_crit_chance += self.effective.vigilante_bonus
+        modded.hunter_munitions = clamp(build.hunter_munitions, 0, 0.3)
+        modded.primed_chamber = clamp(build.primed_chamber, 0, 1.4)
+        modded.vigilante_bonus = clamp(build.vigilante_bonus, 0, 0.3)
 
-    def _compute_average_stats(self) -> None:
-        super()._compute_average_stats()
-        self.average.primed_chamber_multiplier = 1 + self.effective.primed_chamber / self.effective.magazine_capacity
-        self.average.flat_dph *= self.average.primed_chamber_multiplier
-        self.average.flat_weakpoint_dph *= self.average.primed_chamber_multiplier
-        self.average.flat_dps = self.average.fire_rate * self.average.flat_dph
-        self.average.flat_weakpoint_dps = self.average.fire_rate * self.average.flat_weakpoint_dph
-        self.average.total_dph = self.average.flat_dph + self.average.flat_dotph
-        self.average.total_weakpoint_dph = self.average.flat_weakpoint_dph + self.average.flat_weakpoint_dotph
-        self.average.total_dps = self.average.flat_dps + self.average.flat_dotps
-        self.average.total_weakpoint_dps = self.average.flat_weakpoint_dps + self.average.flat_weakpoint_dotps
+    def _compute_effective_stats(self, bucket: AttackBucket) -> None:
+        super()._compute_effective_stats(bucket)
+        modded, effective = bucket.modded, bucket.effective
+        effective.hunter_munitions = modded.hunter_munitions
+        effective.primed_chamber = modded.primed_chamber
+        effective.vigilante_bonus = modded.vigilante_bonus
+        effective.crit_chance += effective.vigilante_bonus
+        effective.weakpoint_crit_chance += effective.vigilante_bonus
 
-    def _flat_dotph_for(self, damage: Dist, forced_procs: Dist, crit_chance: float, crit_multiplier: float, include_multishot: bool = True) -> float:
+    def _compute_average_stats(self, bucket: AttackBucket) -> None:
+        super()._compute_average_stats(bucket)
+        effective, average = bucket.effective, bucket.average
+        average.primed_chamber_multiplier = 1 + effective.primed_chamber / effective.magazine_capacity
+        average.flat_dph *= average.primed_chamber_multiplier
+        average.flat_weakpoint_dph *= average.primed_chamber_multiplier
+        average.flat_dps = average.fire_rate * average.flat_dph
+        average.flat_weakpoint_dps = average.fire_rate * average.flat_weakpoint_dph
+        average.total_dph = average.flat_dph + average.flat_dotph
+        average.total_weakpoint_dph = average.flat_weakpoint_dph + average.flat_weakpoint_dotph
+        average.total_dps = average.flat_dps + average.flat_dotps
+        average.total_weakpoint_dps = average.flat_weakpoint_dps + average.flat_weakpoint_dotps
+
+    def _flat_dotph(self, bucket: AttackBucket, *, weakpoint: bool = False) -> float:
+        damage, forced_procs = bucket.effective.damage, bucket.base.forced_procs
+        effective, average = bucket.effective, bucket.average
         if damage.total_damage() <= 0:
             return 0.0
-        average_primed_chamber_multiplier = 1 + self.effective.primed_chamber / self.effective.magazine_capacity
-        # Hunter munitions: bleed on crit
-        hunter_munitions_expected_procs = self.effective.hunter_munitions * min(crit_chance, 1)
-        hunter_munitions_damage_per_proc = 2.1 * damage.total_damage() * max(self.effective.crit_damage, crit_multiplier) * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
-        hunter_munitions_expected_damage = hunter_munitions_expected_procs * hunter_munitions_damage_per_proc
-        # Overlap variables for proc calculation
-        impact_internal_bleeding = (damage.weight("impact") + forced_procs.get("impact")) * self.effective.internal_bleeding
-        guaranteed_proc, fractional_proc = divmod(self.effective.status_chance, 1)
-        # Internal bleeding: armor-ignoring bleed from impact
-        internal_bleeding_expected_procs = impact_internal_bleeding * self.effective.status_chance
-        internal_bleeding_damage_per_proc = 2.1 * damage.total_damage() * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
-        internal_bleeding_expected_damage = internal_bleeding_expected_procs * internal_bleeding_damage_per_proc
-        # Avoid double-counting: probability both procs occur on same shot
-        prob_at_least_one_internal_bleeding_proc = 1 - (1 - impact_internal_bleeding) ** guaranteed_proc * ((1 - fractional_proc) + fractional_proc * (1 - impact_internal_bleeding))
-        overlap_expected_damage = hunter_munitions_expected_procs * prob_at_least_one_internal_bleeding_proc * min(hunter_munitions_damage_per_proc, internal_bleeding_damage_per_proc)
-        # Base DoT from regular status procs
-        extra_slash_damage_per_bullet = hunter_munitions_expected_damage + internal_bleeding_expected_damage - overlap_expected_damage
-        dot_damage_per_bullet = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * self.effective.status_chance * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
-        forced_dot_damage_per_bullet = sum(multiplier * forced_procs.get(damage_type) * damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * crit_multiplier * self.effective.status_damage * self.effective.faction_damage ** 2 * average_primed_chamber_multiplier
-        # Total DoT damage, multiplied by multishot if applicable
-        return (dot_damage_per_bullet + extra_slash_damage_per_bullet + forced_dot_damage_per_bullet) * (self.effective.multishot * self.average.beam_dot_multiplier if include_multishot else 1)
+        crit_chance = average.weakpoint_crit_chance if weakpoint else average.crit_chance
+        crit_multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        primed_chamber_multiplier = 1 + effective.primed_chamber / effective.magazine_capacity
+        hunter_munitions_procs = effective.hunter_munitions * min(crit_chance, 1)
+        hunter_munitions_dpp = 2.1 * damage.total_damage() * max(effective.crit_damage, crit_multiplier) * effective.status_damage * effective.faction_damage ** 2 * primed_chamber_multiplier
+        hunter_munitions_damage = hunter_munitions_procs * hunter_munitions_dpp
+        impact_internal_bleeding = (damage.weight("impact") + forced_procs.get("impact")) * effective.internal_bleeding
+        guaranteed_proc, fractional_proc = divmod(effective.status_chance, 1)
+        internal_bleeding_procs = impact_internal_bleeding * effective.status_chance
+        internal_bleeding_dpp = 2.1 * damage.total_damage() * crit_multiplier * effective.status_damage * effective.faction_damage ** 2 * primed_chamber_multiplier
+        internal_bleeding_damage = internal_bleeding_procs * internal_bleeding_dpp
+        internal_bleeding_probability = 1 - (1 - impact_internal_bleeding) ** guaranteed_proc * ((1 - fractional_proc) + fractional_proc * (1 - impact_internal_bleeding))
+        overlap_damage = hunter_munitions_procs * internal_bleeding_probability * min(hunter_munitions_dpp, internal_bleeding_dpp)
+        extra_slash_damage = hunter_munitions_damage + internal_bleeding_damage - overlap_damage
+        dot_damage = sum(multiplier * damage.get(damage_type) * damage.weight(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * effective.status_chance * crit_multiplier * effective.status_damage * effective.faction_damage ** 2 * primed_chamber_multiplier
+        forced_dot_damage = sum(multiplier * forced_procs.get(damage_type) * damage.get(damage_type) for damage_type, multiplier in DOT_MULTIPLIERS) * crit_multiplier * effective.status_damage * effective.faction_damage ** 2 * primed_chamber_multiplier
+        return (dot_damage + extra_slash_damage + forced_dot_damage) * effective.multishot * average.beam_dot_multiplier
