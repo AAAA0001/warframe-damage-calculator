@@ -11,7 +11,7 @@ from ..utils.types import Number
 class WeaponCalculator(AttackResult):
     def __init__(self, weapon: Any) -> None:
         super().__init__()
-        object.__setattr__(self, "weapon", weapon)
+        self.weapon = weapon
         self.recompute()
 
     def _compute_base_stats(self, result: AttackResult) -> None:
