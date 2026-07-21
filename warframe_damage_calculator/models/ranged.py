@@ -1,6 +1,7 @@
 from ..calculators.ranged_calculator import RangedCalculator
 from ..formatters.ranged_formatter import RangedFormatter
-from .fields import RangedData, RangedStats
+from ..fields.weapon_data import RangedData
+from ..fields.weapon_input import RangedStats
 from .weapon import Weapon
 
 

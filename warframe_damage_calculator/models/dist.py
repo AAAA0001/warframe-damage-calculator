@@ -1,28 +1,9 @@
 from collections.abc import Iterable, Iterator, Mapping
 from typing import Self
 
+from ..fields.dist_data import DistData
 from ..utils.constants import DAMAGE_TYPE_ORDER, ELEMENTAL_COMBINATIONS, ELEMENTAL_TYPES, PHYSICAL_TYPES
 from ..utils.types import DamageType, Number
-from .data import Data
-
-
-class DistData(Data):
-    impact: Number
-    puncture: Number
-    slash: Number
-    blast: Number
-    corrosive: Number
-    gas: Number
-    magnetic: Number
-    radiation: Number
-    viral: Number
-    cold: Number
-    electricity: Number
-    heat: Number
-    toxin: Number
-    void: Number
-    tau: Number
-    true: Number
 
 
 class Dist:

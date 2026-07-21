@@ -5,7 +5,8 @@ from ..calculators.weapon_calculator import WeaponCalculator
 from ..formatters.weapon_formatter import WeaponFormatter
 from ..utils.types import JsonValue
 from .build import Build
-from .fields import WeaponData, WeaponStats
+from ..fields.weapon_data import WeaponData
+from ..fields.weapon_input import WeaponStats
 
 
 class Weapon:

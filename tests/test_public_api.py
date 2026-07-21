@@ -6,7 +6,11 @@ from warframe_damage_calculator import Build, Primary, Upgrade, Weapon, arsenal
 from warframe_damage_calculator.loader.bundled_names import MeleeName, PrimaryName, SecondaryName, UpgradeName
 from warframe_damage_calculator.models.data import Data
 from warframe_damage_calculator.models.dist import Dist
-from warframe_damage_calculator.models.fields import Attack, AttackResult, AttackResults, Attacks, CalculatedStats, DistData, Evolutions, ResolvedStat
+from warframe_damage_calculator.fields.attack_result import AttackResult, AttackResults
+from warframe_damage_calculator.fields.calculated import CalculatedStats
+from warframe_damage_calculator.fields.dist_data import DistData
+from warframe_damage_calculator.fields.upgrade import ResolvedStat
+from warframe_damage_calculator.fields.weapon_data import Attack, Attacks, Evolutions
 
 
 def galvanized_build() -> Build:
@@ -66,7 +70,7 @@ class PublicApiTests(unittest.TestCase):
         second = OverriddenDataDefaults()
 
         first.children.append(Data({"source": "first"}))
-        first.stats.damage = Dist(impact=100)
+        first.stats.damage = Dist({"impact": 100})
         self.assertEqual(first.label, "child")
         self.assertEqual(second.label, "child")
         self.assertEqual(len(second.children), 1)
@@ -89,7 +93,7 @@ class PublicApiTests(unittest.TestCase):
         second = AttackResult()
 
         first.children["child"] = AttackResult()
-        first.base.damage = Dist(impact=100)
+        first.base.damage = Dist({"impact": 100})
         copied = first.copy()
         self.assertEqual(len(second.children), 0)
         self.assertNotEqual(second.base.damage, first.base.damage)

@@ -1,6 +1,7 @@
 from ..calculators.melee_calculator import MeleeCalculator
 from ..formatters.melee_formatter import MeleeFormatter
-from .fields import MeleeData, MeleeStats
+from ..fields.weapon_data import MeleeData
+from ..fields.weapon_input import MeleeStats
 from .weapon import Weapon
 
 

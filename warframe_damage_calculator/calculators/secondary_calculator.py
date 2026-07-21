@@ -1,7 +1,8 @@
-from ..models.fields import AttackResult
+from ..fields.attack_result import AttackResult
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
 from .ranged_calculator import RangedCalculator
+from .weapon_calculator import WeaponCalculator
 
 
 class SecondaryCalculator(RangedCalculator):
@@ -20,7 +21,8 @@ class SecondaryCalculator(RangedCalculator):
         effective.secondary_encumber = modded.secondary_encumber
 
     def _compute_average_stats(self, result: AttackResult) -> None:
-        super()._compute_average_stats(result)
+        WeaponCalculator._compute_average_stats(self, result)
+        self._setup_ranged_averages(result)
         modded, effective, average = result.modded, result.effective, result.average
         secondary_enervate_bonus = self._average_secondary_enervate_bonus(modded.crit_chance * modded.multiplicative_crit_chance + modded.flat_crit_chance, result)
         weakpoint_secondary_enervate_bonus = self._average_secondary_enervate_bonus(modded.weakpoint_crit_chance * (modded.multiplicative_crit_chance + modded.multiplicative_weakpoint_crit_chance - 1) + modded.flat_crit_chance, result)
@@ -31,18 +33,7 @@ class SecondaryCalculator(RangedCalculator):
         average.weakpoint_crit_chance = effective.weakpoint_crit_chance + weakpoint_secondary_enervate_bonus
         average.crit_multiplier = 1 + average.crit_chance * (effective.crit_damage - 1)
         average.weakpoint_crit_multiplier = 1 + average.weakpoint_crit_chance * (effective.crit_damage - 1)
-        average.flat_dph = effective.damage.total_damage() * effective.multishot * effective.faction_damage * average.crit_multiplier
-        average.flat_weakpoint_dph = effective.damage.total_damage() * effective.multishot * effective.weakpoint_damage * average.weakpoint_crit_multiplier * effective.faction_damage
-        average.flat_dps = average.fire_rate * average.flat_dph
-        average.flat_weakpoint_dps = average.fire_rate * average.flat_weakpoint_dph
-        average.flat_dotph = self._flat_dotph(result)
-        average.flat_weakpoint_dotph = self._flat_dotph(result, weakpoint=True)
-        average.flat_dotps = average.fire_rate * average.flat_dotph
-        average.flat_weakpoint_dotps = average.fire_rate * average.flat_weakpoint_dotph
-        average.total_dph = average.flat_dph + average.flat_dotph
-        average.total_weakpoint_dph = average.flat_weakpoint_dph + average.flat_weakpoint_dotph
-        average.total_dps = average.flat_dps + average.flat_dotps
-        average.total_weakpoint_dps = average.flat_weakpoint_dps + average.flat_weakpoint_dotps
+        self._apply_ranged_damage_averages(result)
 
     @staticmethod
     def _average_secondary_enervate_bonus(crit_chance: float, result: AttackResult, max_stacks: int = 500) -> float:

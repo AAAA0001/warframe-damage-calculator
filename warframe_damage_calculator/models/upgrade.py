@@ -3,7 +3,7 @@ from typing import Self
 
 from ..calculators.upgrade_calculator import UpgradeCalculator
 from ..utils.types import JsonValue
-from .fields import UpgradeData
+from ..fields.upgrade import UpgradeData
 
 
 class Upgrade:

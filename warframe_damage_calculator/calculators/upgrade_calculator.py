@@ -1,11 +1,11 @@
 from collections.abc import Mapping
 from typing import Any
 
+from ..fields.upgrade import ResolvedStat
 from ..loader.matching import MELEE_TYPES, PRIMARY_TYPES, SECONDARY_TYPES
-from ..utils.constants import DAMAGE_TYPES
 from ..models.data import Data
 from ..models.dist import Dist
-from ..models.fields import ResolvedStat
+from ..utils.constants import DAMAGE_TYPES
 
 
 class UpgradeCalculator:
@@ -19,6 +19,33 @@ class UpgradeCalculator:
     @staticmethod
     def _key(value: Any) -> str:
         return " ".join(str(value).casefold().replace("_", " ").replace("-", " ").split())
+
+    @staticmethod
+    def _merge_stat(stats: Data, stat: str, value: Any) -> None:
+        if stat in DAMAGE_TYPES:
+            stat, value = "damage", {stat: value}
+        current = stats.get(stat)
+        if stat == "damage":
+            if not isinstance(current, Dist):
+                current = Dist(current or {})
+            if not isinstance(value, Dist):
+                value = Dist(value)
+            stats[stat] = current + value
+        elif stat == "condition_overload":
+            current = current or {}
+            maximums = {current.get("max_stacks", 0), value.get("max_stacks", 0)}
+            stats[stat] = {
+                "value": current.get("value", 0) + value.get("value", 0),
+                "max_stacks": "inf" if "inf" in maximums else max(maximums),
+            }
+        elif current is None:
+            stats[stat] = value
+        elif isinstance(value, bool):
+            stats[stat] = current or value
+        elif isinstance(current, Mapping) and isinstance(value, Mapping):
+            stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in dict(current) | dict(value)}
+        else:
+            stats[stat] = current + value
 
     def _upgrade_data(self) -> Data:
         data = self.upgrade.data
@@ -58,36 +85,9 @@ class UpgradeCalculator:
     def _scale(cls, value: Any, multiplier: float) -> Any:
         return {key: cls._scale(item, multiplier) for key, item in value.items()} if isinstance(value, Mapping) else value if isinstance(value, bool) else value * multiplier
 
-    @staticmethod
-    def _add(stats: Data, stat: str, value: Any) -> None:
-        if stat in DAMAGE_TYPES:
-            stat, value = "damage", {stat: value}
-        current = stats.get(stat)
-        if stat == "damage":
-            if not isinstance(current, Dist):
-                current = Dist(current or {})
-            if not isinstance(value, Dist):
-                value = Dist(value)
-            stats[stat] = current + value
-        elif stat == "condition_overload":
-            current = current or {}
-            maximums = {current.get("max_stacks", 0), value.get("max_stacks", 0)}
-            stats[stat] = {
-                "value": current.get("value", 0) + value.get("value", 0),
-                "max_stacks": "inf" if "inf" in maximums else max(maximums),
-            }
-        elif current is None:
-            stats[stat] = value
-        elif isinstance(value, bool):
-            stats[stat] = current or value
-        elif isinstance(current, Mapping) and isinstance(value, Mapping):
-            stats[stat] = {key: current.get(key, 0) + value.get(key, 0) for key in dict(current) | dict(value)}
-        else:
-            stats[stat] = current + value
-
     def _record(self, bucket: ResolvedStat, stat: str, value: Any) -> None:
-        self._add(bucket, stat, value)
-        self._add(self.total, stat, value)
+        self._merge_stat(bucket, stat, value)
+        self._merge_stat(self.total, stat, value)
 
     @staticmethod
     def _required_rank(effect: Data) -> Any:

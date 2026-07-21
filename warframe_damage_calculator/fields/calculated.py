@@ -1,0 +1,67 @@
+from ..models.data import Data
+from ..models.dist import Dist
+from ..utils.types import Number
+
+
+class CalculatedStats(Data):
+    damage: Dist = Dist()
+    forced_procs: Dist = Dist()
+    multiplicative_base_damage: Number
+    base_damage: Number
+    faction_damage: Number
+    flat_crit_chance: Number
+    multiplicative_crit_chance: Number
+    crit_chance: Number
+    flat_crit_damage: Number
+    crit_damage: Number
+    status_chance: Number
+    status_damage: Number
+    attack_speed: Number
+    melee_duplicate: Number
+    melee_doughty: Number
+    multishot: Number
+    fire_rate: Number
+    multiplicative_fire_rate: Number
+    burst_count: int
+    burst_delay: Number
+    charge_time: Number
+    reload_speed: Number
+    recharge_rate: Number
+    ammo_efficiency: Number
+    magazine_capacity: Number
+    weakpoint_damage: Number
+    multiplicative_weakpoint_crit_chance: Number
+    weakpoint_crit_chance: Number
+    internal_bleeding: Number
+    hunter_munitions: Number
+    primed_chamber: Number
+    vigilante_bonus: Number
+    secondary_enervate: Number
+    secondary_encumber: Number
+
+
+class AverageStats(Data):
+    crit_chance: Number
+    crit_multiplier: Number
+    weakpoint_crit_chance: Number
+    weakpoint_crit_multiplier: Number
+    fire_rate: Number
+    procs_per_shot: Number
+    beam_dot_multiplier: Number
+    flat_dph: Number
+    flat_weakpoint_dph: Number
+    flat_dps: Number
+    flat_weakpoint_dps: Number
+    flat_dotph: Number
+    flat_weakpoint_dotph: Number
+    flat_dotps: Number
+    flat_weakpoint_dotps: Number
+    total_dph: Number
+    total_weakpoint_dph: Number
+    total_dps: Number
+    total_weakpoint_dps: Number
+    melee_doughty_bonus: Number
+    melee_duplicate_multiplier: Number
+    primed_chamber_multiplier: Number
+    secondary_enervate_bonus: Number
+    weakpoint_secondary_enervate_bonus: Number

@@ -2,7 +2,6 @@ from collections.abc import Iterator, Mapping
 from pathlib import Path
 from typing import Any, Literal, Self, overload
 
-from ..models.data import Data
 from ..models.melee import Melee
 from ..models.primary import Primary
 from ..models.secondary import Secondary

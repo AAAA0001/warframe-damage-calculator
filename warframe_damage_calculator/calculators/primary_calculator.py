@@ -1,4 +1,4 @@
-from ..models.fields import AttackResult
+from ..fields.attack_result import AttackResult
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.functions import clamp
 from .ranged_calculator import RangedCalculator
@@ -28,12 +28,7 @@ class PrimaryCalculator(RangedCalculator):
         average.primed_chamber_multiplier = 1 + effective.primed_chamber / effective.magazine_capacity
         average.flat_dph *= average.primed_chamber_multiplier
         average.flat_weakpoint_dph *= average.primed_chamber_multiplier
-        average.flat_dps = average.fire_rate * average.flat_dph
-        average.flat_weakpoint_dps = average.fire_rate * average.flat_weakpoint_dph
-        average.total_dph = average.flat_dph + average.flat_dotph
-        average.total_weakpoint_dph = average.flat_weakpoint_dph + average.flat_weakpoint_dotph
-        average.total_dps = average.flat_dps + average.flat_dotps
-        average.total_weakpoint_dps = average.flat_weakpoint_dps + average.flat_weakpoint_dotps
+        self._refresh_dps_from_dph(average)
 
     def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
         damage, forced_procs = result.effective.damage, result.base.forced_procs

@@ -2,7 +2,9 @@ from math import expm1, log1p
 from typing import Any
 
 from ..models.build import Build
-from ..models.fields import Attack, AttackResult, AttackResults, CalculatedStats
+from ..fields.attack_result import AttackResult, AttackResults
+from ..fields.calculated import CalculatedStats
+from ..fields.weapon_data import Attack
 from ..models.upgrade import Upgrade
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.types import Number

@@ -1,6 +1,6 @@
 from ..calculators.primary_calculator import PrimaryCalculator
 from ..formatters.primary_formatter import PrimaryFormatter
-from .fields import PrimaryData
+from ..fields.weapon_data import PrimaryData
 from .ranged import Ranged
 
 

@@ -130,12 +130,10 @@ class Data(MutableMapping[str, DataValue]):
     def items(self) -> ItemsView[str, DataValue]:
         return self._values.items()
 
-    def update(self, data: Mapping[str, DataValue] | None = None, /, **values: DataValue) -> None:
+    def update(self, data: Mapping[str, DataValue] | None = None, /) -> None:
         if data is not None:
             for key, value in data.items():
                 self[key] = value
-        for key, value in values.items():
-            self[key] = value
 
     def copy(self) -> Self:
         return deepcopy(self)

@@ -1,4 +1,4 @@
-from ..models.fields import AttackResult
+from ..fields.attack_result import AttackResult
 from ..utils.functions import clamp, true_round
 from .weapon_calculator import WeaponCalculator
 
