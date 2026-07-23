@@ -26,8 +26,8 @@ front ends, but it is not a complete simulation of Warframe combat.
 - Multiple named attack modes per weapon
 - Runtime attack selection with `weapon.configure(attack=...)`
 - Automatic calculation of related attacks, such as projectiles and their explosions
-- Flat per-attack results under `weapon.stats.attacks`
-- Per-attack tree totals on `weapon.stats.attacks[name].final` (attack + children DPH/DPS)
+- Selected attack results on `weapon.stats.main`; direct children on `weapon.stats.child`
+- Per-attack tree totals on `weapon.stats.main.final` (selected attack + related children DPH/DPS)
 - Global weapon data separated from attack-specific stats
 - Incarnon evolution selection with `weapon.configure(evolutions={...})`
 - Fluent runtime configuration on `Upgrade.configure(...)` and `Build.configure(...)`
@@ -168,12 +168,13 @@ build = Build(
 weapon.configure(build)
 
 print(weapon.format.summary())
-print(f"Average DPS:   {weapon.stats.attacks['buckshot'].final.total_dps:.2f}")
-print(f"Weakpoint DPS: {weapon.stats.attacks['buckshot'].final.total_weakpoint_dps:.2f}")
+print(f"Average DPS:   {weapon.stats.main.final.total_dps:.2f}")
+print(f"Weakpoint DPS: {weapon.stats.main.final.total_weakpoint_dps:.2f}")
 ```
 
-`weapon.stats` holds `attacks` (every attack). Each attack has `base` / `modded` /
-`effective` / `average` for itself, and `final` for itself plus related children.
+`weapon.stats.main` is the selected attack. `weapon.stats.child` is its direct
+children (flat list). Each attack result has `base` / `modded` / `effective` /
+`average` for itself, and `final` for itself plus related children.
 
 Database upgrades resolve at maximum rank and, where applicable, maximum stacks
 by default. Pass runtime values through `context` or `configure(...)` to
@@ -207,10 +208,12 @@ weapon.configure(attack="air_burst_projectile")
 print(weapon.data.attacks.air_burst_projectile.trigger)
 print(weapon.data.attacks.air_burst_projectile.delivery)
 print(weapon.data.attacks.air_burst_projectile.children)
-print(weapon.stats.attacks["air_burst_projectile"].effective.damage)
+print(weapon.stats.main.effective.damage)
+print(weapon.stats.child[0].effective.damage)  # air_burst_explosion
 ```
 
 Attack keys match `weapon.data.attacks` exactly (for example `air_burst_projectile`).
+`weapon.stats.main` always reflects the currently selected attack.
 
 ### Configure a build
 
@@ -248,7 +251,7 @@ weapon = arsenal.get("Corinth Prime").configure(
 weapon = arsenal.get("Telos Boltor")
 weapon.configure(evolutions={2: 1, 3: 2}, attack="incarnon_form")
 
-print(weapon.stats.attacks["incarnon_form"].effective.damage.total_damage())
+print(weapon.stats.main.effective.damage.total_damage())
 ```
 
 Evolution keys are tier numbers matching the database (`2`, `3`, …); values are
@@ -258,14 +261,14 @@ included when the weapon is recomputed.
 ### Read results
 
 ```python
-selected = weapon.stats.attacks["buckshot"]
+selected = weapon.stats.main
 
 print(selected.base)
 print(selected.modded)
 print(selected.effective)
 print(selected.average)
 print(selected.final)
-print(weapon.stats.attacks)
+print(weapon.stats.child)
 
 print(selected.final.total_dph)
 print(selected.final.total_dps)
@@ -383,16 +386,17 @@ weapon = Primary(
 
 weapon.configure(attack="projectile")
 
-print(weapon.stats.attacks["projectile"].effective.damage)
-print(weapon.stats.attacks["explosion"].effective.damage)
-print(weapon.stats.attacks["projectile"].final.total_dps)
+print(weapon.stats.main.effective.damage)
+print(weapon.stats.child[0].effective.damage)
+print(weapon.stats.main.final.total_dps)
 ```
 
 For ranged weapons, selected attacks may name related attacks through
-`children`. Every attack is computed into the flat map `weapon.stats.attacks`,
-including each attack's base, modded, effective, and average layers.
-`attacks[name].final` folds that attack plus its related children (DPH summed,
-DPS using that attack's fire rate).
+`children`. Results for the selected attack are on `weapon.stats.main`; its
+direct children are on `weapon.stats.child`. `main.final` folds that attack
+plus its related children (DPH summed, DPS using that attack's fire rate).
+To inspect a deeper related attack as `main`, select it with
+`weapon.configure(attack=...)`.
 
 ### Constructing a melee weapon
 
@@ -424,8 +428,8 @@ weapon = Melee(
     }
 )
 
-print(weapon.stats.attacks["normal_attack"].base.attack_speed)
-print(weapon.stats.attacks["normal_attack"].final.total_dps)
+print(weapon.stats.main.base.attack_speed)
+print(weapon.stats.main.final.total_dps)
 ```
 
 For melee attacks, the selected attack's `fire_rate` is used as the base attack
@@ -776,7 +780,7 @@ copied_data = weapon.data.copy()
 Damage and forced-proc fields are converted to `Dist` objects:
 
 ```python
-damage = weapon.stats.attacks["buckshot"].effective.damage
+damage = weapon.stats.main.effective.damage
 
 print(damage.total_damage())
 print(damage.weight("slash"))
@@ -861,7 +865,7 @@ Each weapon exposes:
 |---|---|
 | `weapon.data` | Flat weapon definition (`name`, `type`, `ammo`, `attacks`, `evolutions`). |
 | `weapon.build` | Detached active build. |
-| `weapon.stats` | Result container (`attacks`). |
+| `weapon.stats` | Result container (`main`, `child`). |
 | `weapon.format` | Text formatter. |
 
 ### Weapon state buckets
@@ -871,16 +875,17 @@ Each weapon exposes:
 | `weapon.data` | Flat weapon definition (`name`, `type`, `ammo`, `attacks`, `evolutions`). |
 | `weapon.data.attacks[name].name` | Attack identity (same as the map key). |
 | `weapon.stats` | Result container. |
-| `weapon.stats.attacks` | Flat map of every computed attack. |
-| `weapon.stats.attacks[name].base` / `modded` / `effective` / `average` | Per-attack layers (that attack alone). |
-| `weapon.stats.attacks[name].final` | That attack plus related children (DPH summed; DPS uses this attack's fire rate). |
-| `weapon.stats.attacks[name].children` | Related attack name list. |
+| `weapon.stats.main` | Selected attack result (`weapon._attack`). |
+| `weapon.stats.child` | Direct children of `main` (flat list of `AttackResult`). |
+| `weapon.stats.main.base` / `modded` / `effective` / `average` | Per-attack layers (that attack alone). |
+| `weapon.stats.main.final` | That attack plus related children (DPH summed; DPS uses this attack's fire rate). |
+| `weapon.stats.main.children` | Related attack name list. |
 
-`weapon.stats.attacks[name].average` is that attack alone.
-`weapon.stats.attacks[name].final` folds in related attacks.
+`weapon.stats.main.average` is the selected attack alone.
+`weapon.stats.main.final` folds in related attacks.
 
 ```python
-final = weapon.stats.attacks["buckshot"].final
+final = weapon.stats.main.final
 
 print(final.crit_chance)
 print(final.crit_multiplier)
@@ -897,7 +902,7 @@ procs per shot, and weakpoint averages:
 
 ```python
 print(average.fire_rate)
-print(weapon.stats.attacks["buckshot"].average.procs_per_shot)
+print(weapon.stats.main.average.procs_per_shot)
 print(average.weakpoint_crit_chance)
 print(average.total_weakpoint_dph)
 print(average.total_weakpoint_dps)
@@ -1030,7 +1035,7 @@ Faction damage is applied twice to modeled DoT damage.
 calculator. Use individual damage-type fields or `damage` to modify the damage
 distribution.
 
-`melee_doughty` exposes `weapon.stats.attacks[name].average.melee_doughty_bonus`;
+`melee_doughty` exposes `weapon.stats.main.average.melee_doughty_bonus`;
 that bonus is not yet applied to DPH or DPS.
 
 ---

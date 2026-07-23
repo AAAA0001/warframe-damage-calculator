@@ -1,7 +1,4 @@
-from collections.abc import Mapping
-
 from ..models.data import Data
-from ..utils.types import JsonValue
 from .calculated import AverageStats, CalculatedStats
 from .upgrade import ResolvedStat
 from .weapon_data import Attack
@@ -29,10 +26,3 @@ class AttackResult(Data):
     @property
     def aoe(self) -> bool:
         return self.attack.aoe
-
-
-class AttackResults(Data):
-    def __setitem__(self, key: str, value: JsonValue) -> None:
-        if isinstance(value, Mapping) and not isinstance(value, AttackResult):
-            value = AttackResult(value)
-        super().__setitem__(key, value)

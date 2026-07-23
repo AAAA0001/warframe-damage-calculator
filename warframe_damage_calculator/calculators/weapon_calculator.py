@@ -1,6 +1,6 @@
 from typing import Any, Iterator
 
-from ..fields.attack_result import AttackResult, AttackResults
+from ..fields.attack_result import AttackResult
 from ..fields.calculated import AverageStats, CalculatedStats
 from ..fields.upgrade import ResolvedStat
 from ..fields.weapon_data import Attack
@@ -13,8 +13,16 @@ from . import helpers
 class WeaponCalculator:
     def __init__(self, weapon: Any) -> None:
         self.weapon = weapon
-        self.attacks = AttackResults()
+        self._results: dict[str, AttackResult] = {}
         self.recompute()
+
+    @property
+    def main(self) -> AttackResult:
+        return self._results[self.weapon._attack]
+
+    @property
+    def child(self) -> list[AttackResult]:
+        return [self._results[name] for name in self.main.children if name in self._results]
 
     def _resolved_build(self) -> ResolvedStat:
         build = Build(*self.weapon.build, *helpers.selected_evolution_upgrades(self.weapon))
@@ -40,11 +48,11 @@ class WeaponCalculator:
         ancestors = frozenset() if ancestors is None else ancestors
         if name in ancestors:
             raise ValueError(f"cyclic attack relationship detected: {name}")
-        result = self.attacks[name]
+        result = self._results[name]
         yield result
         next_ancestors = ancestors | {name}
         for child in result.children:
-            if child in self.attacks:
+            if child in self._results:
                 yield from self._walk_tree(child, next_ancestors)
 
     def compute_attack(self, name: str, attack: Attack, resolved_build: ResolvedStat) -> AttackResult:
@@ -113,16 +121,7 @@ class WeaponCalculator:
         effective.status_damage = modded.status_damage
 
     def _max_average_faction_damage(self, result: AttackResult) -> float:
-        average = result.average
-        return max(
-            average.get("corpus_damage", 1),
-            average.get("grineer_damage", 1),
-            average.get("infested_damage", 1),
-            average.get("orokin_damage", 1),
-            average.get("murmur_damage", 1),
-            average.get("sentient_damage", 1),
-            1,
-        )
+        return max(result.average.corpus_damage, result.average.grineer_damage, result.average.infested_damage, result.average.orokin_damage, result.average.murmur_damage, result.average.sentient_damage)
 
     def _compute_average_stats(self, result: AttackResult) -> None:
         effective, average = result.effective, result.average
@@ -167,11 +166,11 @@ class WeaponCalculator:
     def recompute(self) -> None:
         self._validate_attack_cycles()
         resolved = self._resolved_build()
-        self.attacks = AttackResults({
+        self._results = {
             name: self.compute_attack(name, attack, resolved)
             for name, attack in self.weapon.data.attacks.items()
-        })
-        for name, result in self.attacks.items():
+        }
+        for name, result in self._results.items():
             result.final = self._fold_attack_tree(result, list(self._walk_tree(name)))
 
     def contribution(self, upgrade: Upgrade) -> float:
@@ -179,10 +178,10 @@ class WeaponCalculator:
         if all(equipped.data != upgrade.data for equipped in full):
             return 0.0
         reduced = full - upgrade
-        full_dps = self.attacks[self.weapon._attack].final.total_dps
+        full_dps = self.main.final.total_dps
         try:
             self.weapon.configure(reduced)
-            return full_dps - self.attacks[self.weapon._attack].final.total_dps
+            return full_dps - self.main.final.total_dps
         finally:
             self.weapon.configure(full)
 
