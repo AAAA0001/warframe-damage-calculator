@@ -27,11 +27,7 @@ class _Effect:
 
 
 class UpgradeCalculator:
-    METADATA = {
-        "name", "category", "type", "trigger", "is_beam", "is_battery", "compatibility",
-        "incompatibility", "requirements", "max_rank", "max_stacks", "stacks", "is_exilus",
-        "rank", "weapon",
-    }
+    METADATA = {"name", "category", "type", "trigger", "is_beam", "is_battery", "compatibility", "incompatibility", "requirements", "max_rank", "max_stacks", "stacks", "is_exilus", "rank", "weapon"}
     WEAPON_TYPES = PRIMARY_TYPES | SECONDARY_TYPES | MELEE_TYPES
     BUCKETS = ("static", "conditional", "modular", "stacking", "rank_locked", "total")
 
@@ -150,11 +146,7 @@ class UpgradeCalculator:
         return _Effect(stat, value, "conditional", condition=condition, scales_with_rank=True)
 
     def _normalize_effects(self) -> tuple[_Effect, ...]:
-        return tuple(
-            self._normalize_effect(stat, effect)
-            for stat, raw in self.upgrade.data.stats.items()
-            for effect in self._raw_effects(raw)
-        )
+        return tuple(self._normalize_effect(stat, effect) for stat, raw in self.upgrade.data.stats.items() for effect in self._raw_effects(raw))
 
     def _stack_count(self, effect: _Effect, upgrade: Data, upgrade_max_stacks: int | None, defaults: bool) -> int:
         effect_max = effect.max_stacks if effect.max_stacks is not None else upgrade_max_stacks
@@ -163,17 +155,7 @@ class UpgradeCalculator:
         stacks = upgrade.get(effect.stacks_on, fallback)
         return min(stacks, effect_max) if effect_max is not None else stacks
 
-    def _resolve_effects(
-        self,
-        effects: Iterable[_Effect],
-        weapon: Data,
-        build: Data,
-        upgrade: Data,
-        rank: int,
-        multiplier: float,
-        upgrade_max_stacks: int | None,
-        defaults: bool,
-    ) -> tuple[_Effect, ...]:
+    def _resolve_effects(self, effects: Iterable[_Effect], weapon: Data, build: Data, upgrade: Data, rank: int, multiplier: float, upgrade_max_stacks: int | None, defaults: bool) -> tuple[_Effect, ...]:
         resolved: list[_Effect] = []
         equipped_names = set(build.get("equipped", []))
 
@@ -222,7 +204,5 @@ class UpgradeCalculator:
         defaults = set(upgrade_data) <= self.METADATA
 
         effects = self._normalize_effects()
-        applicable = self._resolve_effects(
-            effects, weapon_data, build_data, upgrade_data, rank, multiplier, max_stacks, defaults,
-        )
+        applicable = self._resolve_effects(effects, weapon_data, build_data, upgrade_data, rank, multiplier, max_stacks, defaults)
         self._aggregate_effects(applicable)
