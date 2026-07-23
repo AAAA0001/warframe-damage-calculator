@@ -95,10 +95,6 @@ class WeaponCalculator:
 
     @staticmethod
     def _distribute_flat_damage(damage: Dist, flat: Number) -> Dist:
-        if flat == 0 or damage.total_damage() <= 0:
-            if flat == 0:
-                return Dist()
-            return Dist({"impact": flat})
         return Dist({damage_type: flat * damage.weight(damage_type) for damage_type, _ in damage})
 
     def _compute_base(self, result: AttackResult) -> None:
@@ -287,12 +283,7 @@ class WeaponCalculator:
         base, effective, average = result.base, result.effective, result.average
         if effective.damage.total_damage() <= 0:
             return 0.0
-        multiplier = self._hit_multiplier(
-            average.weakpoint_crit_chance if weakpoint else average.crit_chance,
-            effective.crit_damage,
-            effective.get("non_crit_bonus_damage", 0),
-            effective.get("non_crit_bonus_chance", 0),
-        )
+        multiplier = self._hit_multiplier(average.weakpoint_crit_chance if weakpoint else average.crit_chance, effective.crit_damage, effective.get("non_crit_bonus_damage", 0), effective.get("non_crit_bonus_chance", 0))
         regular = sum(factor * effective.damage.get(damage_type) * effective.damage.weight(damage_type) for damage_type, factor in DOT_MULTIPLIERS) * effective.status_chance
         forced = sum(factor * base.forced_procs.get(damage_type) * effective.damage.get(damage_type) for damage_type, factor in DOT_MULTIPLIERS)
         shot_hits = effective.get("multishot", self._status_hits(result)) if hits is None else hits
