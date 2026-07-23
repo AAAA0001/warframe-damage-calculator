@@ -30,4 +30,23 @@ class PrimaryCalculator(RangedCalculator):
         helpers.refresh_dps_from_dph(average)
 
     def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
-        return helpers.primary_flat_dotph(result, weakpoint=weakpoint, faction_damage=self._max_average_faction_damage(result))
+        damage, forced_procs = result.effective.damage, result.base.forced_procs
+        effective, average = result.effective, result.average
+        if damage.total_damage() <= 0:
+            return 0.0
+        faction_damage = self._max_average_faction_damage(result)
+        crit_chance = average.weakpoint_crit_chance if weakpoint else average.crit_chance
+        multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        primed = 1 + effective.primed_chamber / effective.magazine_capacity
+        hunter_procs = effective.hunter_munitions * min(crit_chance, 1)
+        hunter_dpp = 2.1 * damage.total_damage() * max(effective.crit_damage, multiplier) * effective.status_damage * faction_damage ** 2 * primed
+        hunter_damage = hunter_procs * hunter_dpp
+        impact_ib = (damage.weight("impact") + forced_procs.get("impact")) * effective.internal_bleeding
+        guaranteed_proc, fractional_proc = divmod(effective.status_chance, 1)
+        ib_procs = impact_ib * effective.status_chance
+        ib_dpp = 2.1 * damage.total_damage() * multiplier * effective.status_damage * faction_damage ** 2 * primed
+        ib_damage = ib_procs * ib_dpp
+        ib_probability = 1 - (1 - impact_ib) ** guaranteed_proc * ((1 - fractional_proc) + fractional_proc * (1 - impact_ib))
+        overlap = hunter_procs * ib_probability * min(hunter_dpp, ib_dpp)
+        extra = hunter_damage + ib_damage - overlap
+        return super()._flat_dotph(result, weakpoint=weakpoint, damage_multiplier=primed, extra_damage=extra * effective.multishot, faction_damage=faction_damage)

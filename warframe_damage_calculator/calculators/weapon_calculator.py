@@ -1,4 +1,5 @@
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
+from math import expm1, log1p
 
 from ..fields.attack_result import AttackResult
 from ..fields.calculated import AverageStats, CalculatedStats
@@ -6,23 +7,18 @@ from ..fields.upgrade import ResolvedStat
 from ..fields.weapon_data import Attack
 from ..models.build import Build
 from ..protocols import BuildUpgradeOwner, ConfigurableWeaponOwner
+from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.types import Number
 from . import helpers
 
 
 class WeaponCalculator:
+    main: AttackResult
+    child: list[AttackResult]
+
     def __init__(self, weapon: ConfigurableWeaponOwner) -> None:
         self.weapon = weapon
-        self._results: dict[str, AttackResult] = {}
         self.recompute()
-
-    @property
-    def main(self) -> AttackResult:
-        return self._results[self.weapon._attack]
-
-    @property
-    def child(self) -> list[AttackResult]:
-        return [self._results[name] for name in self.main.children if name in self._results]
 
     def _resolved_build(self) -> ResolvedStat:
         build = Build(*self.weapon.build, *helpers.selected_evolution_upgrades(self.weapon))
@@ -44,18 +40,18 @@ class WeaponCalculator:
         for name in attacks:
             walk(name, frozenset())
 
-    def _walk_tree(self, name: str, ancestors: frozenset[str] | None = None) -> Iterator[AttackResult]:
+    def _walk_tree(self, name: str, results: Mapping[str, AttackResult], ancestors: frozenset[str] | None = None) -> Iterator[AttackResult]:
         ancestors = frozenset() if ancestors is None else ancestors
         if name in ancestors:
             raise ValueError(f"cyclic attack relationship detected: {name}")
-        result = self._results[name]
+        result = results[name]
         yield result
         next_ancestors = ancestors | {name}
         for child in result.children:
-            if child in self._results:
-                yield from self._walk_tree(child, next_ancestors)
+            if child in results:
+                yield from self._walk_tree(child, results, next_ancestors)
 
-    def compute_attack(self, name: str, attack: Attack, resolved_build: ResolvedStat) -> AttackResult:
+    def _compute_attack(self, name: str, attack: Attack, resolved_build: ResolvedStat) -> AttackResult:
         result = AttackResult({"name": name, "attack": attack, "build": resolved_build.copy(), "children": list(attack.children)})
         self._compute_base(result)
         self._compute_modded_scalars(result)
@@ -130,14 +126,76 @@ class WeaponCalculator:
         average.murmur_damage = effective.murmur_damage
         average.sentient_damage = effective.sentient_damage
 
-    def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
-        return helpers.flat_dotph(result, weakpoint=weakpoint, faction_damage=self._max_average_faction_damage(result))
-
-    def _average_condition_overload_bonus(self, result: AttackResult, time: Number = 5) -> float:
-        return helpers.average_condition_overload_bonus(self.weapon, result, time)
+    @staticmethod
+    def _status_hits(result: AttackResult) -> float:
+        build, stats, modded = result.build, result.attack.stats, result.modded
+        hits = max(modded.get("multishot", stats.multishot), 1)
+        duplicate = modded.get("melee_duplicate", 0)
+        chance = max(stats.crit_chance * (1 + build.crit_chance) * modded.multiplicative_crit_chance + modded.flat_crit_chance, 0)
+        return hits + duplicate * max(0, 1 - abs(chance - 1))
 
     def _effective_attacks_per_second(self, result: AttackResult) -> float:
-        return helpers.effective_attacks_per_second(self.weapon, result)
+        stats, base, modded = result.attack.stats, result.base, result.modded
+        if "attack_speed" in modded:
+            return max(stats.fire_rate * modded.attack_speed / (base.attack_speed or 1), 0)
+        if "magazine_capacity" not in modded:
+            return max(stats.fire_rate, 0)
+
+        build = result.build
+        speed = 1 if build.fire_rate_lock else max(1 + build.fire_rate, 0.01)
+        fire_rate = max(stats.fire_rate * speed, 0.05) * modded.multiplicative_fire_rate
+        burst_count = max(stats.burst_count, 1)
+        ammo_cost = max(float(modded.get("ammo_cost", stats.ammo_cost)), 0)
+        if ammo_cost <= 0:
+            return fire_rate
+        shots = modded.magazine_capacity / ammo_cost
+        bursts = shots / burst_count
+        is_battery = "recharge_delay" in self.weapon.data.ammo
+        reload_speed = modded.reload_speed + (0 if not is_battery else float("inf") if modded.recharge_rate <= 0 else modded.magazine_capacity / modded.recharge_rate)
+        ammo_spent = 1 - modded.ammo_efficiency
+        cycle = bursts * (max(stats.charge_time, 0) / speed / modded.multiplicative_fire_rate + (burst_count - 1) * max(stats.burst_delay, 0) / max(speed, 1))
+        cycle += (bursts - ammo_spent) / fire_rate + ammo_spent * reload_speed
+        return float("inf") if cycle <= 0 else shots / cycle
+
+    def _average_condition_overload_bonus(self, result: AttackResult, time: Number = 5) -> float:
+        build, stats = result.build, result.attack.stats
+        damage = stats.damage.apply(build.damage).combine().sorted()
+        guaranteed, fractional = divmod(max(stats.status_chance * (1 + build.status_chance), 0), 1)
+        guaranteed_hits, fractional_hit = divmod(max(self._status_hits(result), 0), 1)
+        probabilities: dict[str, float] = {}
+        for damage_type in damage.data:
+            weight = damage.weight(damage_type)
+            miss = (1 - weight) ** guaranteed * (1 - fractional * weight)
+            probabilities[damage_type] = 1 - miss ** guaranteed_hits * (1 - fractional_hit + fractional_hit * miss)
+        probabilities.update({damage_type: 1.0 for damage_type, count in stats.forced_procs if count > 0})
+
+        condition_overload = build.condition_overload
+        maximum = len(probabilities) if condition_overload.max_stacks == "inf" else int(condition_overload.max_stacks)
+        attack_rate = self._effective_attacks_per_second(result)
+        if maximum <= 0 or attack_rate <= 0:
+            return 0.0
+        attempts, distribution = attack_rate * time, [1.0] + [0.0] * maximum
+        for probability in probabilities.values():
+            acquired = 0 if probability <= 0 else 1 if probability >= 1 else -expm1(attempts * log1p(-probability))
+            updated = [0.0] * (maximum + 1)
+            for count, chance in enumerate(distribution):
+                updated[count] += chance * (1 - acquired)
+                updated[min(count + 1, maximum)] += chance * acquired
+            distribution = updated
+        expected = sum(count * chance for count, chance in enumerate(distribution))
+        return float(condition_overload.value) * stats.co_factor * expected
+
+    def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False, hits: Number | None = None, damage_multiplier: Number = 1, extra_damage: Number = 0, faction_damage: Number | None = None) -> float:
+        if faction_damage is None:
+            faction_damage = self._max_average_faction_damage(result)
+        base, effective, average = result.base, result.effective, result.average
+        if effective.damage.total_damage() <= 0:
+            return 0.0
+        multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        regular = sum(factor * effective.damage.get(damage_type) * effective.damage.weight(damage_type) for damage_type, factor in DOT_MULTIPLIERS) * effective.status_chance
+        forced = sum(factor * base.forced_procs.get(damage_type) * effective.damage.get(damage_type) for damage_type, factor in DOT_MULTIPLIERS)
+        shot_hits = effective.get("multishot", self._status_hits(result)) if hits is None else hits
+        return (regular + forced) * effective.status_damage * faction_damage ** 2 * multiplier * damage_multiplier * shot_hits + extra_damage
 
     def _fold_attack_tree(self, root: AttackResult, tree: list[AttackResult]) -> AverageStats:
         final = root.average.copy()
@@ -162,9 +220,11 @@ class WeaponCalculator:
     def recompute(self) -> None:
         self._validate_attack_cycles()
         resolved = self._resolved_build()
-        self._results = {name: self.compute_attack(name, attack, resolved) for name, attack in self.weapon.data.attacks.items()}
-        for name, result in self._results.items():
-            result.final = self._fold_attack_tree(result, list(self._walk_tree(name)))
+        results = {name: self._compute_attack(name, attack, resolved) for name, attack in self.weapon.data.attacks.items()}
+        for name, result in results.items():
+            result.final = self._fold_attack_tree(result, list(self._walk_tree(name, results)))
+        self.main = results[self.weapon._attack]
+        self.child = [results[name] for name in self.main.children if name in results]
 
     def contribution(self, upgrade: BuildUpgradeOwner) -> float:
         full = self.weapon.build

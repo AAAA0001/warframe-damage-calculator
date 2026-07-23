@@ -64,4 +64,16 @@ class SecondaryCalculator(RangedCalculator):
         return 0.1 * accumulated[0][0] / length[0][0]
 
     def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
-        return helpers.secondary_flat_dotph(result, weakpoint=weakpoint, faction_damage=self._max_average_faction_damage(result))
+        # Secondary Encumber calculations need testing in-game
+        damage, forced_procs = result.effective.damage, result.base.forced_procs
+        effective, average = result.effective, result.average
+        if damage.total_damage() <= 0:
+            return 0.0
+        faction_damage = self._max_average_faction_damage(result)
+        multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        encumber_chance = 1 - (1 - effective.secondary_encumber * min(effective.status_chance, 1)) ** effective.multishot
+        encumber_dot = encumber_chance * damage.total_damage() * 14.1 / 13 * multiplier * effective.status_damage * faction_damage ** 2
+        ib_procs = ((damage.weight("impact") + forced_procs.get("impact")) * effective.status_chance + encumber_chance / 13) * effective.internal_bleeding
+        ib_dpp = 2.1 * damage.total_damage() * multiplier * effective.status_damage * faction_damage ** 2
+        extra = ib_procs * ib_dpp * effective.multishot
+        return super()._flat_dotph(result, weakpoint=weakpoint, extra_damage=extra + encumber_dot, faction_damage=faction_damage)

@@ -1,6 +1,7 @@
 import unittest
 
 from warframe_damage_calculator.calculators import helpers
+from warframe_damage_calculator.calculators.weapon_calculator import WeaponCalculator
 from warframe_damage_calculator.fields.attack_result import AttackResult
 from warframe_damage_calculator.fields.calculated import AverageStats
 from warframe_damage_calculator.fields.weapon_data import Attack
@@ -35,7 +36,7 @@ class HelperTests(unittest.TestCase):
             "name": "test",
             "attack": Attack({"name": "test", "stats": {"damage": {}}}),
         })
-        self.assertEqual(helpers.flat_dotph(result), 0.0)
+        self.assertEqual(WeaponCalculator._flat_dotph(None, result, faction_damage=1), 0.0)
 
     def test_status_hits_uses_multishot(self):
         result = AttackResult({
@@ -43,7 +44,7 @@ class HelperTests(unittest.TestCase):
             "attack": Attack({"name": "test", "stats": {"multishot": 1, "crit_chance": 0.1}}),
             "modded": {"multishot": 2.5, "multiplicative_crit_chance": 1, "flat_crit_chance": 0},
         })
-        self.assertAlmostEqual(helpers.status_hits(result), 2.5)
+        self.assertAlmostEqual(WeaponCalculator._status_hits(result), 2.5)
 
 
 if __name__ == "__main__":

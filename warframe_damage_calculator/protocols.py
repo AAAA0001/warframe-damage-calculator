@@ -48,12 +48,7 @@ class WeaponCalculatorOwner(Protocol):
 
 @runtime_checkable
 class ConfigurableWeaponOwner(WeaponCalculatorOwner, Protocol):
-    def configure(
-        self,
-        build: BuildOwner | None = None,
-        attack: str | None = None,
-        evolutions: Mapping[int, int] | None = None,
-    ) -> ConfigurableWeaponOwner: ...
+    def configure(self, build: BuildOwner | None = None, attack: str | None = None, evolutions: Mapping[int, int] | None = None) -> ConfigurableWeaponOwner: ...
 
 
 @runtime_checkable

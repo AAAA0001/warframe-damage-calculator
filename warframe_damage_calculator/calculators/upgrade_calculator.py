@@ -170,7 +170,7 @@ class UpgradeCalculator:
             if not stacks:
                 return None
 
-        value = (self._scale(effect.value, context.rank_multiplier) if effect.scales_with_rank else effect.value)
+        value = self._scale(effect.value, context.rank_multiplier) if effect.scales_with_rank else effect.value
         if effect.stat == "condition_overload":
             value = {"value": value, "max_stacks": effect.co_max_stacks}
         elif effect.stacks_on is not None and not isinstance(value, bool):
