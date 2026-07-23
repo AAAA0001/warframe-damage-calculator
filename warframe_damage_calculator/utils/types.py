@@ -3,6 +3,7 @@ from typing import Literal, Any
 
 
 type DamageType = Literal["impact", "puncture", "slash", "blast", "corrosive", "gas", "magnetic", "radiation", "viral", "cold", "electricity", "heat", "toxin", "void", "tau", "true"]
+type EffectMode = Literal["additive", "base", "flat", "multiplicative"]
 type Number = int | float
 type JsonScalar = str | int | float | bool | None
 type JsonValue = JsonScalar | Mapping[str, JsonValue] | list[JsonValue]

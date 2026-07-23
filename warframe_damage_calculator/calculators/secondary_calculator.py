@@ -1,6 +1,5 @@
 from ..fields.attack_result import AttackResult
 from ..utils.functions import clamp
-from . import helpers
 from .ranged_calculator import RangedCalculator
 from .weapon_calculator import WeaponCalculator
 
@@ -9,8 +8,8 @@ class SecondaryCalculator(RangedCalculator):
     def _compute_modded_scalars(self, result: AttackResult) -> None:
         super()._compute_modded_scalars(result)
         build, modded = result.build, result.modded
-        modded.secondary_enervate = clamp(build.secondary_enervate, 0, 6)
-        modded.secondary_encumber = clamp(build.secondary_encumber, 0, 0.24)
+        modded.secondary_enervate = clamp(build.additive.secondary_enervate, 0, 6)
+        modded.secondary_encumber = clamp(build.additive.secondary_encumber, 0, 0.24)
 
     def _compute_effective(self, result: AttackResult) -> None:
         super()._compute_effective(result)
@@ -29,8 +28,8 @@ class SecondaryCalculator(RangedCalculator):
         average.weakpoint_secondary_enervate_bonus = weakpoint_secondary_enervate_bonus
         average.crit_chance = effective.crit_chance + secondary_enervate_bonus
         average.weakpoint_crit_chance = effective.weakpoint_crit_chance + weakpoint_secondary_enervate_bonus
-        average.crit_multiplier = helpers.crit_multiplier(average.crit_chance, effective.crit_damage)
-        average.weakpoint_crit_multiplier = helpers.crit_multiplier(average.weakpoint_crit_chance, effective.crit_damage)
+        average.crit_multiplier = self._crit_multiplier(average.crit_chance, effective.crit_damage)
+        average.weakpoint_crit_multiplier = self._crit_multiplier(average.weakpoint_crit_chance, effective.crit_damage)
         self._apply_ranged_damage_averages(result)
 
     @staticmethod
@@ -70,7 +69,7 @@ class SecondaryCalculator(RangedCalculator):
         if damage.total_damage() <= 0:
             return 0.0
         faction_damage = self._max_average_faction_damage(result)
-        multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        multiplier = self._hit_multiplier(average.weakpoint_crit_chance if weakpoint else average.crit_chance, effective.crit_damage, effective.get("non_crit_bonus_damage", 0), effective.get("non_crit_bonus_chance", 0))
         encumber_chance = 1 - (1 - effective.secondary_encumber * min(effective.status_chance, 1)) ** effective.multishot
         encumber_dot = encumber_chance * damage.total_damage() * 14.1 / 13 * multiplier * effective.status_damage * faction_damage ** 2
         ib_procs = ((damage.weight("impact") + forced_procs.get("impact")) * effective.status_chance + encumber_chance / 13) * effective.internal_bleeding

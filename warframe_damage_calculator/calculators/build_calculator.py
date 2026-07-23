@@ -1,6 +1,7 @@
 from ..fields.upgrade import ResolvedStat
 from ..models.data import Data
 from ..protocols import BuildOwner
+from ..utils.constants import EFFECT_MODES
 from .upgrade_calculator import UpgradeCalculator
 
 
@@ -20,5 +21,8 @@ class BuildCalculator(UpgradeCalculator):
             calculator.resolve(weapon_data, build_data)
             for bucket in self.BUCKETS:
                 target = getattr(self, bucket)
-                for stat, value in getattr(calculator, bucket).items():
-                    self._merge_stat(target, stat, value)
+                source = getattr(calculator, bucket)
+                for mode in EFFECT_MODES:
+                    target_mode = getattr(target, mode)
+                    for stat, value in getattr(source, mode).items():
+                        self._merge_stat(target_mode, stat, value)

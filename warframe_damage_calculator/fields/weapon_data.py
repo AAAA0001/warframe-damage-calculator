@@ -2,6 +2,7 @@ from collections.abc import Mapping
 
 from ..models.data import Data
 from ..utils.types import JsonValue, Number
+from .evolution import Evolutions
 from .weapon_input import AttackStats
 
 
@@ -20,17 +21,6 @@ class Attacks(Data):
             value = Attack(value)
         if isinstance(value, Attack) and not value.name:
             value.name = key
-        super().__setitem__(key, value)
-
-
-class Evolution(Data):
-    pass
-
-
-class Evolutions(Data):
-    def __setitem__(self, key: str, value: JsonValue) -> None:
-        if isinstance(value, Mapping) and not isinstance(value, Evolution):
-            value = Evolution(value)
         super().__setitem__(key, value)
 
 

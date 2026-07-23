@@ -1,6 +1,5 @@
 from ..fields.attack_result import AttackResult
 from ..utils.functions import clamp
-from . import helpers
 from .ranged_calculator import RangedCalculator
 
 
@@ -8,9 +7,9 @@ class PrimaryCalculator(RangedCalculator):
     def _compute_modded_scalars(self, result: AttackResult) -> None:
         super()._compute_modded_scalars(result)
         build, modded = result.build, result.modded
-        modded.hunter_munitions = clamp(build.hunter_munitions, 0, 0.3)
-        modded.primed_chamber = clamp(build.primed_chamber, 0, 1.4)
-        modded.vigilante_bonus = clamp(build.vigilante_bonus, 0, 0.3)
+        modded.hunter_munitions = clamp(build.additive.hunter_munitions, 0, 0.3)
+        modded.primed_chamber = clamp(build.additive.primed_chamber, 0, 1.4)
+        modded.vigilante_bonus = clamp(build.additive.vigilante_bonus, 0, 0.3)
 
     def _compute_effective(self, result: AttackResult) -> None:
         super()._compute_effective(result)
@@ -27,7 +26,7 @@ class PrimaryCalculator(RangedCalculator):
         average.primed_chamber_multiplier = 1 + effective.primed_chamber / effective.magazine_capacity
         average.flat_dph *= average.primed_chamber_multiplier
         average.flat_weakpoint_dph *= average.primed_chamber_multiplier
-        helpers.refresh_dps_from_dph(average)
+        self._refresh_dps_from_dph(average)
 
     def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
         damage, forced_procs = result.effective.damage, result.base.forced_procs
@@ -36,7 +35,7 @@ class PrimaryCalculator(RangedCalculator):
             return 0.0
         faction_damage = self._max_average_faction_damage(result)
         crit_chance = average.weakpoint_crit_chance if weakpoint else average.crit_chance
-        multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
+        multiplier = self._hit_multiplier(crit_chance, effective.crit_damage, effective.get("non_crit_bonus_damage", 0), effective.get("non_crit_bonus_chance", 0))
         primed = 1 + effective.primed_chamber / effective.magazine_capacity
         hunter_procs = effective.hunter_munitions * min(crit_chance, 1)
         hunter_dpp = 2.1 * damage.total_damage() * max(effective.crit_damage, multiplier) * effective.status_damage * faction_damage ** 2 * primed

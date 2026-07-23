@@ -13,7 +13,7 @@ def main() -> None:
     mod8 = arsenal.get("Toxic Barrage")
     exilus = arsenal.get("Vigilante Supplies")
     arcane = arsenal.get("Primary Merciless")
-    buff = Upgrade({"name": "Buff", "type": "buff", "stats": {"flat_crit_damage": 1.2}})
+    buff = Upgrade({"name": "Buff", "type": "buff", "stats": {"crit_damage": {"value": 1.2, "mode": "flat"}}})
     build = Build(mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, exilus, arcane, buff)
     weapon.configure(build, attack="buckshot")
 

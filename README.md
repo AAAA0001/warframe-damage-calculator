@@ -255,8 +255,9 @@ print(weapon.results.main.effective.damage.total_damage())
 ```
 
 Evolution keys are tier numbers matching the database (`2`, `3`, …); values are
-perk indices. Each selected evolution is converted into an internal upgrade and
-included when the weapon is recomputed.
+perk indices. Selected evolutions are resolved separately from the mod build:
+flat/base-stat bonuses are baked into `results.main.base` before Serration-style
+multipliers, and percent bonuses combine with the build in the scalar formulas.
 
 ### Read results
 
@@ -279,9 +280,9 @@ print(weapon.format.summary())
 
 ```python
 upgrade = Upgrade({"name": "Headshot", "type": "mod", "max_rank": 0, "stats": {"crit_chance": [1.2, {"value": 0.8, "when": "headshot"}]}})
-print(upgrade.stats.total.crit_chance)  # 2.0
+print(upgrade.stats.total.additive.crit_chance)  # 2.0
 upgrade.configure({"headshot": False})
-print(upgrade.stats.total.crit_chance)  # 1.2
+print(upgrade.stats.total.additive.crit_chance)  # 1.2
 
 build = Build(upgrade)
 build.configure({"headshot": True})
@@ -452,7 +453,7 @@ upgrade = Upgrade(
         },
         "incompatibility": ["Conflicting Mod"],
         "stats": {
-            "base_damage": 1.65,
+            "damage_bonus": 1.65,
             "crit_chance": 2.0,
             "fire_rate": -0.20,
             "heat": 0.90,
@@ -461,8 +462,8 @@ upgrade = Upgrade(
 )
 
 print(upgrade.data.name)
-print(upgrade.data.stats.base_damage)
-print(upgrade.stats.total.base_damage)
+print(upgrade.data.stats.damage_bonus)
+print(upgrade.stats.total.additive.damage_bonus)
 ```
 
 The canonical data contains persistent metadata and stat effects. Runtime
@@ -482,12 +483,12 @@ upgrade = Upgrade(
         "type": "arcane",
         "max_rank": 5,
         "stats": {
-            "base_damage": [
+            "damage_bonus": [
                 0.30,
-                {"value": 0.20, "when": "headshot"},
-                {"value": 0.10, "stacks": {"when": "kill", "max": 3}},
-                {"value": 0.25, "rank": 5},
-                {"value": 0.15, "equipped": ["Partner"]},
+                {"value": 0.20, "mode": "additive", "when": "headshot"},
+                {"value": 0.10, "mode": "additive", "stacks": {"when": "kill", "max": 3}},
+                {"value": 0.25, "mode": "additive", "rank": 5},
+                {"value": 0.15, "mode": "additive", "equipped": ["Partner"]},
             ]
         },
     }
@@ -506,23 +507,32 @@ upgrade.data.runtime.update(
 build = Build(upgrade, partner)
 resolved = build.upgrades[0]
 
-print(resolved.stats.static.base_damage)       # 0.30
-print(resolved.stats.conditional.base_damage)  # 0.20
-print(resolved.stats.stacking.base_damage)     # 0.20
-print(resolved.stats.rank_locked.base_damage)  # 0.25
-print(resolved.stats.modular.base_damage)      # 0.15
-print(resolved.stats.total.base_damage)        # 1.10
+print(resolved.stats.static.additive.damage_bonus)       # 0.30
+print(resolved.stats.conditional.additive.damage_bonus)  # 0.20
+print(resolved.stats.stacking.additive.damage_bonus)     # 0.20
+print(resolved.stats.rank_locked.additive.damage_bonus)  # 0.25
+print(resolved.stats.modular.additive.damage_bonus)      # 0.15
+print(resolved.stats.total.additive.damage_bonus)        # 1.10
 ```
 
 | Form | Example | Behavior |
 |---|---|---|
-| Scalar | `"base_damage": 1.65` | Always active. |
-| Static record | `{"value": 1.65}` | Always active. |
-| Conditional | `{"value": 0.3, "when": "headshot"}` | Active when the named runtime condition is truthy. |
-| Stacking | `{"value": 0.1, "stacks": {"when": "kill", "max": 3}}` | Multiplied by the named stack count. |
-| Rank-locked | `{"value": 0.3, "rank": 5}` | Added at full value when the current rank reaches 5. |
-| Equipped | `{"value": 0.55, "equipped": ["Partner"]}` | Active when every named upgrade is equipped. |
+| Scalar | `"damage_bonus": 1.65` | Always active. |
+| Static record | `{"value": 1.65, "mode": "additive"}` | Always active. |
+| Conditional | `{"value": 0.3, "mode": "additive", "when": "headshot"}` | Active when the named runtime condition is truthy. |
+| Stacking | `{"value": 0.1, "mode": "additive", "stacks": {"when": "kill", "max": 3}}` | Multiplied by the named stack count. |
+| Rank-locked | `{"value": 0.3, "mode": "additive", "rank": 5}` | Added at full value when the current rank reaches 5. |
+| Equipped | `{"value": 0.55, "mode": "additive", "equipped": ["Partner"]}` | Active when every named upgrade is equipped. |
 | Mixed list | `[1.0, {...}, {...}]` | Resolves each effect independently. |
+
+Every effect has a calculation mode:
+
+| Mode | Behavior |
+|---|---|
+| `additive` | Joins the stat's ordinary modifier pool. This is the default when `mode` is omitted. |
+| `multiplicative` | Joins the stat's separate multiplicative modifier pool. |
+| `base` | Changes the base value before ordinary modifiers. |
+| `flat` | Adds after percentage and multiplicative modifiers. |
 
 Boolean effects aggregate with logical OR. Numeric effects add together.
 Damage-type effects aggregate into a single ordered damage distribution.
@@ -687,7 +697,7 @@ The file uses the same top-level schema as the bundled database:
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 3,
   "weapons": {
     "Example Rifle": {
       "name": "Example Rifle",
@@ -936,6 +946,19 @@ build.stats.rank_locked
 build.stats.total
 ```
 
+Each activation bucket contains `additive`, `multiplicative`, `base`, and
+`flat` mode buckets:
+
+```python
+print(upgrade.stats.total.additive.crit_chance)
+print(upgrade.stats.total.multiplicative.crit_chance)
+print(upgrade.stats.total.base.crit_chance)
+print(upgrade.stats.total.flat.crit_chance)
+
+print(weapon.results.main.build.additive.damage_bonus)
+print(weapon.results.main.evolutions.base.damage)
+```
+
 ### Contribution estimates
 
 Contribution helpers live on the private calculator:
@@ -982,8 +1005,7 @@ calculator change calculated results.
   `toxin`, `blast`, `corrosive`, `gas`, `magnetic`, `radiation`, `viral`,
   `void`, and `tau`
 - `damage`
-- `base_damage`
-- `multiplicative_base_damage`
+- `damage_bonus`
 - `condition_overload`
 - `corpus_damage`
 - `grineer_damage`
@@ -1002,7 +1024,6 @@ Faction damage is applied twice to modeled DoT damage.
 
 - `attack_speed`
 - `fire_rate`
-- `multiplicative_fire_rate`
 - `fire_rate_lock`
 - `reload_speed`
 - `magazine_capacity`
@@ -1011,12 +1032,8 @@ Faction damage is applied twice to modeled DoT damage.
 ### Critical
 
 - `crit_chance`
-- `flat_crit_chance`
-- `multiplicative_crit_chance`
 - `weakpoint_crit_chance`
-- `multiplicative_weakpoint_crit_chance`
 - `crit_damage`
-- `flat_crit_damage`
 
 ### Status and special mechanics
 

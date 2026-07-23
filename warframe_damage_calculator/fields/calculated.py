@@ -6,8 +6,8 @@ from ..utils.types import Number
 class CalculatedStats(Data):
     damage: Dist = Dist()
     forced_procs: Dist = Dist()
-    multiplicative_base_damage: Number
-    base_damage: Number
+    multiplicative_damage_bonus: Number
+    damage_bonus: Number
     corpus_damage: Number
     grineer_damage: Number
     infested_damage: Number
@@ -19,12 +19,15 @@ class CalculatedStats(Data):
     crit_chance: Number
     flat_crit_damage: Number
     crit_damage: Number
+    flat_status_chance: Number
     status_chance: Number
     status_damage: Number
     attack_speed: Number
     melee_duplicate: Number
     melee_doughty: Number
     multishot: Number
+    non_crit_bonus_chance: Number
+    non_crit_bonus_damage: Number
     fire_rate: Number
     multiplicative_fire_rate: Number
     burst_count: int

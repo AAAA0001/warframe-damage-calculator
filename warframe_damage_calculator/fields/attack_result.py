@@ -1,5 +1,7 @@
 from ..models.data import Data
+from ..models.dist import Dist
 from .calculated import AverageStats, CalculatedStats
+from .evolution import ResolvedEvolutionStat
 from .upgrade import ResolvedStat
 from .weapon_data import Attack
 
@@ -8,6 +10,8 @@ class AttackResult(Data):
     name: str = ""
     attack: Attack = Attack()
     build: ResolvedStat = ResolvedStat()
+    evolutions: ResolvedEvolutionStat = ResolvedEvolutionStat()
+    original_damage: Dist = Dist()
     base: CalculatedStats = CalculatedStats()
     modded: CalculatedStats = CalculatedStats()
     effective: CalculatedStats = CalculatedStats()
