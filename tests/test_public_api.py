@@ -3,6 +3,7 @@ from types import MappingProxyType
 from typing import get_args
 
 from warframe_damage_calculator import Build, Primary, Upgrade, Weapon, arsenal
+from warframe_damage_calculator.calculators.upgrade_calculator import UpgradeCalculator
 from warframe_damage_calculator.loader.bundled_names import MeleeName, PrimaryName, SecondaryName, UpgradeName
 from warframe_damage_calculator.models.data import Data
 from warframe_damage_calculator.models.dist import Dist
@@ -634,6 +635,128 @@ class PublicApiTests(unittest.TestCase):
 
         self.assertRegex(blast, r"2200\.00\s+-> 2200\.00$")
         self.assertRegex(total, r"2200\.00\s+-> 2200\.00$")
+
+    def test_rank_scaled_and_rank_locked_effects_resolve_independently(self):
+        upgrade = Upgrade({
+            "name": "Hybrid Rank",
+            "type": "mod",
+            "max_rank": 5,
+            "stats": {
+                "base_damage": 1.65,
+                "reload_speed": [{"value": 0.3, "rank": 5}],
+            },
+        })
+
+        low = upgrade.configure({"rank": 2})
+        self.assertAlmostEqual(low.stats.static.base_damage, 1.65 * 3 / 6)
+        self.assertEqual(low.stats.rank_locked.reload_speed, 0)
+        self.assertAlmostEqual(low.stats.total.base_damage, 1.65 * 3 / 6)
+
+        high = upgrade.configure({"rank": 5})
+        self.assertAlmostEqual(high.stats.static.base_damage, 1.65)
+        self.assertEqual(high.stats.rank_locked.reload_speed, 0.3)
+        self.assertAlmostEqual(high.stats.total.base_damage, 1.65)
+        self.assertAlmostEqual(high.stats.total.reload_speed, 0.3)
+
+        merciless = arsenal.get("Primary Merciless", context={"rank": 2, "stacks": 12})
+        self.assertAlmostEqual(merciless.stats.stacking.base_damage, 0.3 * 3 / 6 * 12)
+        self.assertEqual(merciless.stats.rank_locked.reload_speed, 0)
+
+    def test_build_subtraction_matches_definition_not_runtime(self):
+        low = arsenal.get("Serration", context={"rank": 5})
+        high = arsenal.get("Serration", context={"rank": 10})
+        other = arsenal.get("Point Strike")
+        build = Build(high, other)
+
+        self.assertTrue(low == high)
+        reduced = build - low
+        self.assertEqual([upgrade.data.name for upgrade in reduced], ["Point Strike"])
+
+        different = Upgrade({"name": "Serration", "type": "mod", "max_rank": 10, "stats": {"base_damage": 0.1}})
+        self.assertFalse(different == high)
+        untouched = Build(high) - different
+        self.assertEqual([upgrade.data.name for upgrade in untouched], ["Serration"])
+
+    def test_protocols_accept_concrete_models(self):
+        from warframe_damage_calculator.protocols import (
+            UpgradeOwner,
+            WeaponCalculatorOwner,
+            WeaponFormatterOwner,
+        )
+
+        upgrade = Upgrade({"name": "Proto", "type": "mod", "max_rank": 0, "stats": {"base_damage": 1}})
+        weapon = arsenal.get("Braton")
+
+        self.assertIsInstance(upgrade, UpgradeOwner)
+        self.assertIsInstance(weapon, WeaponCalculatorOwner)
+        self.assertIsInstance(weapon, WeaponFormatterOwner)
+        self.assertEqual(UpgradeCalculator(upgrade).total.base_damage, 1)
+        self.assertEqual(weapon.results.main.name, weapon._attack)
+        self.assertIn(weapon.data.name, weapon.format.summary())
+
+    def test_condition_overload_applies_before_modded_damage(self):
+        from warframe_damage_calculator.calculators.weapon_calculator import WeaponCalculator
+
+        condition_overload = Upgrade({
+            "name": "CO",
+            "type": "mod",
+            "max_rank": 0,
+            "compatibility": {"types": []},
+            "stats": {"condition_overload": [{"value": 1, "stacks": {"when": "status_type", "max": 1}}]},
+        })
+        weapon = Primary({
+            "name": "CO Order",
+            "type": "primary",
+            "attacks": {
+                "shot": {"stats": {"damage": {"heat": 100}, "status_chance": 1, "fire_rate": 1, "multishot": 1}},
+            },
+        }).configure(Build(condition_overload))
+
+        result = weapon.results.main
+        self.assertGreater(result.modded.base_damage, 1)
+        expected_damage = result.modded.base_damage * result.base.damage.apply(result.build.damage).combine().sorted()
+        self.assertEqual(dict(result.modded.damage), dict(expected_damage))
+
+        damage_assignments: list[float] = []
+        original = WeaponCalculator._compute_modded_damage
+        test_case = self
+
+        def tracked(calculator, attack_result):
+            damage_assignments.append(attack_result.modded.base_damage)
+            original(calculator, attack_result)
+            test_case.assertEqual(
+                dict(attack_result.modded.damage),
+                dict(attack_result.modded.base_damage * attack_result.base.damage.apply(attack_result.build.damage).combine().sorted()),
+            )
+
+        WeaponCalculator._compute_modded_damage = tracked
+        try:
+            weapon.configure(Build(condition_overload))
+        finally:
+            WeaponCalculator._compute_modded_damage = original
+
+        self.assertEqual(len(damage_assignments), 1)
+        self.assertGreater(damage_assignments[0], 1)
+
+    def test_modded_scalars_do_not_assign_damage(self):
+        from warframe_damage_calculator.calculators.weapon_calculator import WeaponCalculator
+
+        weapon = arsenal.get("Braton")
+        result = weapon.results.main
+        calculator = weapon.results
+        fresh = type(result)({
+            "name": result.name,
+            "attack": result.attack,
+            "build": result.build.copy(),
+            "children": list(result.children),
+        })
+        calculator._compute_base(fresh)
+        calculator._compute_modded_scalars(fresh)
+        self.assertEqual(fresh.modded.damage.total_damage(), 0)
+        calculator._apply_condition_overload(fresh)
+        calculator._compute_modded_damage(fresh)
+        self.assertGreater(fresh.modded.damage.total_damage(), 0)
+        self.assertIsInstance(calculator, WeaponCalculator)
 
 
 if __name__ == "__main__":

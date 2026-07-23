@@ -5,15 +5,15 @@ from .ranged_calculator import RangedCalculator
 
 
 class PrimaryCalculator(RangedCalculator):
-    def _compute_modded_stats(self, result: AttackResult) -> None:
-        super()._compute_modded_stats(result)
+    def _compute_modded_scalars(self, result: AttackResult) -> None:
+        super()._compute_modded_scalars(result)
         build, modded = result.build, result.modded
         modded.hunter_munitions = clamp(build.hunter_munitions, 0, 0.3)
         modded.primed_chamber = clamp(build.primed_chamber, 0, 1.4)
         modded.vigilante_bonus = clamp(build.vigilante_bonus, 0, 0.3)
 
-    def _compute_effective_stats(self, result: AttackResult) -> None:
-        super()._compute_effective_stats(result)
+    def _compute_effective(self, result: AttackResult) -> None:
+        super()._compute_effective(result)
         modded, effective = result.modded, result.effective
         effective.hunter_munitions = modded.hunter_munitions
         effective.primed_chamber = modded.primed_chamber
@@ -21,8 +21,8 @@ class PrimaryCalculator(RangedCalculator):
         effective.crit_chance += effective.vigilante_bonus
         effective.weakpoint_crit_chance += effective.vigilante_bonus
 
-    def _compute_average_stats(self, result: AttackResult) -> None:
-        super()._compute_average_stats(result)
+    def _compute_average(self, result: AttackResult) -> None:
+        super()._compute_average(result)
         effective, average = result.effective, result.average
         average.primed_chamber_multiplier = 1 + effective.primed_chamber / effective.magazine_capacity
         average.flat_dph *= average.primed_chamber_multiplier

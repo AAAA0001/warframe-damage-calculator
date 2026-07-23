@@ -1,17 +1,17 @@
-from typing import Any, Iterator
+from collections.abc import Iterator
 
 from ..fields.attack_result import AttackResult
 from ..fields.calculated import AverageStats, CalculatedStats
 from ..fields.upgrade import ResolvedStat
 from ..fields.weapon_data import Attack
 from ..models.build import Build
-from ..models.upgrade import Upgrade
+from ..protocols import BuildUpgradeOwner, WeaponCalculatorOwner
 from ..utils.types import Number
 from . import helpers
 
 
 class WeaponCalculator:
-    def __init__(self, weapon: Any) -> None:
+    def __init__(self, weapon: WeaponCalculatorOwner) -> None:
         self.weapon = weapon
         self._results: dict[str, AttackResult] = {}
         self.recompute()
@@ -62,34 +62,29 @@ class WeaponCalculator:
             "build": resolved_build.copy(),
             "children": list(attack.children),
         })
-        self._compute_base_stats(result)
-        self._compute_modded_stats(result)
-
-        bonus = self._average_condition_overload_bonus(result)
-        if result.attack.stats.co_effect == "multiplies":
-            result.modded.multiplicative_base_damage = max(result.modded.multiplicative_base_damage + bonus, 1)
-        else:
-            result.modded.base_damage = max(result.modded.base_damage + bonus, 0)
-        damage = result.base.damage.apply(result.build.damage).combine().sorted()
-        result.modded.damage = result.modded.base_damage * damage
-
-        self._compute_effective_stats(result)
-        self._compute_average_stats(result)
+        self._compute_base(result)
+        self._compute_modded_scalars(result)
+        self._apply_condition_overload(result)
+        self._compute_modded_damage(result)
+        self._compute_effective(result)
+        self._compute_average(result)
         return result
 
-    def _compute_base_stats(self, result: AttackResult) -> None:
+    def _compute_base(self, result: AttackResult) -> None:
         attack = result.attack
         ammo, stats = self.weapon.data.ammo, dict(attack.stats)
-        stats.update({"attack_speed": attack.stats.fire_rate, "magazine_capacity": ammo.get("magazine_size", 1), "reload_speed": ammo.get("reload_time", 0), "recharge_rate": ammo.get("recharge_rate", 0)})
+        stats.update({
+            "attack_speed": attack.stats.fire_rate,
+            "magazine_capacity": ammo.get("magazine_size", 1),
+            "reload_speed": ammo.get("reload_time", 0),
+            "recharge_rate": ammo.get("recharge_rate", 0),
+        })
         result.base = CalculatedStats(self.weapon.stats_type(stats).with_defaults())
 
-    def _compute_modded_stats(self, result: AttackResult) -> None:
+    def _compute_modded_scalars(self, result: AttackResult) -> None:
         build, base, modded = result.build, result.base, result.modded
-        damage = base.damage.apply(build.damage).combine().sorted()
-
         modded.multiplicative_base_damage = max(1 + build.multiplicative_base_damage, 1)
         modded.base_damage = max(1 + build.base_damage, 0)
-        modded.damage = modded.base_damage * damage
         modded.corpus_damage = max(1 + build.corpus_damage, 1)
         modded.grineer_damage = max(1 + build.grineer_damage, 1)
         modded.infested_damage = max(1 + build.infested_damage, 1)
@@ -104,7 +99,18 @@ class WeaponCalculator:
         modded.status_chance = max(base.status_chance * (1 + build.status_chance), 0)
         modded.status_damage = max(1 + build.status_damage, 1)
 
-    def _compute_effective_stats(self, result: AttackResult) -> None:
+    def _apply_condition_overload(self, result: AttackResult) -> None:
+        bonus = self._average_condition_overload_bonus(result)
+        if result.attack.stats.co_effect == "multiplies":
+            result.modded.multiplicative_base_damage = max(result.modded.multiplicative_base_damage + bonus, 1)
+        else:
+            result.modded.base_damage = max(result.modded.base_damage + bonus, 0)
+
+    def _compute_modded_damage(self, result: AttackResult) -> None:
+        damage = result.base.damage.apply(result.build.damage).combine().sorted()
+        result.modded.damage = result.modded.base_damage * damage
+
+    def _compute_effective(self, result: AttackResult) -> None:
         base, modded, effective = result.base, result.modded, result.effective
         effective.forced_procs = base.forced_procs
         effective.base_damage = modded.base_damage * modded.multiplicative_base_damage
@@ -123,7 +129,7 @@ class WeaponCalculator:
     def _max_average_faction_damage(self, result: AttackResult) -> float:
         return max(result.average.corpus_damage, result.average.grineer_damage, result.average.infested_damage, result.average.orokin_damage, result.average.murmur_damage, result.average.sentient_damage)
 
-    def _compute_average_stats(self, result: AttackResult) -> None:
+    def _compute_average(self, result: AttackResult) -> None:
         effective, average = result.effective, result.average
         average.crit_chance = effective.crit_chance
         average.crit_multiplier = helpers.crit_multiplier(average.crit_chance, effective.crit_damage)
@@ -166,16 +172,13 @@ class WeaponCalculator:
     def recompute(self) -> None:
         self._validate_attack_cycles()
         resolved = self._resolved_build()
-        self._results = {
-            name: self.compute_attack(name, attack, resolved)
-            for name, attack in self.weapon.data.attacks.items()
-        }
+        self._results = {name: self.compute_attack(name, attack, resolved) for name, attack in self.weapon.data.attacks.items()}
         for name, result in self._results.items():
             result.final = self._fold_attack_tree(result, list(self._walk_tree(name)))
 
-    def contribution(self, upgrade: Upgrade) -> float:
+    def contribution(self, upgrade: BuildUpgradeOwner) -> float:
         full = self.weapon.build
-        if all(equipped.data != upgrade.data for equipped in full):
+        if upgrade not in full:
             return 0.0
         reduced = full - upgrade
         full_dps = self.main.final.total_dps

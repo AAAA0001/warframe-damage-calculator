@@ -1,11 +1,11 @@
 from math import expm1, log1p
-from typing import Any
 
 from ..fields.attack_result import AttackResult
 from ..fields.calculated import AverageStats
+from ..models.upgrade import Upgrade
+from ..protocols import WeaponCalculatorOwner
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.types import Number
-from ..models.upgrade import Upgrade
 
 
 def crit_multiplier(crit_chance: Number, crit_damage: Number) -> float:
@@ -29,7 +29,7 @@ def status_hits(result: AttackResult) -> float:
     return hits + duplicate * max(0, 1 - abs(chance - 1))
 
 
-def effective_attacks_per_second(weapon: Any, result: AttackResult) -> float:
+def effective_attacks_per_second(weapon: WeaponCalculatorOwner, result: AttackResult) -> float:
     stats, base, modded = result.attack.stats, result.base, result.modded
     if "attack_speed" in modded:
         return max(stats.fire_rate * modded.attack_speed / (base.attack_speed or 1), 0)
@@ -53,7 +53,7 @@ def effective_attacks_per_second(weapon: Any, result: AttackResult) -> float:
     return float("inf") if cycle <= 0 else shots / cycle
 
 
-def average_condition_overload_bonus(weapon: Any, result: AttackResult, time: Number = 5) -> float:
+def average_condition_overload_bonus(weapon: WeaponCalculatorOwner, result: AttackResult, time: Number = 5) -> float:
     build, stats = result.build, result.attack.stats
     damage = stats.damage.apply(build.damage).combine().sorted()
     guaranteed, fractional = divmod(max(stats.status_chance * (1 + build.status_chance), 0), 1)
@@ -130,5 +130,12 @@ def secondary_flat_dotph(result: AttackResult, *, weakpoint: bool = False, facti
     return flat_dotph(result, weakpoint=weakpoint, extra_damage=extra + encumber_dot, faction_damage=faction_damage)
 
 
-def selected_evolution_upgrades(weapon: Any) -> list:
-    return [Upgrade({"name": f"evolution {tier} perk {perk}",  "type": "evolution",  "stats": weapon.data.evolutions[str(tier)][str(perk)].get("stats", {})}) for tier, perk in weapon._evolutions.items()]
+def selected_evolution_upgrades(weapon: WeaponCalculatorOwner) -> list[Upgrade]:
+    return [
+        Upgrade({
+            "name": f"evolution {tier} perk {perk}",
+            "type": "evolution",
+            "stats": weapon.data.evolutions[str(tier)][str(perk)].get("stats", {}),
+        })
+        for tier, perk in weapon._evolutions.items()
+    ]

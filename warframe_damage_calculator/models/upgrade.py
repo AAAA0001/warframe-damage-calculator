@@ -2,8 +2,8 @@ from collections.abc import Mapping
 from typing import Any, Self
 
 from ..calculators.upgrade_calculator import UpgradeCalculator
-from ..utils.types import JsonValue
 from ..fields.upgrade import UpgradeData
+from ..utils.types import JsonValue
 
 
 class Upgrade:
@@ -11,8 +11,12 @@ class Upgrade:
         self.data = UpgradeData(data or {})
         self.stats = UpgradeCalculator(self)
 
+    def __eq__(self, other: Upgrade) -> bool:
+        return self.data == other.data
+
     def configure(self, context: Mapping[str, Any] | None = None) -> Self:
-        if context is not None: self.data.runtime.update(context)
+        if context is not None:
+            self.data.runtime.update(context)
         self.stats.resolve()
         return self
 

@@ -1,8 +1,8 @@
-from typing import Any
+from ..protocols import WeaponFormatterOwner
 
 
 class WeaponFormatter:
-    def __init__(self, weapon: Any) -> None:
+    def __init__(self, weapon: WeaponFormatterOwner) -> None:
         self.weapon = weapon
 
     def upgrades(self) -> str:

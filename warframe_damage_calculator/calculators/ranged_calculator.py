@@ -5,8 +5,8 @@ from .weapon_calculator import WeaponCalculator
 
 
 class RangedCalculator(WeaponCalculator):
-    def _compute_modded_stats(self, result: AttackResult) -> None:
-        super()._compute_modded_stats(result)
+    def _compute_modded_scalars(self, result: AttackResult) -> None:
+        super()._compute_modded_scalars(result)
         build, base, modded = result.build, result.base, result.modded
 
         modded.weakpoint_damage = max(base.weakpoint_damage + build.weakpoint_damage, 1)
@@ -25,8 +25,8 @@ class RangedCalculator(WeaponCalculator):
         modded.weakpoint_crit_chance = max(base.crit_chance * (1 + build.crit_chance + build.weakpoint_crit_chance), 0)
         modded.internal_bleeding = max(build.internal_bleeding * (2 if modded.fire_rate * modded.multiplicative_fire_rate < 2.5 else 1), 0)
 
-    def _compute_effective_stats(self, result: AttackResult) -> None:
-        super()._compute_effective_stats(result)
+    def _compute_effective(self, result: AttackResult) -> None:
+        super()._compute_effective(result)
         modded, effective = result.modded, result.effective
         is_battery = "recharge_delay" in self.weapon.data.ammo
 
@@ -61,7 +61,7 @@ class RangedCalculator(WeaponCalculator):
         average.flat_weakpoint_dotps = average.fire_rate * average.flat_weakpoint_dotph
         helpers.refresh_dps_from_dph(average)
 
-    def _compute_average_stats(self, result: AttackResult) -> None:
-        super()._compute_average_stats(result)
+    def _compute_average(self, result: AttackResult) -> None:
+        super()._compute_average(result)
         self._setup_ranged_averages(result)
         self._apply_ranged_damage_averages(result)

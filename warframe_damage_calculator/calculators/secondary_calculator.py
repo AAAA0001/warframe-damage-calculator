@@ -6,20 +6,20 @@ from .weapon_calculator import WeaponCalculator
 
 
 class SecondaryCalculator(RangedCalculator):
-    def _compute_modded_stats(self, result: AttackResult) -> None:
-        super()._compute_modded_stats(result)
+    def _compute_modded_scalars(self, result: AttackResult) -> None:
+        super()._compute_modded_scalars(result)
         build, modded = result.build, result.modded
         modded.secondary_enervate = clamp(build.secondary_enervate, 0, 6)
         modded.secondary_encumber = clamp(build.secondary_encumber, 0, 0.24)
 
-    def _compute_effective_stats(self, result: AttackResult) -> None:
-        super()._compute_effective_stats(result)
+    def _compute_effective(self, result: AttackResult) -> None:
+        super()._compute_effective(result)
         modded, effective = result.modded, result.effective
         effective.secondary_enervate = modded.secondary_enervate
         effective.secondary_encumber = modded.secondary_encumber
 
-    def _compute_average_stats(self, result: AttackResult) -> None:
-        WeaponCalculator._compute_average_stats(self, result)
+    def _compute_average(self, result: AttackResult) -> None:
+        WeaponCalculator._compute_average(self, result)
         self._setup_ranged_averages(result)
         modded, effective, average = result.modded, result.effective, result.average
         secondary_enervate_bonus = self._average_secondary_enervate_bonus(modded.crit_chance * modded.multiplicative_crit_chance + modded.flat_crit_chance, result)

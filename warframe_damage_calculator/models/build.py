@@ -24,13 +24,13 @@ class Build:
 
     def __sub__(self, other: Self | Upgrade) -> Self:
         excluded = [other] if isinstance(other, Upgrade) else list(other)
-        names = {str(upgrade.data.name).casefold() for upgrade in excluded}
-        return Build(*(upgrade for upgrade in self if str(upgrade.data.name).casefold() not in names))
+        return Build(*(upgrade for upgrade in self if all(upgrade != item for item in excluded)))
 
     def configure(self, context: Mapping[str, Any] | None = None) -> Self:
-        for upgrade in self.upgrades: upgrade.configure(context)
+        for upgrade in self.upgrades:
+            upgrade.configure(context)
         self.stats.resolve()
         return self
-    
+
     def copy(self) -> Self:
         return type(self)(*self)

@@ -1,14 +1,11 @@
-from typing import Any
-
 from ..fields.upgrade import ResolvedStat
 from ..models.data import Data
+from ..protocols import BuildOwner
 from .upgrade_calculator import UpgradeCalculator
 
 
 class BuildCalculator(UpgradeCalculator):
-    BUCKETS = ("static", "conditional", "modular", "stacking", "rank_locked", "total")
-
-    def __init__(self, build: Any) -> None:
+    def __init__(self, build: BuildOwner) -> None:
         self.build = build
         self.resolve()
 
