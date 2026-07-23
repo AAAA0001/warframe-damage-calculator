@@ -56,12 +56,7 @@ class WeaponCalculator:
                 yield from self._walk_tree(child, next_ancestors)
 
     def compute_attack(self, name: str, attack: Attack, resolved_build: ResolvedStat) -> AttackResult:
-        result = AttackResult({
-            "name": name,
-            "attack": attack,
-            "build": resolved_build.copy(),
-            "children": list(attack.children),
-        })
+        result = AttackResult({"name": name, "attack": attack, "build": resolved_build.copy(), "children": list(attack.children)})
         self._compute_base(result)
         self._compute_modded_scalars(result)
         self._apply_condition_overload(result)
@@ -73,12 +68,7 @@ class WeaponCalculator:
     def _compute_base(self, result: AttackResult) -> None:
         attack = result.attack
         ammo, stats = self.weapon.data.ammo, dict(attack.stats)
-        stats.update({
-            "attack_speed": attack.stats.fire_rate,
-            "magazine_capacity": ammo.get("magazine_size", 1),
-            "reload_speed": ammo.get("reload_time", 0),
-            "recharge_rate": ammo.get("recharge_rate", 0),
-        })
+        stats.update({"attack_speed": attack.stats.fire_rate, "magazine_capacity": ammo.get("magazine_size", 1), "reload_speed": ammo.get("reload_time", 0), "recharge_rate": ammo.get("recharge_rate", 0)})
         result.base = CalculatedStats(self.weapon.stats_type(stats).with_defaults())
 
     def _compute_modded_scalars(self, result: AttackResult) -> None:
