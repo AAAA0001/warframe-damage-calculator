@@ -172,10 +172,9 @@ print(f"Average DPS:   {weapon.stats.combined.total_dps:.2f}")
 print(f"Weakpoint DPS: {weapon.stats.combined.total_weakpoint_dps:.2f}")
 ```
 
-`weapon.stats` is a container with `attacks` (every attack), `combined`
-(aggregate DPH/DPS for the selected attack tree), and `selected` (the currently
-configured attack result). Read any attack through `weapon.stats.attacks[name]`,
-or the active one through `weapon.stats.selected`.
+`weapon.stats` is a container with `attacks` (every attack) and `combined`
+(aggregate DPH/DPS for the selected attack tree). Read a single attack through
+`weapon.stats.attacks[name]`.
 
 Database upgrades resolve at maximum rank and, where applicable, maximum stacks
 by default. Pass runtime values through `context` or `configure(...)` to
@@ -260,14 +259,13 @@ included when the weapon is recomputed.
 ### Read results
 
 ```python
-selected = weapon.stats.selected  # or weapon.stats.attacks["buckshot"]
+selected = weapon.stats.attacks["buckshot"]
 
 print(selected.base)
 print(selected.modded)
 print(selected.effective)
 print(selected.average)
 print(weapon.stats.combined)
-print(weapon.stats.selected_name)
 print(weapon.stats.attacks)
 
 print(weapon.stats.combined.total_dph)
@@ -873,13 +871,11 @@ Each weapon exposes:
 | `weapon.data` | Flat weapon definition (`name`, `type`, `ammo`, `attacks`, `evolutions`). |
 | `weapon.data.attacks[name].name` | Attack identity (same as the map key). |
 | `weapon.stats` | Result container. |
-| `weapon.stats.selected` / `selected_name` | Currently configured attack result and its key. |
 | `weapon.stats.attacks` | Flat map of every computed attack. |
 | `weapon.stats.attacks[name].base` / `modded` / `effective` / `average` | Per-attack layers. |
 | `weapon.stats.attacks[name].children` | Related attack name list. |
 | `weapon.stats.combined` | Aggregate average for the selected attack tree. |
 
-`weapon.stats.selected` is the same object as `weapon.stats.attacks[weapon.stats.selected_name]`.
 `weapon.stats.attacks[name].average` is that attack alone.
 `weapon.stats.combined` folds in related attacks and uses the selected attack's
 fire rate for aggregate DPS.

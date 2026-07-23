@@ -3,7 +3,8 @@ from .weapon_formatter import WeaponFormatter
 
 class RangedFormatter(WeaponFormatter):
     def summary(self) -> str:
-        selected = self.weapon.stats.selected
+        attack_name = self.weapon.stats._attack_name()
+        selected = self.weapon.stats.attacks[attack_name]
         base = selected.base
         effective = selected.effective
         average = self.weapon.stats.combined

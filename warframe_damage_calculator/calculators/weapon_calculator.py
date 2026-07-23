@@ -17,13 +17,8 @@ class WeaponCalculator:
         self.combined = AverageStats()
         self.recompute()
 
-    @property
-    def selected_name(self) -> str:
+    def _attack_name(self) -> str:
         return next(name for name, attack in self.weapon.data.attacks.items() if attack is self.weapon._attack)
-
-    @property
-    def selected(self) -> AttackResult:
-        return self.attacks[self.selected_name]
 
     def _resolved_build(self) -> ResolvedStat:
         build = Build(*self.weapon.build, *helpers.selected_evolution_upgrades(self.weapon))
@@ -161,7 +156,7 @@ class WeaponCalculator:
             name: self.compute_attack(name, attack, resolved)
             for name, attack in self.weapon.data.attacks.items()
         })
-        name = self.selected_name
+        name = self._attack_name()
         self.combined = self._compute_combined(self.attacks[name], list(self._walk_selected(name)))
 
     def contribution(self, upgrade: Upgrade) -> float:

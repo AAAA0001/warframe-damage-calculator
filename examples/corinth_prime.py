@@ -18,7 +18,7 @@ def main() -> None:
     weapon.configure(build, attack="buckshot")
 
     print(weapon.format.summary())
-    
+
 
 if __name__ == "__main__":
     main()

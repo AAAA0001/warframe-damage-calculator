@@ -21,7 +21,7 @@ def galvanized_build() -> Build:
 
 
 def selected(weapon: Weapon):
-    return weapon.stats.selected
+    return weapon.stats.attacks[weapon.stats._attack_name()]
 
 
 class DataDefaults(Data):
@@ -433,7 +433,7 @@ class PublicApiTests(unittest.TestCase):
 
         self.assertEqual(weapon.build.stats.total.corpus_damage, 0.55)
         self.assertEqual(weapon.build.stats.total.grineer_damage, 0.3)
-        self.assertEqual(weapon.stats.selected.effective.faction_damage, 1.55)
+        self.assertEqual(weapon.stats.attacks[weapon.stats._attack_name()].effective.faction_damage, 1.55)
 
     def test_upgrade_stats_accept_scalar_and_single_record_shorthand(self):
         scalar = Upgrade({"name": "Scalar", "type": "mod", "max_rank": 0, "stats": {"base_damage": 1.5}})
