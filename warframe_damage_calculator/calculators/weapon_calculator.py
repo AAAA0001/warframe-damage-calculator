@@ -1,36 +1,33 @@
 from typing import Any, Iterator
 
-from ..models.build import Build
 from ..fields.attack_result import AttackResult, AttackResults
-from ..fields.calculated import AverageStats
+from ..fields.calculated import AverageStats, CalculatedStats
+from ..fields.upgrade import ResolvedStat
+from ..fields.weapon_data import Attack
+from ..models.build import Build
 from ..models.upgrade import Upgrade
-from .attack_calculator import AttackCalculator
+from ..utils.types import Number
+from . import helpers
 
 
 class WeaponCalculator:
-    attack_calculator_type = AttackCalculator
-
     def __init__(self, weapon: Any) -> None:
         self.weapon = weapon
-        self.attack_calculator = self.attack_calculator_type(weapon)
         self.attacks = AttackResults()
         self.combined = AverageStats()
         self.recompute()
 
-    def _resolved_build(self) -> Any:
-        data = self.weapon.data
-        evolutions = (
-            Upgrade({
-                "name": f"evolution {tier} perk {perk}",
-                "type": "evolution",
-                "max_rank": 0,
-                "compatibility": {"types": []},
-                "stats": data.evolutions[str(tier)][str(perk)].get("stats", {}),
-            })
-            for tier, perk in self.weapon._evolutions.items()
-        )
-        build = Build(*self.weapon.build, *evolutions)
-        build.stats.resolve(data)
+    @property
+    def selected_name(self) -> str:
+        return next(name for name, attack in self.weapon.data.attacks.items() if attack is self.weapon._attack)
+
+    @property
+    def selected(self) -> AttackResult:
+        return self.attacks[self.selected_name]
+
+    def _resolved_build(self) -> ResolvedStat:
+        build = Build(*self.weapon.build, *helpers.selected_evolution_upgrades(self.weapon))
+        build.stats.resolve(self.weapon.data)
         return build.stats.total.copy()
 
     def _validate_attack_cycles(self) -> None:
@@ -59,8 +56,83 @@ class WeaponCalculator:
             if child in self.attacks:
                 yield from self._walk_selected(child, next_ancestors)
 
-    def _attack_name(self) -> str:
-        return next(name for name, attack in self.weapon.data.attacks.items() if attack is self.weapon._attack)
+    def compute_attack(self, name: str, attack: Attack, resolved_build: ResolvedStat) -> AttackResult:
+        result = AttackResult({
+            "name": name,
+            "attack": attack,
+            "build": resolved_build.copy(),
+            "children": list(attack.children),
+        })
+        self._compute_base_stats(result)
+        self._compute_modded_stats(result)
+
+        bonus = self._average_condition_overload_bonus(result)
+        if result.attack.stats.co_effect == "multiplies":
+            result.modded.multiplicative_base_damage = max(result.modded.multiplicative_base_damage + bonus, 1)
+        else:
+            result.modded.base_damage = max(result.modded.base_damage + bonus, 0)
+        damage = result.base.damage.apply(result.build.damage).combine().sorted()
+        result.modded.damage = result.modded.base_damage * damage
+
+        self._compute_effective_stats(result)
+        self._compute_average_stats(result)
+        return result
+
+    def _compute_base_stats(self, result: AttackResult) -> None:
+        attack = result.attack
+        ammo, stats = self.weapon.data.ammo, dict(attack.stats)
+        stats.update({
+            "attack_speed": attack.stats.fire_rate,
+            "magazine_capacity": ammo.get("magazine_size", 1),
+            "reload_speed": ammo.get("reload_time", 0),
+            "recharge_rate": ammo.get("recharge_rate", 0),
+        })
+        result.base = CalculatedStats(self.weapon.mode_stats_type(stats).with_defaults())
+
+    def _compute_modded_stats(self, result: AttackResult) -> None:
+        build, base, modded = result.build, result.base, result.modded
+        damage = base.damage.apply(build.damage).combine().sorted()
+        faction_damage = max(
+            build.corpus_damage, build.grineer_damage, build.infested_damage,
+            build.orokin_damage, build.murmur_damage, build.sentient_damage,
+        )
+
+        modded.multiplicative_base_damage = max(1 + build.multiplicative_base_damage, 1)
+        modded.base_damage = max(1 + build.base_damage, 0)
+        modded.damage = modded.base_damage * damage
+        modded.faction_damage = max(1 + faction_damage, 1)
+        modded.flat_crit_chance = max(build.flat_crit_chance, 0)
+        modded.multiplicative_crit_chance = max(1 + build.multiplicative_crit_chance, 1)
+        modded.crit_chance = max(base.crit_chance * (1 + build.crit_chance), 0)
+        modded.flat_crit_damage = max(build.flat_crit_damage, 0)
+        modded.crit_damage = max(base.crit_damage * (1 + build.crit_damage), 1)
+        modded.status_chance = max(base.status_chance * (1 + build.status_chance), 0)
+        modded.status_damage = max(1 + build.status_damage, 1)
+
+    def _compute_effective_stats(self, result: AttackResult) -> None:
+        base, modded, effective = result.base, result.modded, result.effective
+        effective.forced_procs = base.forced_procs
+        effective.base_damage = modded.base_damage * modded.multiplicative_base_damage
+        effective.damage = modded.multiplicative_base_damage * modded.damage
+        effective.faction_damage = modded.faction_damage
+        effective.crit_chance = modded.crit_chance * modded.multiplicative_crit_chance + modded.flat_crit_chance
+        effective.crit_damage = modded.crit_damage + modded.flat_crit_damage
+        effective.status_chance = modded.status_chance
+        effective.status_damage = modded.status_damage
+
+    def _compute_average_stats(self, result: AttackResult) -> None:
+        effective, average = result.effective, result.average
+        average.crit_chance = effective.crit_chance
+        average.crit_multiplier = helpers.crit_multiplier(average.crit_chance, effective.crit_damage)
+
+    def _flat_dotph(self, result: AttackResult, *, weakpoint: bool = False) -> float:
+        return helpers.flat_dotph(result, weakpoint=weakpoint)
+
+    def _average_condition_overload_bonus(self, result: AttackResult, time: Number = 5) -> float:
+        return helpers.average_condition_overload_bonus(self.weapon, result, time)
+
+    def _effective_attacks_per_second(self, result: AttackResult) -> float:
+        return helpers.effective_attacks_per_second(self.weapon, result)
 
     def _compute_combined(self, selected: AttackResult, results: list[AttackResult]) -> AverageStats:
         combined = selected.average.copy()
@@ -68,7 +140,7 @@ class WeaponCalculator:
         combined.flat_dotph = sum(item.average.get("flat_dotph", 0) for item in results)
         combined.total_dph = combined.flat_dph + combined.flat_dotph
 
-        attack_rate = self.attack_calculator._effective_attacks_per_second(selected)
+        attack_rate = self._effective_attacks_per_second(selected)
         combined.flat_dps = combined.flat_dph * attack_rate
         combined.flat_dotps = combined.flat_dotph * attack_rate
         combined.total_dps = combined.total_dph * attack_rate
@@ -85,21 +157,12 @@ class WeaponCalculator:
     def recompute(self) -> None:
         self._validate_attack_cycles()
         resolved = self._resolved_build()
-        self.attack_calculator = self.attack_calculator_type(self.weapon)
         self.attacks = AttackResults({
-            name: self.attack_calculator.compute(name, attack, resolved)
+            name: self.compute_attack(name, attack, resolved)
             for name, attack in self.weapon.data.attacks.items()
         })
-
-        attack_name = self._attack_name()
-        selected = self.attacks[attack_name]
-        self.combined = self._compute_combined(selected, list(self._walk_selected(attack_name)))
-
-    def _average_condition_overload_bonus(self, result: AttackResult, time: float = 5) -> float:
-        return self.attack_calculator._average_condition_overload_bonus(result, time)
-
-    def _effective_attacks_per_second(self, result: AttackResult) -> float:
-        return self.attack_calculator._effective_attacks_per_second(result)
+        name = self.selected_name
+        self.combined = self._compute_combined(self.attacks[name], list(self._walk_selected(name)))
 
     def contribution(self, upgrade: Upgrade) -> float:
         full = self.weapon.build

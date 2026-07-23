@@ -14,7 +14,6 @@ class GlobalWeaponStats(Data):
     disposition: Number = 0.0
     is_incarnon: bool = False
     is_progenitor: bool = False
-    is_beam: bool = False
     is_battery: bool = False
 
 

@@ -21,7 +21,7 @@ def galvanized_build() -> Build:
 
 
 def selected(weapon: Weapon):
-    return weapon.stats.attacks[weapon.stats._attack_name()]
+    return weapon.stats.selected
 
 
 class DataDefaults(Data):
@@ -269,22 +269,24 @@ class PublicApiTests(unittest.TestCase):
                 },
             })
 
-    def test_beam_behavior_is_local_to_each_attack_bucket(self):
+    def test_ammo_cost_is_local_to_each_attack_bucket(self):
         weapon = Primary({
             "name": "Mixed Delivery",
             "type": "primary",
+            "ammo": {"magazine_size": 100, "reload_time": 2},
             "attacks": {
-                "parent": {"delivery": "hitscan", "children": ["child"], "stats": {"damage": {"impact": 10}, "multishot": 2}},
-                "child": {"delivery": "beam", "stats": {"damage": {"heat": 20}, "multishot": 3}},
+                "parent": {"delivery": "hitscan", "children": ["child"], "stats": {"damage": {"impact": 10}, "multishot": 2, "fire_rate": 10}},
+                "child": {"delivery": "beam", "stats": {"damage": {"heat": 20}, "multishot": 3, "ammo_cost": 0.5, "fire_rate": 10}},
             },
         })
         parent = weapon.stats.attacks.parent
         child = weapon.stats.attacks.child
 
-        self.assertEqual(parent.average.beam_dot_multiplier, 1)
-        self.assertEqual(child.average.beam_dot_multiplier, child.effective.multishot)
+        self.assertEqual(parent.effective.ammo_cost, 1)
+        self.assertEqual(child.effective.ammo_cost, 0.5)
         self.assertEqual(parent.effective.ammo_efficiency, 0)
-        self.assertEqual(child.effective.ammo_efficiency, 0.5)
+        self.assertEqual(child.effective.ammo_efficiency, 0)
+        self.assertGreater(child.average.fire_rate, parent.average.fire_rate)
 
     def test_multiple_child_attacks_are_combined_once(self):
         weapon = Primary({
@@ -431,7 +433,7 @@ class PublicApiTests(unittest.TestCase):
 
         self.assertEqual(weapon.build.stats.total.corpus_damage, 0.55)
         self.assertEqual(weapon.build.stats.total.grineer_damage, 0.3)
-        self.assertEqual(weapon.stats.attacks[weapon.stats._attack_name()].effective.faction_damage, 1.55)
+        self.assertEqual(weapon.stats.selected.effective.faction_damage, 1.55)
 
     def test_upgrade_stats_accept_scalar_and_single_record_shorthand(self):
         scalar = Upgrade({"name": "Scalar", "type": "mod", "max_rank": 0, "stats": {"base_damage": 1.5}})

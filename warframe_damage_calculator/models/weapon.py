@@ -9,9 +9,6 @@ from ..fields.weapon_data import WeaponData
 from ..fields.weapon_input import WeaponStats
 
 
-_UNSET = object()
-
-
 class Weapon:
     data_type = WeaponData
     mode_stats_type = WeaponStats
@@ -27,7 +24,7 @@ class Weapon:
         self.format = self.formatter_type(self)
 
     def configure(self, build: Build | None = None, attack: str | None = None, evolutions: Mapping[int, int] | None = None) -> Self:
-        if attack is not None: self.build = build.copy()
+        if build is not None: self.build = build.copy()
         if attack is not None: self._attack = self.data.attacks[attack]
         if evolutions is not None: self._evolutions = dict(evolutions)
         self.stats.recompute()

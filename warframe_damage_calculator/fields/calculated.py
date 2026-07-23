@@ -27,6 +27,7 @@ class CalculatedStats(Data):
     charge_time: Number
     reload_speed: Number
     recharge_rate: Number
+    ammo_cost: Number
     ammo_efficiency: Number
     magazine_capacity: Number
     weakpoint_damage: Number
@@ -47,7 +48,6 @@ class AverageStats(Data):
     weakpoint_crit_multiplier: Number
     fire_rate: Number
     procs_per_shot: Number
-    beam_dot_multiplier: Number
     flat_dph: Number
     flat_weakpoint_dph: Number
     flat_dps: Number
