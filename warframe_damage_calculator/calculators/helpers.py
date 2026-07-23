@@ -5,6 +5,7 @@ from ..fields.attack_result import AttackResult
 from ..fields.calculated import AverageStats
 from ..utils.constants import DOT_MULTIPLIERS
 from ..utils.types import Number
+from ..models.upgrade import Upgrade
 
 
 def crit_multiplier(crit_chance: Number, crit_damage: Number) -> float:
@@ -130,16 +131,4 @@ def secondary_flat_dotph(result: AttackResult, *, weakpoint: bool = False) -> fl
 
 
 def selected_evolution_upgrades(weapon: Any) -> list:
-    from ..models.upgrade import Upgrade
-
-    data = weapon.data
-    return [
-        Upgrade({
-            "name": f"evolution {tier} perk {perk}",
-            "type": "evolution",
-            "max_rank": 0,
-            "compatibility": {"types": []},
-            "stats": data.evolutions[str(tier)][str(perk)].get("stats", {}),
-        })
-        for tier, perk in weapon._evolutions.items()
-    ]
+    return [Upgrade({"name": f"evolution {tier} perk {perk}",  "type": "evolution",  "stats": weapon.data.evolutions[str(tier)][str(perk)].get("stats", {})}) for tier, perk in weapon._evolutions.items()]
