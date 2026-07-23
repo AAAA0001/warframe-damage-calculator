@@ -60,3 +60,11 @@ class RangedStats(WeaponStats):
 
 class MeleeStats(WeaponStats):
     attack_speed: Number = 1.0
+
+
+class PrimaryStats(RangedStats):
+    pass
+
+
+class SecondaryStats(RangedStats):
+    pass
