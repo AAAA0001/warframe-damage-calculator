@@ -81,26 +81,13 @@ def average_condition_overload_bonus(weapon: Any, result: AttackResult, time: Nu
     return float(condition_overload.value) * stats.co_factor * expected
 
 
-def flat_dotph(
-    result: AttackResult,
-    *,
-    weakpoint: bool = False,
-    hits: Number | None = None,
-    damage_multiplier: Number = 1,
-    extra_damage: Number = 0,
-) -> float:
+def flat_dotph(result: AttackResult, *, weakpoint: bool = False, hits: Number | None = None, damage_multiplier: Number = 1, extra_damage: Number = 0) -> float:
     base, effective, average = result.base, result.effective, result.average
     if effective.damage.total_damage() <= 0:
         return 0.0
     multiplier = average.weakpoint_crit_multiplier if weakpoint else average.crit_multiplier
-    regular = sum(
-        factor * effective.damage.get(damage_type) * effective.damage.weight(damage_type)
-        for damage_type, factor in DOT_MULTIPLIERS
-    ) * effective.status_chance
-    forced = sum(
-        factor * base.forced_procs.get(damage_type) * effective.damage.get(damage_type)
-        for damage_type, factor in DOT_MULTIPLIERS
-    )
+    regular = sum(factor * effective.damage.get(damage_type) * effective.damage.weight(damage_type) for damage_type, factor in DOT_MULTIPLIERS) * effective.status_chance
+    forced = sum(factor * base.forced_procs.get(damage_type) * effective.damage.get(damage_type) for damage_type, factor in DOT_MULTIPLIERS)
     shot_hits = effective.get("multishot", status_hits(result)) if hits is None else hits
     return (regular + forced) * effective.status_damage * effective.faction_damage ** 2 * multiplier * damage_multiplier * shot_hits + extra_damage
 
