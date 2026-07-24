@@ -50,6 +50,8 @@ class WeaponCalculatorOwner(Protocol):
 class ConfigurableWeaponOwner(WeaponCalculatorOwner, Protocol):
     def configure(self, build: BuildOwner | None = None, attack: str | None = None, evolutions: Mapping[int, int] | None = None) -> ConfigurableWeaponOwner: ...
 
+    def copy(self) -> ConfigurableWeaponOwner: ...
+
 
 @runtime_checkable
 class WeaponResultsView(Protocol):

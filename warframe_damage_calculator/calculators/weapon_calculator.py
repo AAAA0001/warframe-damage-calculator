@@ -323,13 +323,9 @@ class WeaponCalculator:
         full = self.weapon.build
         if upgrade not in full:
             return 0.0
-        reduced = full - upgrade
-        full_dps = self.main.final.total_dps
-        try:
-            self.weapon.configure(reduced)
-            return full_dps - self.main.final.total_dps
-        finally:
-            self.weapon.configure(full)
+        reduced = self.weapon.copy()
+        reduced.configure(full - upgrade)
+        return self.main.final.total_dps - reduced.results.main.final.total_dps
 
     def contribution_values(self) -> dict[str, float]:
         return {str(upgrade.data.name): self.contribution(upgrade) for upgrade in self.weapon.build}

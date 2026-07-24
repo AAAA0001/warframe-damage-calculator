@@ -29,3 +29,11 @@ class Weapon:
         if evolutions is not None: self._evolutions = dict(evolutions)
         self.results.resolve()
         return self
+
+    def copy(self) -> Self:
+        copied = type(self)(self.data.copy())
+        copied.build = self.build.copy()
+        copied._attack = self._attack
+        copied._evolutions = dict(self._evolutions)
+        copied.results.resolve()
+        return copied

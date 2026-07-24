@@ -391,7 +391,7 @@ class PublicApiTests(unittest.TestCase):
         reduced = build - chamber
         self.assertEqual([upgrade.data.name for upgrade in reduced], ["Galvanized Aptitude"])
 
-    def test_contribution_recomputes_through_attack_buckets_and_restores_build(self):
+    def test_contribution_uses_copy_without_mutating_weapon(self):
         serration = arsenal.get("Serration")
         weapon = arsenal.get("Braton").configure(Build(serration))
         full_dps = selected(weapon).final.total_dps
@@ -429,6 +429,29 @@ class PublicApiTests(unittest.TestCase):
         self.assertIsNot(copied.data, upgrade.data)
         copied.data.stats.multishot = 99
         self.assertNotEqual(copied.data.stats.multishot, upgrade.data.stats.multishot)
+
+    def test_weapon_copy_preserves_configuration_without_sharing_state(self):
+        build = galvanized_build()
+        weapon = arsenal.get("Corinth Prime").configure(build, attack="air_burst_projectile")
+        copied = weapon.copy()
+
+        self.assertIsNot(copied, weapon)
+        self.assertIsNot(copied.data, weapon.data)
+        self.assertIsNot(copied.build, weapon.build)
+        self.assertEqual(copied._attack, weapon._attack)
+        self.assertEqual(copied._evolutions, weapon._evolutions)
+        self.assertEqual(selected(copied).effective, selected(weapon).effective)
+
+        copied.configure(attack=next(name for name in copied.data.attacks if name != copied._attack))
+        self.assertNotEqual(copied._attack, weapon._attack)
+        self.assertEqual(weapon._attack, "air_burst_projectile")
+
+        telos = arsenal.get("Telos Boltor").configure(build, evolutions={2: 1})
+        telos_copy = telos.copy()
+        self.assertEqual(telos_copy._evolutions, {2: 1})
+        telos_copy.configure(evolutions={2: 2})
+        self.assertEqual(telos._evolutions, {2: 1})
+        self.assertNotEqual(selected(telos_copy).effective, selected(telos).effective)
 
     def test_configure_attack_and_build_are_order_independent(self):
         build = galvanized_build()
